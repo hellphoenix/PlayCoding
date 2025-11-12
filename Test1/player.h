@@ -37,11 +37,12 @@ public:
 	int getTotalDefense() const;
 	int getTotalHealth() const;
 
-	void setItem(const Item& _item, const string& _itemSlot);
+	void setItem(const Item& _item);
+	void setItem(const Item& _item, Item::ItemSlot _itemSlot);
 
 	void setBaseStats(int _health, int _attack, int _defense);
 
-	void equipEquipmentFromInventory(const std::string& _itemName);
+	void equipFromInventory(const Item& _item);
 
 
 	void printPlayer() const;

@@ -23,181 +23,264 @@ static std::string toLowerCopy(std::string s)
 void Game::printHelp() const
 {
     cout << "Commands:\n";
-    cout << "  help        - show this help\n";
-    cout << "  stats       - show player stats and equipment\n";
-    cout << "  inventory   - show inventory\n";
-    cout << "  equip       - equip an item from inventory\n";
-    cout << "  unequip     - unequip an item back to inventory\n";
-    cout << "  debug       - change base player variables\n";
-    cout << "  save        - save player stats and items\n";
-    cout << "  load        - load player stats and items\n";
-    cout << "  quit        - exit game\n";
+    cout << "  [h]elp        - show this help\n";
+    cout << "  [s]tats       - show player stats and equipment\n";
+    cout << "  [i]nventory   - show inventory\n";
+    cout << "  [e]quip       - equip an item from inventory\n";
+    cout << "  [u]nequip     - unequip an item back to inventory\n";
+    cout << "  [d]ebug       - change base player variables\n";
+    cout << "  s[a]ve        - save player stats and items\n";
+    cout << "  [l]oad        - load player stats and items\n";
+    cout << "  [q]uit        - exit game\n";
 }
 
 void Game::handleEquipCommand()
 {
     std::string slot;
+    int slotInput;
     std::string itemName;
+    int itemNameInput;
     bool slotFound = false;
+    vector<Item> filteredList;
 
     while (!slotFound)
     {
-        cout << "Enter slot (helmet, chestpiece, pants, boots, shield, sword) or type cancel: ";
+        cout << "Enter slot number: helmet[1], chestpiece[2], pants[3], boots[4], shield[5], sword[6], or cancel[0]: ";
         std::getline(std::cin, slot);
         slot = toLowerCopy(slot);
-      
-        if (slot == "helmet" || slot == "chest" || slot == "chestpiece" || slot == "pants" || slot == "boots" || slot == "shield" || slot == "sword")
+        try
         {
-            cout << "Enter item name exactly as shown in inventory: ";
-            std::getline(std::cin, itemName);
-            player.equipEquipmentFromInventory(itemName);
-            cout << "Updated player:\n";
-            player.printPlayer();
-            slotFound = true;
+            slotInput = std::stoi(slot);
+            if (slotInput > 0 && slotInput < 7)
+            {
+                filteredList.clear();
+                switch (slotInput)
+                {
+                case 1: player.getInventory().filterInventoryBySlot(Item::ItemSlot::HELMET, filteredList); break;
+                case 2: player.getInventory().filterInventoryBySlot(Item::ItemSlot::CHESTPIECE, filteredList); break;
+                case 3: player.getInventory().filterInventoryBySlot(Item::ItemSlot::PANTS, filteredList); break;
+                case 4: player.getInventory().filterInventoryBySlot(Item::ItemSlot::BOOTS, filteredList); break;
+                case 5: player.getInventory().filterInventoryBySlot(Item::ItemSlot::SHIELD, filteredList); break;
+                case 6: player.getInventory().filterInventoryBySlot(Item::ItemSlot::SWORD, filteredList); break;
+                default:;
+                }
+
+                
+                cout << "Choose an item from the list to equip: " << endl;
+                int count = 0;
+                if (!filteredList.empty())
+                {
+                    for (Item item : filteredList)
+                    {
+                        count++;
+                        cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << endl;
+                    }
+                }
+                else return;
+
+                std::getline(std::cin, itemName);
+                itemName = toLowerCopy(itemName);
+
+                try
+                {
+                    itemNameInput = std::stoi(itemName);
+
+                    if (itemNameInput < 1 || itemNameInput > filteredList.size())
+                    {
+                        std::cout << "Invalid number. Please try again.\n";
+                    }
+                    else
+                    {
+                        player.equipFromInventory(filteredList[itemNameInput - 1]);
+                        cout << "Updated player:\n";
+                        player.printPlayer();
+                        slotFound = true;
+                    }
+                    
+                }
+                catch (...)
+                {
+                    std::cout << "Invalid number. Please try again.\n";
+                }
+                
+            }
+            else if (slotInput == 0)
+            {
+                slotFound = true;
+            }
+            else
+                cout << "Unknown slot. Please try again.\n";
         }
-        else if (slot == "cancel")
+        catch (...)
         {
-            slotFound = true;
+            cout << "Unknown slot. Please try again.\n";
         }
-        else
-            cout << "Unknown slot. Please try again or type cancel to not equip item.\n";
-    }   
+    } 
+    filteredList.clear();
 }
 
 void Game::handleUnequipCommand()
 {
     std::string slot;
+    int slotInput;
     bool slotFound = false;
 
     while (!slotFound)
     {
-        cout << "Enter slot to unequip (helmet, chest, pants, boots, shield, sword), or type cancel: ";
+        cout << "Enter slot number to unequip: helmet[1], chestpiece[2], pants[3], boots[4], shield[5], sword[6], or cancel[0]: ";
         std::getline(std::cin, slot);
         slot = toLowerCopy(slot);
 
-        if (slot == "helmet" || slot == "chest" || slot == "chestpiece" || slot == "pants" || slot == "boots" || slot == "shield" || slot == "sword")
+        try
         {
-            player.setItem(Item(), slot);
-            cout << "Updated player:\n";
-            player.printPlayer();
-            slotFound = true;
+            slotInput = std::stoi(slot);
+            if (slotInput > 0 && slotInput < 7)
+            {
+                switch (slotInput)
+                {
+                case 1: player.setItem(Item(), Item::ItemSlot::HELMET); break;
+                case 2: player.setItem(Item(), Item::ItemSlot::CHESTPIECE); break;
+                case 3: player.setItem(Item(), Item::ItemSlot::PANTS); break;
+                case 4: player.setItem(Item(), Item::ItemSlot::BOOTS); break;
+                case 5: player.setItem(Item(), Item::ItemSlot::SHIELD); break;
+                case 6: player.setItem(Item(), Item::ItemSlot::SWORD); break;
+                default:;
+                }
+                cout << "Updated player:\n";
+                player.printPlayer();
+                slotFound = true;
+            }
+            else if (slotInput == 0)
+            {
+                slotFound = true;
+            }
+            else
+                cout << "Unknown slot. Please try again.\n";
         }
-        else if (slot == "cancel")
+        catch (...)
         {
-            slotFound = true;
-        }
-        else
-            cout << "Unknown slot. Please try again or type cancel to not unequip item.\n";
+            cout << "Unknown slot. Please try again.\n";
+        } 
     }
 }
 
 void Game::handleDebugCommand()
 {
     std::string command;
-
-    cout << "Enter a variable to change (name: " << player.getName() << ", base attack: "<< player.getBaseAttack() << ", base defense: "<< player.getBaseDefense() << ", base health: " << player.getBaseHealth() << "): ";
+    int commandInput = 0;
+    cout << "Select a variable to change: name[1]: " << player.getName() << ", base attack[2]: "<< player.getBaseAttack() << ", base defense[3]: "<< player.getBaseDefense() << ", base health[4]: " << player.getBaseHealth() << ", or cancel[0]: ";
     std::getline(std::cin, command);
     command = toLowerCopy(command);
 
-    //Setting new name
-    if (command == "name")
+    try
     {
-        std::string newName;
-        cout << "Set New Name: ";
-        std::getline(std::cin, newName);
-        player.setName(newName);
+        commandInput = std::stoi(command);
 
-        cout << "Updated player:\n";
-        player.printPlayer();
-    }
-    //Setting new base attack
-    else if (command == "base attack")
-    {
-        int newBaseAttack = player.getBaseAttack();
-        string input;
-        while (true)
+        //Setting new name
+        if (commandInput == 1)
         {
-            cout << "Set new base attack: ";
-            std::getline(std::cin, input);
-            input = toLowerCopy(input);
-            if (input == "cancel") break;
+            std::string newName;
+            cout << "Set New Name: ";
+            std::getline(std::cin, newName);
+            player.setName(newName);
 
-            try
+            cout << "Updated player:\n";
+            player.printPlayer();
+        }
+        //Setting new base attack
+        else if (commandInput == 2)
+        {
+            int newBaseAttack = player.getBaseAttack();
+            string input;
+            while (true)
             {
-                newBaseAttack = std::stoi(input);
-                player.setBaseStats(player.getBaseHealth(), newBaseAttack, player.getBaseDefense());
-                cout << "Updated player:\n";
-                player.printPlayer();
-                break;
+                cout << "Set new base attack, or type c to cancel: ";
+                std::getline(std::cin, input);
+                input = toLowerCopy(input);
+                if (input == "c") break;
+
+                try
+                {
+                    newBaseAttack = std::stoi(input);
+                    player.setBaseStats(player.getBaseHealth(), newBaseAttack, player.getBaseDefense());
+                    cout << "Updated player:\n";
+                    player.printPlayer();
+                    break;
+                }
+                catch (...)
+                {
+                    std::cout << "Invalid number. Please try again.\n";
+                }
             }
-            catch (...)
+
+        }
+        //Setting new base defense
+        else if (commandInput == 3)
+        {
+            int newBaseDefense = player.getBaseDefense();
+            string input;
+            while (true)
             {
-                std::cout << "Invalid number. Try again, or type cancel to keep the base attack.\n";
+                cout << "Set new base defense, or type c to cancel: ";
+                std::getline(std::cin, input);
+                input = toLowerCopy(input);
+                if (input == "c") break;
+                try
+                {
+                    newBaseDefense = std::stoi(input);
+                    player.setBaseStats(player.getBaseHealth(), player.getBaseAttack(), newBaseDefense);
+                    cout << "Updated player:\n";
+                    player.printPlayer();
+                    break;
+                }
+                catch (...)
+                {
+                    std::cout << "Invalid number. Please try again.\n";
+                }
             }
         }
-        
-    }
-    //Setting new base defense
-    else if (command == "base defense")
-    {
-        int newBaseDefense = player.getBaseDefense();
-        string input;
-        while (true)
+        //Setting new base health
+        else if (commandInput == 4)
         {
-            cout << "Set new base defense: ";
-            std::getline(std::cin, input);
-            input = toLowerCopy(input);
-            if (input == "cancel") break;
-            try
+            int newBaseHealth = player.getBaseHealth();
+            string input;
+            while (true)
             {
-                newBaseDefense = std::stoi(input);
-                player.setBaseStats(player.getBaseHealth(), player.getBaseAttack(), newBaseDefense);
-                cout << "Updated player:\n";
-                player.printPlayer();
-                break;
-            }
-            catch (...)
-            {
-                std::cout << "Invalid number. Try again, or type cancel to keep the base defense.\n";
+                cout << "Set new base health, or type c to cancel: ";
+                std::getline(std::cin, input);
+                input = toLowerCopy(input);
+                if (input == "c") break;
+                try
+                {
+                    newBaseHealth = std::stoi(input);
+                    player.setBaseStats(newBaseHealth, player.getBaseAttack(), player.getBaseDefense());
+                    cout << "Updated player:\n";
+                    player.printPlayer();
+                    break;
+                }
+                catch (...)
+                {
+                    std::cout << "Invalid number. Please try again.\n";
+                }
             }
         }
-    }
-    //Setting new base health
-    else if (command == "base health")
-    {
-        int newBaseHealth = player.getBaseHealth();
-        string input;
-        while (true)
+        else if (commandInput == 0) return;
+        else
         {
-            cout << "Set new base health: ";
-            std::getline(std::cin, input);
-            input = toLowerCopy(input);
-            if (input == "cancel") break;
-            try
-            {
-                newBaseHealth = std::stoi(input);
-                player.setBaseStats(newBaseHealth, player.getBaseAttack(), player.getBaseDefense());
-                cout << "Updated player:\n";
-                player.printPlayer();
-                break;
-            }
-            catch (...)
-            {
-                std::cout << "Invalid number. Try again, or type cancel to keep the base health.\n";
-            }
-        }    
+            cout << "Unknown command. Type 'h' for a list of available commands.\n";
+        }
     }
-    else
+    catch (...)
     {
-        cout << "Unknown command. Type 'help' for a list.\n";
+        cout << "Unknown command. Type 'h' for a list of available commands.\n";
     }
 }
 
-void Game::loop(const Player& _player)
+void Game::loop(Player _player)
 {
     Game::player = _player;
     cout << "---- Game loop started ----" << endl;
-    cout << "Type 'help' to see available commands.\n";
+    cout << "Type 'h' to see available commands.\n";
 
     std::string command;
 
@@ -209,40 +292,40 @@ void Game::loop(const Player& _player)
 
         command = toLowerCopy(command);
 
-        if (command == "quit" || command == "exit")
+        if (command == "quit" || command == "q")
         {
             cout << "Exiting game.\n";
             break;
         }
-        else if (command == "help")
+        else if (command == "help" || command == "h")
         {
             printHelp();
         }
-        else if (command == "stats")
+        else if (command == "stats" || command == "s")
         {
             player.printPlayer();
         }
-        else if (command == "inventory")
+        else if (command == "inventory" || command == "i")
         {
             player.getInventory().printInventory();
         }
-        else if (command == "equip")
+        else if (command == "equip" || command == "e")
         {
             handleEquipCommand();
         }
-        else if (command == "unequip")
+        else if (command == "unequip" || command == "u")
         {
             handleUnequipCommand();
         }
-        else if (command == "debug")
+        else if (command == "debug" || command == "d")
         {
             handleDebugCommand();
         }
-        else if (command == "save") 
+        else if (command == "save" || command == "a")
         { 
             handleSaveCommand(); 
         }
-        else if (command == "load") 
+        else if (command == "load" || command == "l")
         { 
             handleLoadCommand(); 
         }
@@ -252,7 +335,7 @@ void Game::loop(const Player& _player)
         }
         else
         {
-            cout << "Unknown command. Type 'help' for a list.\n";
+            cout << "Unknown command. Type 'h' for a list of available commands.\n";
         }
     }
     cout << "Game ended. Final player state:\n";

@@ -39,6 +39,9 @@ void GameInitialize::giveStartingItems()
 {
 	
 	playerOne.getInventory().addToInventory((*helmets)[1]);
+	playerOne.getInventory().addToInventory((*helmets)[2]);
+	playerOne.getInventory().addToInventory((*helmets)[3]);
+	playerOne.getInventory().addToInventory((*helmets)[4]);
 	playerOne.getInventory().addToInventory((*chestPieces)[2]);
 	playerOne.getInventory().addToInventory((*pants)[2]);
 	playerOne.getInventory().addToInventory((*shields)[1]);

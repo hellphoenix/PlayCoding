@@ -8,17 +8,16 @@ using std::vector;
 class Inventory
 {
 private:
-	vector<Item> items;
+	vector<Item> inventoryItems;
 
 public:
-	const vector<Item>& getItems() const { return items; }
+	const vector<Item>& getItems() const { return inventoryItems; }
 	void addToInventory(const Item& _item);
-	void removeFromInventory(const string& _itemName);
-	Item equipFromInventory(const string& _itemName, Item::ItemSlot _slot);
-	Item equipFromInventory(const string& _itemName);	
+	void removeFromInventory(const string& _id);
 
 	void sortInventory();
-	void printInventory() const;
+	void filterInventoryBySlot(Item::ItemSlot _slot, vector<Item>& _filterList);
+	void printInventory();
 };
 
 

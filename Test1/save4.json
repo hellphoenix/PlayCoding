@@ -1,0 +1,29 @@
+{
+  "base": {
+    "attack": 10,
+    "defense": 10,
+    "health": 100
+  },
+  "equipped": {
+    "boots": "",
+    "chest": "",
+    "helmet": "",
+    "pants": "",
+    "shield": "",
+    "sword": ""
+  },
+  "inventory": [
+    "helmet_iron",
+    "helmet_leather",
+    "chest_steel",
+    "chest_leather",
+    "pants_steel",
+    "pants_leather",
+    "boots_leather",
+    "shield_iron",
+    "shield_wood",
+    "sword_steel",
+    "sword_bronze"
+  ],
+  "name": "Tony"
+}

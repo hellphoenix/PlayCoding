@@ -1,5 +1,6 @@
 #include "item.h"
 #include <iostream>
+#include <iomanip>
 using std::cout, std::endl;
 
 Item::Item() : id(), itemName(), itemAttack(0), itemDefense(0), itemHealth(0), itemSlot(ItemSlot::EMPTY), itemType(ItemType::UNKNOWN), itemRarity(ItemRarity::NONEXISTENT)
@@ -108,6 +109,6 @@ void Item::printItem() const
 	if (itemSlot == ItemSlot::EMPTY)
 		return;
 
-	cout << "Item Slot: " << itemSlotToString.at(itemSlot) << ", Item Name: " << itemName << ", Item Type: " << itemTypeToString.at(itemType) << ", Item Rarity: " << itemRarityToString.at(itemRarity) << endl;
-		cout << "Health: " << itemHealth << ", Attack: " << itemAttack << ", Defense: " << itemDefense << endl;
+	cout << "| "  << std::setw(20) << id << " | " << std::setw(9) << itemTypeToString.at(itemType) << " | " << std::setw(9) << itemRarityToString.at(itemRarity) << " | " << std::setw(10) << itemSlotToString.at(itemSlot) 
+		<< " | " << std::setw(21) << itemName << " | " << std::setw(6) << itemAttack << " | " << std::setw(7) << itemDefense << " | " << std::setw(6) << itemHealth << " |" << endl;
 }

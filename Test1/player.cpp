@@ -65,12 +65,10 @@ int Player::getTotalHealth() const
 	return Player::totalHealth;
 }
 
-void Player::setItem(const Item& _item, const string& _itemSlot)
+void Player::setItem(const Item& _item) //used when you don't know the item slot
 {
-	if (_item.getItemSlot() != Item::ItemSlot::EMPTY)
+	switch (_item.getItemSlot())
 	{
-		switch (_item.getItemSlot())
-		{
 		case Item::ItemSlot::HELMET:
 		{
 			inventory.addToInventory(std::move(helmet));
@@ -109,40 +107,52 @@ void Player::setItem(const Item& _item, const string& _itemSlot)
 		}
 		default:
 			return;
-		}
 	}
-	else if (_itemSlot == "helmet")
+	updateTotalStats();
+}
+void Player::setItem(const Item& _item, Item::ItemSlot _itemSlot) //used when you do know the item slot
+{
+	switch (_itemSlot)
+	{
+	case Item::ItemSlot::HELMET:
 	{
 		inventory.addToInventory(std::move(helmet));
 		Player::helmet = _item;
+		break;
 	}
-	else if (_itemSlot == "chest" || _itemSlot == "chestpiece")
+	case Item::ItemSlot::CHESTPIECE:
 	{
 		inventory.addToInventory(std::move(chestPiece));
 		Player::chestPiece = _item;
+		break;
 	}
-	else if (_itemSlot == "pants")
+	case Item::ItemSlot::PANTS:
 	{
 		inventory.addToInventory(std::move(pants));
 		Player::pants = _item;
+		break;
 	}
-	else if (_itemSlot == "boots")
+	case Item::ItemSlot::BOOTS:
 	{
 		inventory.addToInventory(std::move(boots));
 		Player::boots = _item;
+		break;
 	}
-	else if (_itemSlot == "shield")
+	case Item::ItemSlot::SHIELD:
 	{
 		inventory.addToInventory(std::move(shield));
 		Player::shield = _item;
+		break;
 	}
-	else if (_itemSlot == "sword")
+	case Item::ItemSlot::SWORD:
 	{
 		inventory.addToInventory(std::move(sword));
 		Player::sword = _item;
+		break;
 	}
-	else return;
-
+	default:
+		return;
+	}
 	updateTotalStats();
 }
 
@@ -151,6 +161,8 @@ void Player::printPlayer() const
 {
 	cout << "Player Name: " << Player::getName() << ", Health: " << Player::getTotalHealth() << ", Attack: " << Player::getTotalAttack() << ", Defense: " << Player::getTotalDefense()  << endl;
 	cout << "Player equipment: "<< endl;
+	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
+	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
 	getHelmet().printItem();
 	getChestPiece().printItem();
 	getPants().printItem();
@@ -184,43 +196,43 @@ void Player::updateTotalStats()
 	}
 }
 
-void Player::equipEquipmentFromInventory(const std::string& _itemName)
+void Player::equipFromInventory(const Item& _item)
 {
-	Item newItem = inventory.equipFromInventory(_itemName);
-	if (newItem.getItemSlot() == Item::ItemSlot::HELMET)
+	if (_item.getItemSlot() == Item::ItemSlot::HELMET)
 	{
 		inventory.addToInventory(std::move(helmet));
-		helmet = std::move(newItem);
+		helmet = _item;
 	}
-	else if (newItem.getItemSlot() == Item::ItemSlot::CHESTPIECE)
+	else if (_item.getItemSlot() == Item::ItemSlot::CHESTPIECE)
 	{
 		inventory.addToInventory(std::move(chestPiece));
-		chestPiece = std::move(newItem);
+		chestPiece = _item;
 	}
-	else if (newItem.getItemSlot() == Item::ItemSlot::PANTS)
+	else if (_item.getItemSlot() == Item::ItemSlot::PANTS)
 	{
 		inventory.addToInventory(std::move(pants));
-		pants = std::move(newItem);
+		pants = _item;
 	}
-	else if (newItem.getItemSlot() == Item::ItemSlot::BOOTS)
+	else if (_item.getItemSlot() == Item::ItemSlot::BOOTS)
 	{
 		inventory.addToInventory(std::move(boots));
-		boots = std::move(newItem);
+		boots = _item;
 	}
-	else if (newItem.getItemSlot() == Item::ItemSlot::SHIELD)
+	else if (_item.getItemSlot() == Item::ItemSlot::SHIELD)
 	{
 		inventory.addToInventory(std::move(shield));
-		shield = std::move(newItem);
+		shield = _item;
 	}
-	else if (newItem.getItemSlot() == Item::ItemSlot::SWORD)
+	else if (_item.getItemSlot() == Item::ItemSlot::SWORD)
 	{
 		inventory.addToInventory(std::move(sword));
-		sword = std::move(newItem);
+		sword = _item;
 	}
 	else
 	{
-		cout << "No item of that name is in your inventory." << endl;
+		cout << "No item of that type is in your inventory." << endl;
 		return;
 	}
+	inventory.removeFromInventory(_item.getId());
 	updateTotalStats();
 }

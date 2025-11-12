@@ -8,7 +8,7 @@ class Game
 	Player player;
 
 public:
-	void loop(const Player& _player);
+	void loop(Player _player);
 	void handleEquipCommand();
 	void handleUnequipCommand();
 	void handleDebugCommand();

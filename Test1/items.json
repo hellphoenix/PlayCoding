@@ -1,10 +1,21 @@
 {
   "items": [
     {
-      "id": "helmet_leather",
+      "id": "helmet_leather_01",
       "slot": "HELMET",
       "type": "EQUIPMENT",
       "rarity": "POOR",
+      "name": "Leather Helmet",
+      "attack": 5,
+      "defense": 5,
+      "health": 0
+    },
+
+    {
+      "id": "helmet_leather_02",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
       "name": "Leather Helmet",
       "attack": 10,
       "defense": 10,
@@ -12,7 +23,51 @@
     },
 
     {
-      "id": "helmet_iron",
+      "id": "helmet_leather_03",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "UNCOMMON",
+      "name": "Leather Helmet",
+      "attack": 15,
+      "defense": 15,
+      "health": 0
+    },
+
+    {
+      "id": "helmet_leather_04",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "RARE",
+      "name": "Leather Helmet",
+      "attack": 20,
+      "defense": 20,
+      "health": 0
+    },
+
+    {
+      "id": "helmet_leather_05",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "EPIC",
+      "name": "Leather Helmet",
+      "attack": 25,
+      "defense": 25,
+      "health": 10
+    },
+
+    {
+      "id": "helmet_leather_06",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "LEGENDARY",
+      "name": "Leather Helmet",
+      "attack": 35,
+      "defense": 35,
+      "health": 20
+    },
+
+    {
+      "id": "helmet_iron_01",
       "slot": "HELMET",
       "type": "EQUIPMENT",
       "rarity": "UNCOMMON",
@@ -23,7 +78,7 @@
     },
 
     {
-      "id": "helmet_steel",
+      "id": "helmet_steel_01",
       "slot": "HELMET",
       "type": "EQUIPMENT",
       "rarity": "RARE",
