@@ -14,9 +14,9 @@ void Inventory::addToInventory(const Item& _item)
 
 void Inventory::removeFromInventory(const string& _itemName)
 {
-	auto tempItem = std::remove_if(items.begin(), items.end(),[&](const Item& item) 
+	auto tempItem = std::remove_if(items.begin(), items.end(),[&](const Item& _item) 
 		{ 
-			return item.getItemName() == _itemName; 
+			return _item.getItemName() == _itemName; 
 		});
 
 	items.erase(tempItem, items.end());
@@ -25,9 +25,9 @@ void Inventory::removeFromInventory(const string& _itemName)
 
 Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot)
 {
-	auto tempItem = std::find_if(items.begin(), items.end(), [&](const Item& item)
+	auto tempItem = std::find_if(items.begin(), items.end(), [&](const Item& _item)
 		{
-			return item.getItemName() == _itemName && item.getItemSlot() == _slot;
+			return _item.getItemName() == _itemName && _item.getItemSlot() == _slot;
 		});
 	
 	if (tempItem != items.end())
@@ -42,38 +42,17 @@ Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot
 	return Item();
 }
 
-void Inventory::unequipToInventory(const Item& _item)
-{
-	if (_item.getItemSlot() != Item::ItemSlot::EMPTY)
-	{
-		items.push_back(_item);
-		sortInventory();
-	}
-		
-}
 
 void Inventory::sortInventory()
 {
 	std::sort(items.begin(), items.end(),[](const Item& a, const Item& b)
 		{
-			return static_cast<int>(a.getItemRarity()) > static_cast<int>(b.getItemRarity());
+			if (a.getItemRarity() != b.getItemRarity())
+				return a.getItemRarity() > b.getItemRarity();
+			if (a.getItemSlot() != b.getItemSlot())
+				return a.getItemSlot() < b.getItemSlot();
+			return a.getItemName() < b.getItemName();
 		});
-}
-
-void Inventory::groupInventory() // Doesn't seem to actually group items within the inventory
-{
-	std::unordered_map<Item::ItemType, vector<Item>> grouped;
-
-	for (const auto& item : items)
-		grouped[item.getItemType()].push_back(item);
-
-	for (const auto& [type, group] : grouped)
-	{
-		cout << "Group: " << Item::itemTypeToString.at(type) << endl;
-		for (const auto& i : group)
-			i.printItem();
-		cout << std::endl;
-	}
 }
 
 void Inventory::printInventory() const

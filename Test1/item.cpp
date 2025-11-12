@@ -63,7 +63,7 @@ Item::ItemRarity Item::getItemRarity() const
 	return itemRarity;
 }
 
-void Item::setItemName(string _itemName)
+void Item::setItemName(const string& _itemName)
 {
 	itemName = _itemName;
 }

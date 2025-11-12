@@ -36,7 +36,7 @@ bool Character::isAlive() const
 	return alive;
 }
 
-void Character::setName(string _name)
+void Character::setName(const string& _name)
 {
 	name = _name;
 }

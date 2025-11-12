@@ -23,7 +23,7 @@ private:
 public:
 	Player();
 	Player(const string& _name, int _health, int _attack, int _defense);
-	Player(const string& _name, int _health, int _attack, int _defense, Item _helmet, Item _chestPiece, Item _pants, Item _boots, Item _shield, Item _sword);
+	Player(const string& _name, int _health, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword);
 
 	Inventory& getInventory() { return inventory; }
 	const Item& getHelmet() const;

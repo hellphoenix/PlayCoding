@@ -57,7 +57,7 @@ public:
 	ItemRarity getItemRarity() const;
 
 
-	void setItemName(string _itemName);
+	void setItemName(const string& _itemName);
 	void setItemAttack(int _itemAttack);
 	void setItemDefense(int _itemDefense);
 	void setItemHealth(int _itemHealth);

@@ -104,6 +104,9 @@ void Game::handleDebugCommand()
         cout << "Set New Name: ";
         std::getline(std::cin, newName);
         player.setName(newName);
+
+        cout << "Updated player:\n";
+        player.printPlayer();
     }
     //Setting new base attack
     else if (command == "base attack")
@@ -121,6 +124,8 @@ void Game::handleDebugCommand()
             {
                 newBaseAttack = std::stoi(input);
                 player.setBaseStats(player.getBaseHealth(), newBaseAttack, player.getBaseDefense());
+                cout << "Updated player:\n";
+                player.printPlayer();
                 break;
             }
             catch (const std::exception&)
@@ -145,6 +150,8 @@ void Game::handleDebugCommand()
             {
                 newBaseDefense = std::stoi(input);
                 player.setBaseStats(player.getBaseHealth(), player.getBaseAttack(), newBaseDefense);
+                cout << "Updated player:\n";
+                player.printPlayer();
                 break;
             }
             catch (const std::exception&)
@@ -168,6 +175,8 @@ void Game::handleDebugCommand()
             {
                 newBaseHealth = std::stoi(input);
                 player.setBaseStats(newBaseHealth, player.getBaseAttack(), player.getBaseDefense());
+                cout << "Updated player:\n";
+                player.printPlayer();
                 break;
             }
             catch (const std::exception&)

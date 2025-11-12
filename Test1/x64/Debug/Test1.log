@@ -1,2 +1,7 @@
 ﻿  game.cpp
+  gameInitialize.cpp
+  inventory.cpp
+  main.cpp
+  player.cpp
+  Generating Code...
   Test1.vcxproj -> D:\Game Dev Training\PlayCoding\x64\Debug\Test1.exe

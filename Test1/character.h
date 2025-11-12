@@ -24,7 +24,7 @@ public:
 	int getBaseDefense() const;
 	bool isAlive() const;
 
-	void setName(string _name);
+	void setName(const string& _name);
 	void setBaseHealth(int _health);
 	void setBaseAttack(int _attack);
 	void setBaseDefense(int _defense);
