@@ -44,8 +44,8 @@ public:
 
 	void equipFromInventory(const Item& _item);
 
-
 	void printPlayer() const;
+	void quickPrintPlayer() const;
 
 	void updateTotalStats();
 };

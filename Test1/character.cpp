@@ -43,6 +43,7 @@ void Character::setName(const string& _name)
 
 void Character::setBaseHealth(int _health)
 {
+	
 	baseHealth = _health;
 }
 

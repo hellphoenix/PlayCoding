@@ -32,6 +32,7 @@ void Game::printHelp() const
     cout << "  s[a]ve        - save player stats and items\n";
     cout << "  [l]oad        - load player stats and items\n";
     cout << "  [q]uit        - exit game\n";
+    cout << "  [f]ight       - spawn a slime and fight it\n";
 }
 
 void Game::handleEquipCommand()
@@ -279,12 +280,13 @@ void Game::handleDebugCommand()
 void Game::loop(Player _player)
 {
     Game::player = _player;
+    Game::slimeEnemy = createSlimeEnemy();
     cout << "---- Game loop started ----" << endl;
     cout << "Type 'h' to see available commands.\n";
 
     std::string command;
 
-    while (true)
+    while (player.isAlive())
     {
         cout << "\n> ";
         if (!std::getline(std::cin, command))
@@ -328,6 +330,10 @@ void Game::loop(Player _player)
         else if (command == "load" || command == "l")
         { 
             handleLoadCommand(); 
+        }
+        else if (command == "fight" || command == "f")
+        {
+            handleFightCommand();
         }
         else if (command.empty())
         {
@@ -374,4 +380,80 @@ void Game::handleLoadCommand()
     else {
         std::cout << "Load failed.\n";
     }
+}
+
+Enemy Game::createSlimeEnemy()
+{
+    Enemy enemyOne("King Slime", 1000, 50, 40);
+    return enemyOne;
+}
+
+void Game::handleFightCommand()
+{
+    string command;
+    int commandInput;
+    if (!slimeEnemy.isAlive())
+    {
+        slimeEnemy = createSlimeEnemy();
+        cout << "A slime has been created. ";
+    }
+    while (slimeEnemy.isAlive() && player.isAlive())
+    {
+        slimeEnemy.printEnemy();
+        cout << "Attack ? Yes[1] No[2] \n";
+        std::getline(std::cin, command);
+        command = toLowerCopy(command);
+        try
+        {
+            commandInput = std::stoi(command);
+            if (commandInput == 1)
+            {
+                cout << "You attack the slime for " << attacking(slimeEnemy, player) << " damage! \n";
+                slimeEnemy.setBaseHealth(slimeEnemy.getBaseHealth() - attacking(slimeEnemy, player));
+                if (slimeEnemy.getBaseHealth() > 0)
+                {
+                    cout << "The slime attacks you for " << defending(slimeEnemy, player) << " damage! \n";
+                    player.setBaseStats(player.getBaseHealth() - defending(slimeEnemy, player), player.getBaseAttack(), player.getBaseDefense());
+                    player.quickPrintPlayer();
+                }
+                else
+                {
+                    slimeEnemy.setBaseHealth(0);
+                    slimeEnemy.setAlive(false);
+                    cout << "You killed the slime!\n";
+                    //slimeEnemy.~Enemy();
+                    return;
+                }
+            }
+            else if (commandInput == 2)
+            {
+                return;
+            }
+            else
+            {
+                std::cout << "Invalid number. Please try again.\n";
+            }
+        }
+        catch (...)
+        {
+            std::cout << "unknown command. Please try again.\n";
+        }
+        if (player.getTotalHealth() <= 0)
+        {
+            cout << "You died. So sad.\n";
+            player.setAlive(false);
+        }
+    }  
+}
+
+int Game::attacking(const Enemy& _enemy, const Player& _player)
+{
+    if (_enemy.getBaseDefense() >= _player.getTotalAttack()) return 0;
+    else return _player.getTotalAttack() - _enemy.getBaseDefense();
+}
+
+int Game::defending(const Enemy& _enemy, const Player& _player)
+{
+    if (_player.getTotalDefense() >= _enemy.getBaseAttack()) return 0;
+    else return _enemy.getBaseAttack() - _player.getTotalDefense();
 }

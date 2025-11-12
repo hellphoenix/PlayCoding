@@ -1,5 +1,6 @@
 #pragma once
 #include "player.h"
+#include "enemy.h"
 #include "item_library.h"
 
 #ifndef GAME_INITIALIZE_H
@@ -14,6 +15,7 @@ public:
 private:
     void loadItems();
     void createPlayer();
+    
     void giveStartingItems();
 
     // data used across phases

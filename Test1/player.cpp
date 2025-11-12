@@ -52,17 +52,23 @@ const Item& Player::getSword() const
 
 int Player::getTotalAttack() const
 {
-	return Player::totalAttack;
+	if (totalAttack > 0)
+		return Player::totalAttack;
+	else return 0;
 }
 
 int Player::getTotalDefense() const
 {
-	return Player::totalDefense;
+	if (totalDefense > 0)
+		return Player::totalDefense;
+	else return 0;
 }
 
 int Player::getTotalHealth() const
 {
-	return Player::totalHealth;
+	if (totalHealth > 0)
+		return Player::totalHealth;
+	else return 0;
 }
 
 void Player::setItem(const Item& _item) //used when you don't know the item slot
@@ -170,6 +176,11 @@ void Player::printPlayer() const
 	getShield().printItem();
 	getSword().printItem();
 	cout << endl;
+}
+
+void Player::quickPrintPlayer() const
+{
+	cout << "Player Name: " << Player::getName() << ", Health: " << Player::getTotalHealth() << ", Attack: " << Player::getTotalAttack() << ", Defense: " << Player::getTotalDefense() << endl;
 }
 
 void Player::setBaseStats(int _health, int _attack, int _defense)
