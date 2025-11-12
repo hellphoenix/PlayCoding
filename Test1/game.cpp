@@ -1,10 +1,11 @@
 #include "game.h"
 #include "gameInitialize.h"
+#include "save_load.h"
 #include <iostream>
 #include <string>
 #include <cctype>
 #include <algorithm>
-#include <cctype>
+
 
 using std::cout;
 using std::endl;
@@ -28,6 +29,8 @@ void Game::printHelp() const
     cout << "  equip       - equip an item from inventory\n";
     cout << "  unequip     - unequip an item back to inventory\n";
     cout << "  debug       - change base player variables\n";
+    cout << "  save        - save player stats and items\n";
+    cout << "  load        - load player stats and items\n";
     cout << "  quit        - exit game\n";
 }
 
@@ -236,6 +239,14 @@ void Game::loop(const Player& _player)
         {
             handleDebugCommand();
         }
+        else if (command == "save") 
+        { 
+            handleSaveCommand(); 
+        }
+        else if (command == "load") 
+        { 
+            handleLoadCommand(); 
+        }
         else if (command.empty())
         {
             // ignore blank line
@@ -247,4 +258,36 @@ void Game::loop(const Player& _player)
     }
     cout << "Game ended. Final player state:\n";
     player.printPlayer();
+}
+
+void Game::handleSaveCommand()
+{
+    std::string path;
+    std::cout << "Save file name (e.g. save1.json): ";
+    std::getline(std::cin, path);
+    if (path.empty()) { std::cout << "Canceled.\n"; return; }
+
+    if (SaveLoad::saveToFile(player, path))
+        std::cout << "Saved to " << path << "\n";
+    else
+        std::cout << "Save failed.\n";
+}
+
+void Game::handleLoadCommand()
+{
+    std::string path;
+    std::cout << "Load file name (e.g. save1.json): ";
+    std::getline(std::cin, path);
+    if (path.empty()) { std::cout << "Canceled.\n"; return; }
+
+    Player loaded;
+    if (SaveLoad::loadFromFile(loaded, path)) {
+        player = std::move(loaded);
+        std::cout << "Loaded from " << path << "\n";
+        player.printPlayer();
+        player.getInventory().printInventory();
+    }
+    else {
+        std::cout << "Load failed.\n";
+    }
 }

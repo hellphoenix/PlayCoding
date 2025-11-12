@@ -47,7 +47,8 @@ public:
 
 
 	Item();
-	Item(string _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot, ItemType _itemType = ItemType::EQUIPMENT, ItemRarity _itemRarity = ItemRarity::POOR);
+	Item(string _id, string _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot = ItemSlot::EMPTY, ItemType _itemType = ItemType::UNKNOWN, ItemRarity _itemRarity = ItemRarity::NONEXISTENT);
+	string getId() const;
 	string getItemName() const;
 	int getItemAttack() const;
 	int getItemDefense() const;
@@ -68,6 +69,7 @@ public:
 	void printItem() const;
 
 private:
+	string id;
 	string itemName;
 	int itemAttack;
 	int itemDefense;

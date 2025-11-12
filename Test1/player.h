@@ -25,7 +25,7 @@ public:
 	Player(const string& _name, int _health, int _attack, int _defense);
 	Player(const string& _name, int _health, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword);
 
-	Inventory& getInventory() { return inventory; }
+	Inventory& getInventory() { return Player::inventory; }
 	const Item& getHelmet() const;
 	const Item& getChestPiece() const;
 	const Item& getPants() const;

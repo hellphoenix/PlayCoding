@@ -2,13 +2,13 @@
 #include <iostream>
 using std::cout, std::endl;
 
-Item::Item() : itemName(), itemAttack(0), itemDefense(0), itemHealth(0), itemSlot(ItemSlot::EMPTY), itemType(ItemType::UNKNOWN), itemRarity(ItemRarity::NONEXISTENT)
+Item::Item() : id(), itemName(), itemAttack(0), itemDefense(0), itemHealth(0), itemSlot(ItemSlot::EMPTY), itemType(ItemType::UNKNOWN), itemRarity(ItemRarity::NONEXISTENT)
 {
 
 }
 
-Item::Item(string _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot, ItemType _itemType, ItemRarity _itemRarity) : 
-	itemName(_itemName), itemAttack(_itemAttack), itemDefense(_itemDefense), itemHealth(_itemHealth), itemSlot(_itemSlot), itemType(_itemType), itemRarity(_itemRarity)
+Item::Item( string _id, string _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot, ItemType _itemType, ItemRarity _itemRarity) : 
+	id(std::move(_id)), itemName(std::move(_itemName)), itemAttack(_itemAttack), itemDefense(_itemDefense), itemHealth(_itemHealth), itemSlot(_itemSlot), itemType(_itemType), itemRarity(_itemRarity)
 {
 
 }
@@ -27,6 +27,11 @@ const map<Item::ItemRarity, string> Item::itemRarityToString =
 {
 	{ItemRarity::NONEXISTENT, "Non-Existent"}, {ItemRarity::POOR, "Poor"}, {ItemRarity::COMMON, "Common"}, {ItemRarity::UNCOMMON, "Uncommon"}, {ItemRarity::RARE, "Rare"}, {ItemRarity::EPIC, "Epic"}, {ItemRarity::LEGENDARY, "Legendary"}
 };
+
+string Item::getId() const
+{
+	return id;
+}
 
 string Item::getItemName() const
 {

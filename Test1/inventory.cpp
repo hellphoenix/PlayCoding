@@ -8,6 +8,7 @@ using std::cout, std::endl;
 
 void Inventory::addToInventory(const Item& _item)
 {
+	
 	items.push_back(_item);
 	sortInventory();
 }

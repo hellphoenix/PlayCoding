@@ -2,6 +2,7 @@
 #include "include/json.hpp"
 #include <fstream>
 #include <stdexcept>
+#include <unordered_map>
 
 using json = nlohmann::json;
 
@@ -13,6 +14,8 @@ static std::vector<Item> g_boots;
 static std::vector<Item> g_shields;
 static std::vector<Item> g_swords;
 static bool g_loaded = false;
+
+static std::unordered_map<std::string, Item> g_byId; // copy-based registry
 
 static Item::ItemSlot itemSlotFromString(const string& slotStr)
 {
@@ -57,7 +60,7 @@ static void loadIfNeeded()
 
     for (const auto& jitem : j["items"])
     {
-        //std::string id = jitem["id"];
+        std::string id = jitem["id"];
         std::string slot = jitem["slot"];
         std::transform(slot.begin(), slot.end(), slot.begin(), ::toupper);
         std::string type = jitem["type"];
@@ -73,7 +76,7 @@ static void loadIfNeeded()
         Item::ItemType itemType = itemTypeFromString(type);
         Item::ItemRarity itemRarity = itemRarityFromString(rarity);
 
-        Item item(name, attack, defense, health, itemSlot, itemType, itemRarity);
+        Item item(id, name, attack, defense, health, itemSlot, itemType, itemRarity);
 
         switch (itemSlot)
         {
@@ -87,6 +90,9 @@ static void loadIfNeeded()
             // You might log or ignore EMPTY or unknown
             break;
         }
+
+        // id registry
+        g_byId.emplace(item.getId(), item);
     }
 
     g_loaded = true;
@@ -128,4 +134,14 @@ const std::vector<Item>& ItemLibrary::swords()
 {
     loadIfNeeded();
     return g_swords;
+}
+
+const Item& ItemLibrary::byId(const string& _id)
+{
+    loadIfNeeded();
+    auto it = g_byId.find(_id);
+    if (it != g_byId.end()) return it->second;
+
+    static Item EMPTY; // default-constructed EMPTY
+    return EMPTY;
 }

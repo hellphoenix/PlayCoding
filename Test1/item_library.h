@@ -15,6 +15,8 @@ public:
 	static const vector<Item>& boots();
 	static const vector<Item>& shields();
 	static const vector<Item>& swords();
+
+	static const Item& byId(const string& _id);
 };
 
 #endif // !ITEM_LIBRARY_H

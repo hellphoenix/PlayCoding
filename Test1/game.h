@@ -12,6 +12,8 @@ public:
 	void handleEquipCommand();
 	void handleUnequipCommand();
 	void handleDebugCommand();
+	void handleSaveCommand();
+	void handleLoadCommand();
 	void printHelp() const;
 
 };

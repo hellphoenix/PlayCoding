@@ -37,6 +37,7 @@ const Player& GameInitialize::getPlayer() const
 
 void GameInitialize::giveStartingItems()
 {
+	
 	playerOne.getInventory().addToInventory((*helmets)[1]);
 	playerOne.getInventory().addToInventory((*chestPieces)[2]);
 	playerOne.getInventory().addToInventory((*pants)[2]);

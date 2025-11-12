@@ -135,6 +135,7 @@
     <ClCompile Include="item_library.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="save_load.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="item.h" />
     <ClInclude Include="item_library.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="save_load.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="items.json" />
