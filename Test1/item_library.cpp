@@ -59,8 +59,11 @@ static void loadIfNeeded()
     {
         //std::string id = jitem["id"];
         std::string slot = jitem["slot"];
+        std::transform(slot.begin(), slot.end(), slot.begin(), ::toupper);
         std::string type = jitem["type"];
+        std::transform(type.begin(), type.end(), type.begin(), ::toupper);
         std::string rarity = jitem["rarity"];
+        std::transform(rarity.begin(), rarity.end(), rarity.begin(), ::toupper);
         std::string name = jitem["name"];
         int attack = jitem["attack"];
         int defense = jitem["defense"];

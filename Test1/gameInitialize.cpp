@@ -30,7 +30,7 @@ void GameInitialize::createPlayer()
 	playerOne = Player{ "Tony", 100, 10, 10 , (*helmets)[0], (*chestPieces)[0], (*pants)[0], (*boots)[0], (*shields)[0], (*swords)[0] };
 }
 
-Player GameInitialize::getPlayer() const
+const Player& GameInitialize::getPlayer() const
 {
 	return playerOne;
 }
