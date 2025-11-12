@@ -32,7 +32,7 @@ Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot
 	
 	if (tempItem != items.end())
 	{
-		Item foundItem = *tempItem;               // copy the item to return
+		Item foundItem = std::move(*tempItem);               // copy the item to return
 		items.erase(tempItem);                    // remove from inventory
 		sortInventory();
 		return foundItem;                   // return for equipping

@@ -9,7 +9,7 @@ class GameInitialize
 {
 public:
     void run();
-    Player getPlayer() const;
+    const Player& getPlayer() const;
 
 private:
     void loadItems();

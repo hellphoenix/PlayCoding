@@ -245,4 +245,6 @@ void Game::loop(const Player& _player)
             cout << "Unknown command. Type 'help' for a list.\n";
         }
     }
+    cout << "Game ended. Final player state:\n";
+    player.printPlayer();
 }
