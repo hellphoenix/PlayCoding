@@ -1,0 +1,201 @@
+{
+  "items": [
+    {
+      "id": "helmet_leather",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "POOR",
+      "name": "Leather Helmet",
+      "attack": 10,
+      "defense": 10,
+      "health": 0
+    },
+
+    {
+      "id": "helmet_iron",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "UNCOMMON",
+      "name": "Iron Helmet",
+      "attack": 0,
+      "defense": 20,
+      "health": 0
+    },
+
+    {
+      "id": "helmet_steel",
+      "slot": "HELMET",
+      "type": "EQUIPMENT",
+      "rarity": "RARE",
+      "name": "Steel Helmet",
+      "attack": -10,
+      "defense": 30,
+      "health": 0
+    },
+
+    {
+      "id": "chest_leather",
+      "slot": "CHESTPIECE",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
+      "name": "Leather Chestpiece",
+      "attack": 15,
+      "defense": 15,
+      "health": 0
+    },
+
+    {
+      "id": "chest_iron",
+      "slot": "CHESTPIECE",
+      "type": "EQUIPMENT",
+      "rarity": "UNCOMMON",
+      "name": "Iron Chestpiece",
+      "attack": 0,
+      "defense": 30,
+      "health": 0
+    },
+
+    {
+      "id": "chest_steel",
+      "slot": "CHESTPIECE",
+      "type": "EQUIPMENT",
+      "rarity": "LEGENDARY",
+      "name": "Steel Chestpiece",
+      "attack": -20,
+      "defense": 50,
+      "health": 0
+    },
+
+    {
+      "id": "pants_leather",
+      "slot": "PANTS",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
+      "name": "Leather Pants",
+      "attack": 0,
+      "defense": 0,
+      "health": 30
+    },
+
+    {
+      "id": "pants_iron",
+      "slot": "PANTS",
+      "type": "EQUIPMENT",
+      "rarity": "UNCOMMON",
+      "name": "Iron Pants",
+      "attack": 0,
+      "defense": 10,
+      "health": 20
+    },
+
+    {
+      "id": "pants_steel",
+      "slot": "PANTS",
+      "type": "EQUIPMENT",
+      "rarity": "EPIC",
+      "name": "Steel Pants",
+      "attack": 0,
+      "defense": 20,
+      "health": 10
+    },
+
+    {
+      "id": "boots_leather",
+      "slot": "BOOTS",
+      "type": "EQUIPMENT",
+      "rarity": "POOR",
+      "name": "Leather Boots",
+      "attack": 0,
+      "defense": 5,
+      "health": 25
+    },
+
+    {
+      "id": "boots_iron",
+      "slot": "BOOTS",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
+      "name": "Iron Boots",
+      "attack": 0,
+      "defense": 15,
+      "health": 15
+    },
+
+    {
+      "id": "boots_steel",
+      "slot": "BOOTS",
+      "type": "EQUIPMENT",
+      "rarity": "RARE",
+      "name": "Steel Boots",
+      "attack": 0,
+      "defense": 25,
+      "health": 5
+    },
+
+    {
+      "id": "shield_wood",
+      "slot": "SHIELD",
+      "type": "EQUIPMENT",
+      "rarity": "POOR",
+      "name": "Wooden Shield",
+      "attack": 0,
+      "defense": 10,
+      "health": 0
+    },
+
+    {
+      "id": "shield_iron",
+      "slot": "SHIELD",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
+      "name": "Iron Shield",
+      "attack": 0,
+      "defense": 20,
+      "health": -10
+    },
+
+    {
+      "id": "shield_steel",
+      "slot": "SHIELD",
+      "type": "EQUIPMENT",
+      "rarity": "UNCOMMON",
+      "name": "Steel Shield",
+      "attack": 0,
+      "defense": 30,
+      "health": -20
+    },
+
+    {
+      "id": "sword_bronze",
+      "slot": "SWORD",
+      "type": "EQUIPMENT",
+      "rarity": "POOR",
+      "name": "Bronze Sword",
+      "attack": 10,
+      "defense": 0,
+      "health": 0
+    },
+
+    {
+      "id": "sword_iron",
+      "slot": "SWORD",
+      "type": "EQUIPMENT",
+      "rarity": "COMMON",
+      "name": "Iron Sword",
+      "attack": 30,
+      "defense": 0,
+      "health": 0
+    },
+
+    {
+      "id": "sword_steel",
+      "slot": "SWORD",
+      "type": "EQUIPMENT",
+      "rarity": "RARE",
+      "name": "Steel Sword",
+      "attack": 60,
+      "defense": 0,
+      "health": 0
+    }
+  ]
+}
