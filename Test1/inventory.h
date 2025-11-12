@@ -16,7 +16,9 @@ public:
 	void removeFromInventory(const string& _id);
 
 	void sortInventory();
-	void filterInventoryBySlot(Item::ItemSlot _slot, vector<Item>& _filterList);
+	vector<Item> filterInventoryBySlot(Item::ItemSlot _slot) const;
+	vector<Item> filterInventoryByType(Item::ItemType _type) const;
+	vector<Item> filterInventoryByRarity(Item::ItemRarity _rarity) const;
 	void printInventory();
 };
 

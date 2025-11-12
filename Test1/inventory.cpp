@@ -34,15 +34,56 @@ void Inventory::sortInventory()
 		});
 }
 
-void Inventory::filterInventoryBySlot(Item::ItemSlot _slot, vector<Item>& _filterList)
+vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
 {
-	for (Item item : Inventory::inventoryItems)
-	{	
+	vector<Item> filteredList;
+	filteredList.reserve(inventoryItems.size());
+
+	for (const auto& item : inventoryItems)
+	{
 		if (item.getItemSlot() == _slot)
 		{
-			_filterList.push_back(item);
+			filteredList.push_back(item);
 		}
 	}
+	filteredList.shrink_to_fit();
+
+	return filteredList;
+}
+
+vector<Item> Inventory::filterInventoryByType(Item::ItemType _type) const
+{
+	vector<Item> filteredList;
+	filteredList.reserve(inventoryItems.size());
+
+	for (const auto& item : inventoryItems)
+	{
+		if (item.getItemType() == _type)
+		{
+			filteredList.push_back(item);
+		}
+	}
+	filteredList.shrink_to_fit();
+
+	return filteredList;
+
+}
+
+vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
+{
+	vector<Item> filteredList;
+	filteredList.reserve(inventoryItems.size());
+
+	for (const auto& item : inventoryItems)
+	{
+		if (item.getItemRarity() == _rarity)
+		{
+			filteredList.push_back(item);
+		}
+	}
+	filteredList.shrink_to_fit();
+
+	return filteredList;
 }
 
 void Inventory::printInventory()

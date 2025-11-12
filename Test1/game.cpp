@@ -56,12 +56,12 @@ void Game::handleEquipCommand()
                 filteredList.clear();
                 switch (slotInput)
                 {
-                case 1: player.getInventory().filterInventoryBySlot(Item::ItemSlot::HELMET, filteredList); break;
-                case 2: player.getInventory().filterInventoryBySlot(Item::ItemSlot::CHESTPIECE, filteredList); break;
-                case 3: player.getInventory().filterInventoryBySlot(Item::ItemSlot::PANTS, filteredList); break;
-                case 4: player.getInventory().filterInventoryBySlot(Item::ItemSlot::BOOTS, filteredList); break;
-                case 5: player.getInventory().filterInventoryBySlot(Item::ItemSlot::SHIELD, filteredList); break;
-                case 6: player.getInventory().filterInventoryBySlot(Item::ItemSlot::SWORD, filteredList); break;
+                case 1: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::HELMET); break;
+                case 2: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::CHESTPIECE); break;
+                case 3: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::PANTS); break;
+                case 4: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::BOOTS); break;
+                case 5: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::SHIELD); break;
+                case 6: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::SWORD); break;
                 default:;
                 }
 
