@@ -65,46 +65,84 @@ int Player::getTotalHealth() const
 	return Player::totalHealth;
 }
 
-//Setters for each item
-void Player::setHelmet(const Item& _helmet)
+void Player::setItem(const Item& _item, const string& _itemSlot)
 {
-	inventory.addToInventory(std::move(helmet));
-	Player::helmet = _helmet;
-	updateTotalStats();
-}
+	if (_item.getItemSlot() != Item::ItemSlot::EMPTY)
+	{
+		switch (_item.getItemSlot())
+		{
+		case Item::ItemSlot::HELMET:
+		{
+			inventory.addToInventory(std::move(helmet));
+			Player::helmet = _item;
+			break;
+		}
+		case Item::ItemSlot::CHESTPIECE:
+		{
+			inventory.addToInventory(std::move(chestPiece));
+			Player::chestPiece = _item;
+			break;
+		}
+		case Item::ItemSlot::PANTS:
+		{
+			inventory.addToInventory(std::move(pants));
+			Player::pants = _item;
+			break;
+		}
+		case Item::ItemSlot::BOOTS:
+		{
+			inventory.addToInventory(std::move(boots));
+			Player::boots = _item;
+			break;
+		}
+		case Item::ItemSlot::SHIELD:
+		{
+			inventory.addToInventory(std::move(shield));
+			Player::shield = _item;
+			break;
+		}
+		case Item::ItemSlot::SWORD:
+		{
+			inventory.addToInventory(std::move(sword));
+			Player::sword = _item;
+			break;
+		}
+		default:
+			return;
+		}
+	}
+	else if (_itemSlot == "helmet")
+	{
+		inventory.addToInventory(std::move(helmet));
+		Player::helmet = _item;
+	}
+	else if (_itemSlot == "chest" || _itemSlot == "chestpiece")
+	{
+		inventory.addToInventory(std::move(chestPiece));
+		Player::chestPiece = _item;
+	}
+	else if (_itemSlot == "pants")
+	{
+		inventory.addToInventory(std::move(pants));
+		Player::pants = _item;
+	}
+	else if (_itemSlot == "boots")
+	{
+		inventory.addToInventory(std::move(boots));
+		Player::boots = _item;
+	}
+	else if (_itemSlot == "shield")
+	{
+		inventory.addToInventory(std::move(shield));
+		Player::shield = _item;
+	}
+	else if (_itemSlot == "sword")
+	{
+		inventory.addToInventory(std::move(sword));
+		Player::sword = _item;
+	}
+	else return;
 
-void Player::setChestPiece(const Item& _chestPiece)
-{
-	inventory.addToInventory(std::move(chestPiece));
-	Player::chestPiece = _chestPiece;
-	updateTotalStats();
-}
-
-void Player::setPants(const Item& _pants)
-{
-	inventory.addToInventory(std::move(pants));
-	Player::pants = _pants;
-	updateTotalStats();
-}
-
-void Player::setBoots(const Item& _boots)
-{
-	inventory.addToInventory(std::move(boots));
-	Player::boots = _boots;
-	updateTotalStats();
-}
-
-void Player::setShield(const Item& _shield)
-{
-	inventory.addToInventory(std::move(shield));
-	Player::shield = _shield;
-	updateTotalStats();
-}
-
-void Player::setSword(const Item& _sword)
-{
-	inventory.addToInventory(std::move(sword));
-	Player::sword = _sword;
 	updateTotalStats();
 }
 
@@ -146,76 +184,43 @@ void Player::updateTotalStats()
 	}
 }
 
-
-//Equipping Items
-void Player::equipHelmetFromInventory(const std::string& _itemName)
+void Player::equipEquipmentFromInventory(const std::string& _itemName)
 {
-	// Ask inventory for a helmet with this name
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::HELMET);
-
-	// If not found, equipFromInventory returns an EMPTY item
-	if (newItem.getItemSlot() != Item::ItemSlot::HELMET)
+	Item newItem = inventory.equipFromInventory(_itemName);
+	if (newItem.getItemSlot() == Item::ItemSlot::HELMET)
+	{
+		inventory.addToInventory(std::move(helmet));
+		helmet = std::move(newItem);
+	}
+	else if (newItem.getItemSlot() == Item::ItemSlot::CHESTPIECE)
+	{
+		inventory.addToInventory(std::move(chestPiece));
+		chestPiece = std::move(newItem);
+	}
+	else if (newItem.getItemSlot() == Item::ItemSlot::PANTS)
+	{
+		inventory.addToInventory(std::move(pants));
+		pants = std::move(newItem);
+	}
+	else if (newItem.getItemSlot() == Item::ItemSlot::BOOTS)
+	{
+		inventory.addToInventory(std::move(boots));
+		boots = std::move(newItem);
+	}
+	else if (newItem.getItemSlot() == Item::ItemSlot::SHIELD)
+	{
+		inventory.addToInventory(std::move(shield));
+		shield = std::move(newItem);
+	}
+	else if (newItem.getItemSlot() == Item::ItemSlot::SWORD)
+	{
+		inventory.addToInventory(std::move(sword));
+		sword = std::move(newItem);
+	}
+	else
+	{
+		cout << "No item of that name is in your inventory." << endl;
 		return;
-
-	// Put current helmet back into inventory if it is not empty
-	inventory.addToInventory(std::move(helmet));
-
-	// Equip the new one
-	helmet = std::move(newItem);
-	updateTotalStats();
-}
-
-void Player::equipChestFromInventory(const std::string& _itemName)
-{
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::CHESTPIECE);
-	if (newItem.getItemSlot() != Item::ItemSlot::CHESTPIECE)
-		return;
-
-	inventory.addToInventory(std::move(chestPiece));
-	chestPiece = std::move(newItem);
-	updateTotalStats();
-}
-
-void Player::equipPantsFromInventory(const std::string& _itemName)
-{
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::PANTS);
-	if (newItem.getItemSlot() != Item::ItemSlot::PANTS)
-		return;
-
-	inventory.addToInventory(std::move(pants));
-	pants = std::move(newItem);
-	updateTotalStats();
-}
-
-void Player::equipBootsFromInventory(const std::string& _itemName)
-{
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::BOOTS);
-	if (newItem.getItemSlot() != Item::ItemSlot::BOOTS)
-		return;
-
-	inventory.addToInventory(std::move(boots));
-	boots = std::move(newItem);
-	updateTotalStats();
-}
-
-void Player::equipShieldFromInventory(const std::string& _itemName)
-{
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::SHIELD);
-	if (newItem.getItemSlot() != Item::ItemSlot::SHIELD)
-		return;
-
-	inventory.addToInventory(std::move(shield));
-	shield = std::move(newItem);
-	updateTotalStats();
-}
-
-void Player::equipSwordFromInventory(const std::string& _itemName)
-{
-	Item newItem = inventory.equipFromInventory(_itemName, Item::ItemSlot::SWORD);
-	if (newItem.getItemSlot() != Item::ItemSlot::SWORD)
-		return;
-
-	inventory.addToInventory(std::move(sword));
-	sword = std::move(newItem);
+	}
 	updateTotalStats();
 }

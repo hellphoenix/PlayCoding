@@ -38,58 +38,57 @@ void Game::handleEquipCommand()
 {
     std::string slot;
     std::string itemName;
+    bool slotFound = false;
 
-    cout << "Enter slot (helmet, chest, pants, boots, shield, sword): ";
-    std::getline(std::cin, slot);
-    slot = toLowerCopy(slot);
-
-    cout << "Enter item name exactly as shown in inventory: ";
-    std::getline(std::cin, itemName);
-
-    if (slot == "helmet")
-        player.equipHelmetFromInventory(itemName);
-    else if (slot == "chest" || slot == "chestpiece")
-        player.equipChestFromInventory(itemName);
-    else if (slot == "pants")
-        player.equipPantsFromInventory(itemName);
-    else if (slot == "boots")
-        player.equipBootsFromInventory(itemName);
-    else if (slot == "shield")
-        player.equipShieldFromInventory(itemName);
-    else if (slot == "sword")
-        player.equipSwordFromInventory(itemName);
-    else
-        cout << "Unknown slot.\n";
-
-    cout << "Updated player:\n";
-    player.printPlayer();
+    while (!slotFound)
+    {
+        cout << "Enter slot (helmet, chestpiece, pants, boots, shield, sword) or type cancel: ";
+        std::getline(std::cin, slot);
+        slot = toLowerCopy(slot);
+      
+        if (slot == "helmet" || slot == "chest" || slot == "chestpiece" || slot == "pants" || slot == "boots" || slot == "shield" || slot == "sword")
+        {
+            cout << "Enter item name exactly as shown in inventory: ";
+            std::getline(std::cin, itemName);
+            player.equipEquipmentFromInventory(itemName);
+            cout << "Updated player:\n";
+            player.printPlayer();
+            slotFound = true;
+        }
+        else if (slot == "cancel")
+        {
+            slotFound = true;
+        }
+        else
+            cout << "Unknown slot. Please try again or type cancel to not equip item.\n";
+    }   
 }
 
 void Game::handleUnequipCommand()
 {
     std::string slot;
+    bool slotFound = false;
 
-    cout << "Enter slot to unequip (helmet, chest, pants, boots, shield, sword): ";
-    std::getline(std::cin, slot);
-    slot = toLowerCopy(slot);
+    while (!slotFound)
+    {
+        cout << "Enter slot to unequip (helmet, chest, pants, boots, shield, sword), or type cancel: ";
+        std::getline(std::cin, slot);
+        slot = toLowerCopy(slot);
 
-    if (slot == "helmet")
-        player.setHelmet(Item());
-    else if (slot == "chest" || slot == "chestpiece")
-        player.setChestPiece(Item());
-    else if (slot == "pants")
-        player.setPants(Item());
-    else if (slot == "boots")
-        player.setBoots(Item());
-    else if (slot == "shield")
-        player.setShield(Item());
-    else if (slot == "sword")
-        player.setSword(Item());
-    else
-        cout << "Unknown slot.\n";
-
-    cout << "Updated player:\n";
-    player.printPlayer();
+        if (slot == "helmet" || slot == "chest" || slot == "chestpiece" || slot == "pants" || slot == "boots" || slot == "shield" || slot == "sword")
+        {
+            player.setItem(Item(), slot);
+            cout << "Updated player:\n";
+            player.printPlayer();
+            slotFound = true;
+        }
+        else if (slot == "cancel")
+        {
+            slotFound = true;
+        }
+        else
+            cout << "Unknown slot. Please try again or type cancel to not unequip item.\n";
+    }
 }
 
 void Game::handleDebugCommand()
@@ -131,7 +130,7 @@ void Game::handleDebugCommand()
                 player.printPlayer();
                 break;
             }
-            catch (const std::exception&)
+            catch (...)
             {
                 std::cout << "Invalid number. Try again, or type cancel to keep the base attack.\n";
             }
@@ -157,7 +156,7 @@ void Game::handleDebugCommand()
                 player.printPlayer();
                 break;
             }
-            catch (const std::exception&)
+            catch (...)
             {
                 std::cout << "Invalid number. Try again, or type cancel to keep the base defense.\n";
             }
@@ -182,7 +181,7 @@ void Game::handleDebugCommand()
                 player.printPlayer();
                 break;
             }
-            catch (const std::exception&)
+            catch (...)
             {
                 std::cout << "Invalid number. Try again, or type cancel to keep the base health.\n";
             }
@@ -263,9 +262,10 @@ void Game::loop(const Player& _player)
 void Game::handleSaveCommand()
 {
     std::string path;
-    std::cout << "Save file name (e.g. save1.json): ";
+    std::cout << "Save file name (e.g. save1): ";
     std::getline(std::cin, path);
     if (path.empty()) { std::cout << "Canceled.\n"; return; }
+    path.append(".json");
 
     if (SaveLoad::saveToFile(player, path))
         std::cout << "Saved to " << path << "\n";
@@ -276,9 +276,10 @@ void Game::handleSaveCommand()
 void Game::handleLoadCommand()
 {
     std::string path;
-    std::cout << "Load file name (e.g. save1.json): ";
+    std::cout << "Load file name (e.g. save1): ";
     std::getline(std::cin, path);
     if (path.empty()) { std::cout << "Canceled.\n"; return; }
+    path.append(".json");
 
     Player loaded;
     if (SaveLoad::loadFromFile(loaded, path)) {

@@ -6,18 +6,19 @@
   },
   "equipped": {
     "boots": "boots_leather",
-    "chest": "chest_steel",
+    "chest": "chest_leather",
     "helmet": "helmet_leather",
     "pants": "pants_leather",
-    "shield": "shield_wood",
-    "sword": "sword_bronze"
+    "shield": "",
+    "sword": "sword_steel"
   },
   "inventory": [
+    "chest_steel",
     "pants_steel",
-    "sword_steel",
     "helmet_iron",
-    "chest_leather",
-    "shield_iron"
+    "shield_iron",
+    "shield_wood",
+    "sword_bronze"
   ],
-  "name": "Tony"
+  "name": "Ember"
 }

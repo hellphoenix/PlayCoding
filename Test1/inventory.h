@@ -15,11 +15,9 @@ public:
 	void addToInventory(const Item& _item);
 	void removeFromInventory(const string& _itemName);
 	Item equipFromInventory(const string& _itemName, Item::ItemSlot _slot);
-	//void unequipToInventory(const Item& _item);
+	Item equipFromInventory(const string& _itemName);	
 
 	void sortInventory();
-	//void groupInventory();
-
 	void printInventory() const;
 };
 

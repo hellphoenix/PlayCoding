@@ -32,24 +32,16 @@ public:
 	const Item& getBoots() const;
 	const Item& getShield() const;
 	const Item& getSword() const;
+
 	int getTotalAttack() const;
 	int getTotalDefense() const;
 	int getTotalHealth() const;
 
-	void setHelmet(const Item& _helmet);
-	void setChestPiece(const Item& _chestPiece);
-	void setPants(const Item& _pants);
-	void setBoots(const Item& _boots);
-	void setShield(const Item& _shield);
-	void setSword(const Item& _sword);
+	void setItem(const Item& _item, const string& _itemSlot);
+
 	void setBaseStats(int _health, int _attack, int _defense);
 
-	void equipHelmetFromInventory(const std::string& itemName);
-	void equipChestFromInventory(const std::string& itemName);
-	void equipPantsFromInventory(const std::string& itemName);
-	void equipBootsFromInventory(const std::string& itemName);
-	void equipShieldFromInventory(const std::string& itemName);
-	void equipSwordFromInventory(const std::string& itemName);
+	void equipEquipmentFromInventory(const std::string& _itemName);
 
 
 	void printPlayer() const;

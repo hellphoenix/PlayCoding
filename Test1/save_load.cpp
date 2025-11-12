@@ -68,12 +68,12 @@ bool SaveLoad::fromJson(const json& j, Player& out)
 
         // equip
         const auto& eq = j.at("equipped");
-        out.setHelmet(resolveOrEmpty(eq.value("helmet", "")));
-        out.setChestPiece(resolveOrEmpty(eq.value("chest", "")));
-        out.setPants(resolveOrEmpty(eq.value("pants", "")));
-        out.setBoots(resolveOrEmpty(eq.value("boots", "")));
-        out.setShield(resolveOrEmpty(eq.value("shield", "")));
-        out.setSword(resolveOrEmpty(eq.value("sword", "")));
+        out.setItem(resolveOrEmpty(eq.value("helmet", "")),"helmet");
+        out.setItem(resolveOrEmpty(eq.value("chest", "")),"chest");
+        out.setItem(resolveOrEmpty(eq.value("pants", "")),"pants");
+        out.setItem(resolveOrEmpty(eq.value("boots", "")),"boots");
+        out.setItem(resolveOrEmpty(eq.value("shield", "")),"shield");
+        out.setItem(resolveOrEmpty(eq.value("sword", "")),"sword");
 
         // inventory
         if (j.contains("inventory") && j["inventory"].is_array()) {

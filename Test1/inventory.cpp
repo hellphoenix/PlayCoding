@@ -24,7 +24,7 @@ void Inventory::removeFromInventory(const string& _itemName)
 	sortInventory();
 }
 
-Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot)
+Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot) //Possibly remove if overload works
 {
 	auto tempItem = std::find_if(items.begin(), items.end(), [&](const Item& _item)
 		{
@@ -43,6 +43,24 @@ Item Inventory::equipFromInventory(const string& _itemName, Item::ItemSlot _slot
 	return Item();
 }
 
+Item Inventory::equipFromInventory(const string& _itemName)
+{
+	auto tempItem = std::find_if(items.begin(), items.end(), [&](const Item& _item)
+		{
+			return _item.getItemName() == _itemName;
+		});
+
+	if (tempItem != items.end())
+	{
+		Item foundItem = std::move(*tempItem);               // copy the item to return
+		items.erase(tempItem);                    // remove from inventory
+		sortInventory();
+		return foundItem;                   // return for equipping
+	}
+
+	// If not found, return a default EMPTY item
+	return Item();
+}
 
 void Inventory::sortInventory()
 {
