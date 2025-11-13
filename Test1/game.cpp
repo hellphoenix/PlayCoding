@@ -203,7 +203,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseAttack = std::stoi(input);
-                    player.setBaseStats(player.getBaseHealth(), newBaseAttack, player.getBaseDefense());
+                    player.setBaseStats(player.getBaseHealth(), player.getMaxHealth(), newBaseAttack, player.getBaseDefense());
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -229,7 +229,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseDefense = std::stoi(input);
-                    player.setBaseStats(player.getBaseHealth(), player.getBaseAttack(), newBaseDefense);
+                    player.setBaseStats(player.getBaseHealth(), player.getMaxHealth(), player.getBaseAttack(), newBaseDefense);
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -254,7 +254,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseHealth = std::stoi(input);
-                    player.setBaseStats(newBaseHealth, player.getBaseAttack(), player.getBaseDefense());
+                    player.setBaseStats(newBaseHealth, player.getMaxHealth(), player.getBaseAttack(), player.getBaseDefense());
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -279,8 +279,9 @@ void Game::handleDebugCommand()
 
 void Game::loop(Player _player)
 {
+    
     Game::player = _player;
-    Game::slimeEnemy = createSlimeEnemy();
+    Game::enemy = gameActions.spawnEnemy(Enemy::EnemyType::SLIME);
     cout << "---- Game loop started ----" << endl;
     cout << "Type 'h' to see available commands.\n";
 
@@ -374,6 +375,7 @@ void Game::handleLoadCommand()
     if (SaveLoad::loadFromFile(loaded, path)) {
         player = std::move(loaded);
         std::cout << "Loaded from " << path << "\n";
+        player.updateMaxStats();
         player.printPlayer();
         player.getInventory().printInventory();
     }
@@ -382,24 +384,18 @@ void Game::handleLoadCommand()
     }
 }
 
-Enemy Game::createSlimeEnemy()
-{
-    Enemy enemyOne("King Slime", 1000, 50, 40);
-    return enemyOne;
-}
-
 void Game::handleFightCommand()
 {
     string command;
     int commandInput;
-    if (!slimeEnemy.isAlive())
+    if (!enemy.isAlive())
     {
-        slimeEnemy = createSlimeEnemy();
-        cout << "A slime has been created. ";
+        enemy = gameActions.spawnEnemy(Enemy::EnemyType::SLIME);
+        cout << "An enemy has been created. ";
     }
-    while (slimeEnemy.isAlive() && player.isAlive())
+    while (enemy.isAlive() && player.isAlive())
     {
-        slimeEnemy.printEnemy();
+        enemy.printEnemy();
         cout << "Attack ? Yes[1] No[2] \n";
         std::getline(std::cin, command);
         command = toLowerCopy(command);
@@ -408,20 +404,21 @@ void Game::handleFightCommand()
             commandInput = std::stoi(command);
             if (commandInput == 1)
             {
-                cout << "You attack the slime for " << attacking(slimeEnemy, player) << " damage! \n";
-                slimeEnemy.setBaseHealth(slimeEnemy.getBaseHealth() - attacking(slimeEnemy, player));
-                if (slimeEnemy.getBaseHealth() > 0)
+                int playerDamage = gameActions.playerAttack(enemy, player);
+                cout << "You attack the enemy for " << playerDamage << " damage! \n";
+                enemy.setBaseHealth(enemy.getBaseHealth() - playerDamage);
+                if (enemy.getBaseHealth() > 0)
                 {
-                    cout << "The slime attacks you for " << defending(slimeEnemy, player) << " damage! \n";
-                    player.setBaseStats(player.getBaseHealth() - defending(slimeEnemy, player), player.getBaseAttack(), player.getBaseDefense());
+                    int enemyDamage = gameActions.enemyAttack(enemy, player);
+                    cout << "The enemy attacks you for " << enemyDamage << " damage! \n";
+                    player.changeCurrentHealth(0 - enemyDamage);
                     player.quickPrintPlayer();
                 }
                 else
                 {
-                    slimeEnemy.setBaseHealth(0);
-                    slimeEnemy.setAlive(false);
-                    cout << "You killed the slime!\n";
-                    //slimeEnemy.~Enemy();
+                    enemy.setBaseHealth(0);
+                    enemy.setAlive(false);
+                    cout << "You killed the enemy!\n";
                     return;
                 }
             }
@@ -438,22 +435,11 @@ void Game::handleFightCommand()
         {
             std::cout << "unknown command. Please try again.\n";
         }
-        if (player.getTotalHealth() <= 0)
+
+        if (player.getCurrentHealth() <= 0)
         {
             cout << "You died. So sad.\n";
             player.setAlive(false);
         }
     }  
-}
-
-int Game::attacking(const Enemy& _enemy, const Player& _player)
-{
-    if (_enemy.getBaseDefense() >= _player.getTotalAttack()) return 0;
-    else return _player.getTotalAttack() - _enemy.getBaseDefense();
-}
-
-int Game::defending(const Enemy& _enemy, const Player& _player)
-{
-    if (_player.getTotalDefense() >= _enemy.getBaseAttack()) return 0;
-    else return _enemy.getBaseAttack() - _player.getTotalDefense();
 }

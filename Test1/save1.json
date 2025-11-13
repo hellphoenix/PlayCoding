@@ -1,23 +1,33 @@
 {
   "base": {
     "attack": 10,
-    "defense": 10,
-    "health": 100
+    "base_health": 200,
+    "current_health": 225,
+    "defense": 10
   },
   "equipped": {
     "boots": "boots_leather",
-    "chest": "chest_steel",
-    "helmet": "helmet_leather",
+    "chest": "chest_leather",
+    "helmet": "helmet_leather_01",
     "pants": "pants_leather",
     "shield": "shield_wood",
     "sword": "sword_bronze"
   },
   "inventory": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "helmet_leather_05",
+    "helmet_leather_04",
+    "helmet_leather_03",
+    "helmet_leather_02",
+    "chest_steel",
     "pants_steel",
-    "sword_steel",
-    "helmet_iron",
-    "chest_leather",
-    "shield_iron"
+    "shield_iron",
+    "sword_steel"
   ],
   "name": "Tony"
 }

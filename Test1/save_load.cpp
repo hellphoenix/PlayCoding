@@ -15,7 +15,8 @@ json SaveLoad::toJson(const Player& p)
     json j;
     j["name"] = tp.getName();
     j["base"] = {
-        {"health", tp.getBaseHealth()},
+        {"base_health", tp.getBaseHealth()},
+        {"current_health", tp.getCurrentHealth()},
         {"attack", tp.getBaseAttack()},
         {"defense", tp.getBaseDefense()}
     };
@@ -59,12 +60,13 @@ bool SaveLoad::fromJson(const json& j, Player& out)
     try {
         // base
         std::string name = j.at("name").get<std::string>();
-        int bh = j.at("base").at("health").get<int>();
+        int bh = j.at("base").at("base_health").get<int>();
+        int ch = j.at("base").at("current_health").get<int>();
         int ba = j.at("base").at("attack").get<int>();
         int bd = j.at("base").at("defense").get<int>();
 
         // start with no gear
-        out = Player{ name, bh, ba, bd };
+        out = Player{ name, bh, ch, ba, bd };
 
         // equip
         const auto& eq = j.at("equipped");
@@ -85,7 +87,8 @@ bool SaveLoad::fromJson(const json& j, Player& out)
         }
 
         // totals refresh
-        out.updateTotalStats();
+        out.setBaseStats(bh,ch,ba,bd);
+        out.updateMaxStats();
         return true;
     }
     catch (...) {

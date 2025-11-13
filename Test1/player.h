@@ -16,14 +16,16 @@ private:
 	Item boots;
 	Item shield;
 	Item sword;
-	int totalAttack;
-	int totalDefense;
-	int totalHealth;
+	int maxAttack;
+	int maxDefense;
+	int maxHealth;
+	int currentHealth;
+
 
 public:
 	Player();
-	Player(const string& _name, int _health, int _attack, int _defense);
-	Player(const string& _name, int _health, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword);
+	Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense);
+	Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword);
 
 	Inventory& getInventory() { return Player::inventory; }
 	const Item& getHelmet() const;
@@ -33,21 +35,23 @@ public:
 	const Item& getShield() const;
 	const Item& getSword() const;
 
-	int getTotalAttack() const;
-	int getTotalDefense() const;
-	int getTotalHealth() const;
+	int getMaxAttack() const;
+	int getMaxDefense() const;
+	int getMaxHealth() const;
+	int getCurrentHealth() const;
 
 	void setItem(const Item& _item);
 	void setItem(const Item& _item, Item::ItemSlot _itemSlot);
 
-	void setBaseStats(int _health, int _attack, int _defense);
+	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense);
+	void changeCurrentHealth(int _health);
 
 	void equipFromInventory(const Item& _item);
 
 	void printPlayer() const;
 	void quickPrintPlayer() const;
 
-	void updateTotalStats();
+	void updateMaxStats();
 };
 
 #endif // !PLAYER_H

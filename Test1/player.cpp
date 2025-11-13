@@ -2,21 +2,21 @@
 #include <iostream>
 using std::cout, std::endl;
 
-Player::Player() : Character("Player", 1, 0, 0), totalHealth(1), totalAttack(0), totalDefense(0),  helmet(), chestPiece(), pants(), boots(), shield(), sword()
+Player::Player() : Character("Player", 1, 0, 0), currentHealth(1), helmet(), chestPiece(), pants(), boots(), shield(), sword()
 {
-	updateTotalStats();
+	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _health, int _attack, int _defense) : Character(_name, _health, _attack, _defense), totalHealth(_health), totalAttack(_attack), totalDefense(_defense),  helmet(), chestPiece(), pants(), boots(), shield(), sword()
+Player::Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense) : Character(_name, _baseHealth, _attack, _defense), currentHealth(_currentHealth), helmet(), chestPiece(), pants(), boots(), shield(), sword()
 
 {
-	updateTotalStats();
+	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _health, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword) : Character(_name, _health, _attack, _defense),
-helmet(_helmet), chestPiece(_chestPiece), pants(_pants), boots(_boots), shield(_shield), sword(_sword)
+Player::Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword) : 
+	Character(_name, _baseHealth, _attack, _defense), currentHealth(_currentHealth), helmet(_helmet), chestPiece(_chestPiece), pants(_pants), boots(_boots), shield(_shield), sword(_sword)
 {
-	updateTotalStats();
+	updateMaxStats();
 }
 
 //Getters for each item
@@ -50,24 +50,31 @@ const Item& Player::getSword() const
 	return Player::sword;
 }
 
-int Player::getTotalAttack() const
+int Player::getMaxAttack() const
 {
-	if (totalAttack > 0)
-		return Player::totalAttack;
+	if (maxAttack > 0)
+		return Player::maxAttack;
 	else return 0;
 }
 
-int Player::getTotalDefense() const
+int Player::getMaxDefense() const
 {
-	if (totalDefense > 0)
-		return Player::totalDefense;
+	if (maxDefense > 0)
+		return Player::maxDefense;
 	else return 0;
 }
 
-int Player::getTotalHealth() const
+int Player::getMaxHealth() const
 {
-	if (totalHealth > 0)
-		return Player::totalHealth;
+	if (maxHealth > 0)
+		return Player::maxHealth;
+	else return 0;
+}
+
+int Player::getCurrentHealth() const
+{
+	if (currentHealth > 0)
+		return Player::currentHealth;
 	else return 0;
 }
 
@@ -114,7 +121,7 @@ void Player::setItem(const Item& _item) //used when you don't know the item slot
 		default:
 			return;
 	}
-	updateTotalStats();
+	updateMaxStats();
 }
 void Player::setItem(const Item& _item, Item::ItemSlot _itemSlot) //used when you do know the item slot
 {
@@ -159,13 +166,13 @@ void Player::setItem(const Item& _item, Item::ItemSlot _itemSlot) //used when yo
 	default:
 		return;
 	}
-	updateTotalStats();
+	updateMaxStats();
 }
 
 
 void Player::printPlayer() const
 {
-	cout << "Player Name: " << Player::getName() << ", Health: " << Player::getTotalHealth() << ", Attack: " << Player::getTotalAttack() << ", Defense: " << Player::getTotalDefense()  << endl;
+	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense()  << endl;
 	cout << "Player equipment: "<< endl;
 	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
 	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
@@ -180,31 +187,42 @@ void Player::printPlayer() const
 
 void Player::quickPrintPlayer() const
 {
-	cout << "Player Name: " << Player::getName() << ", Health: " << Player::getTotalHealth() << ", Attack: " << Player::getTotalAttack() << ", Defense: " << Player::getTotalDefense() << endl;
+	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense() << endl;
 }
 
-void Player::setBaseStats(int _health, int _attack, int _defense)
+void Player::setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense)
 {
-	Character::setBaseHealth(_health);
+	Character::setBaseHealth(_baseHealth);
 	Character::setBaseAttack(_attack);
 	Character::setBaseDefense(_defense);
-	updateTotalStats();
+	updateMaxStats();
+	Player::currentHealth = _currentHealth;
 }
 
-void Player::updateTotalStats()
+void Player::changeCurrentHealth(int _healthChanged)
 {
-	Player::totalAttack = Player::getBaseAttack();
-	Player::totalDefense = Player::getBaseDefense();
-	Player::totalHealth = Player::getBaseHealth();
+	if (Player::currentHealth + _healthChanged <= 0) //Sending negative values can lower health to zero or less (also called dying)
+		Player::currentHealth = 0;
+	else if (Player::currentHealth + _healthChanged > Player::maxHealth) //Sending positive values can cause the current health to go above max health (also called overhealing)
+		Player::currentHealth = Player::maxHealth;
+	else Player::currentHealth += _healthChanged; //Normal gain or loss of current health
+}
+
+void Player::updateMaxStats()
+{
+	Player::maxAttack = Player::getBaseAttack();
+	Player::maxDefense = Player::getBaseDefense();
+	Player::maxHealth = Player::getBaseHealth();
 
 	const Item* equipment[] = { &helmet, &chestPiece, &pants, &boots, &shield, &sword };
 
 	for (auto& item : equipment)
 	{
-		totalAttack += item->getItemAttack();
-		totalDefense += item->getItemDefense();
-		totalHealth += item->getItemHealth();
+		Player::maxAttack += item->getItemAttack();
+		Player::maxDefense += item->getItemDefense();
+		Player::maxHealth += item->getItemHealth();
 	}
+	if (Player::maxHealth < Player::currentHealth) Player::currentHealth = Player::maxHealth;
 }
 
 void Player::equipFromInventory(const Item& _item)
@@ -245,5 +263,5 @@ void Player::equipFromInventory(const Item& _item)
 		return;
 	}
 	inventory.removeFromInventory(_item.getId());
-	updateTotalStats();
+	updateMaxStats();
 }
