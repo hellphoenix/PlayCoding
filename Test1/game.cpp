@@ -11,7 +11,6 @@ using std::cout;
 using std::endl;
 
 
-
 // helper to lower case a string
 static std::string toLowerCopy(std::string s)
 {
@@ -46,38 +45,35 @@ void Game::handleEquipCommand()
 
     while (!slotFound)
     {
-        cout << "Enter slot number: helmet[1], chestpiece[2], pants[3], boots[4], shield[5], sword[6], or cancel[0]: ";
+        cout << "Enter a slot number to equip item: ";
+        for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        cout << "or cancel[0]: ";
+
         std::getline(std::cin, slot);
         slot = toLowerCopy(slot);
         try
         {
             slotInput = std::stoi(slot);
-            if (slotInput > 0 && slotInput < 7)
+            if (slotInput > 0 && slotInput < itemSlotToIndex(Item::ItemSlot::COUNT))
             {
                 filteredList.clear();
-                switch (slotInput)
-                {
-                case 1: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::HELMET); break;
-                case 2: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::CHESTPIECE); break;
-                case 3: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::PANTS); break;
-                case 4: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::BOOTS); break;
-                case 5: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::SHIELD); break;
-                case 6: filteredList = player.getInventory().filterInventoryBySlot(Item::ItemSlot::SWORD); break;
-                default:;
-                }
+                filteredList = player.getPlayerInventory().filterInventoryBySlot(itemSlotFromIndex(slotInput));
 
-                
-                cout << "Choose an item from the list to equip: " << endl;
-                int count = 0;
                 if (!filteredList.empty())
                 {
+                cout << "Choose an item from the list to equip: " << endl;
+                int count = 0;
                     for (Item item : filteredList)
                     {
                         count++;
                         cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << endl;
                     }
                 }
-                else return;
+                else
+                {
+                    cout << "No " << Item::itemSlotToString.at(itemSlotFromIndex(slotInput)) << " items found in inventory." << endl;
+                    return;
+                }
 
                 std::getline(std::cin, itemName);
                 itemName = toLowerCopy(itemName);
@@ -92,18 +88,16 @@ void Game::handleEquipCommand()
                     }
                     else
                     {
-                        player.equipFromInventory(filteredList[itemNameInput - 1]);
+                        player.equipItemFromInventory(filteredList[itemNameInput - 1].getId());
                         cout << "Updated player:\n";
                         player.printPlayer();
                         slotFound = true;
-                    }
-                    
+                    }  
                 }
                 catch (...)
                 {
                     std::cout << "Invalid number. Please try again.\n";
-                }
-                
+                } 
             }
             else if (slotInput == 0)
             {
@@ -128,25 +122,19 @@ void Game::handleUnequipCommand()
 
     while (!slotFound)
     {
-        cout << "Enter slot number to unequip: helmet[1], chestpiece[2], pants[3], boots[4], shield[5], sword[6], or cancel[0]: ";
+        cout << "Enter a slot number to unequip item: ";
+        for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        cout << "or cancel[0]: ";
         std::getline(std::cin, slot);
         slot = toLowerCopy(slot);
 
         try
         {
             slotInput = std::stoi(slot);
-            if (slotInput > 0 && slotInput < 7)
+            
+            if (slotInput > 0 && slotInput < itemSlotToIndex(Item::ItemSlot::COUNT))
             {
-                switch (slotInput)
-                {
-                case 1: player.setItem(Item(), Item::ItemSlot::HELMET); break;
-                case 2: player.setItem(Item(), Item::ItemSlot::CHESTPIECE); break;
-                case 3: player.setItem(Item(), Item::ItemSlot::PANTS); break;
-                case 4: player.setItem(Item(), Item::ItemSlot::BOOTS); break;
-                case 5: player.setItem(Item(), Item::ItemSlot::SHIELD); break;
-                case 6: player.setItem(Item(), Item::ItemSlot::SWORD); break;
-                default:;
-                }
+                player.unequipItem(itemSlotFromIndex(slotInput));
                 cout << "Updated player:\n";
                 player.printPlayer();
                 slotFound = true;
@@ -203,7 +191,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseAttack = std::stoi(input);
-                    player.setBaseStats(player.getBaseHealth(), player.getMaxHealth(), newBaseAttack, player.getBaseDefense());
+                    player.setBaseStats(player.getBaseHealth(), player.getCurrentHealth(), newBaseAttack, player.getBaseDefense());
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -229,7 +217,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseDefense = std::stoi(input);
-                    player.setBaseStats(player.getBaseHealth(), player.getMaxHealth(), player.getBaseAttack(), newBaseDefense);
+                    player.setBaseStats(player.getBaseHealth(), player.getCurrentHealth(), player.getBaseAttack(), newBaseDefense);
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -254,7 +242,7 @@ void Game::handleDebugCommand()
                 try
                 {
                     newBaseHealth = std::stoi(input);
-                    player.setBaseStats(newBaseHealth, player.getMaxHealth(), player.getBaseAttack(), player.getBaseDefense());
+                    player.setBaseStats(newBaseHealth, player.getCurrentHealth(), player.getBaseAttack(), player.getBaseDefense());
                     cout << "Updated player:\n";
                     player.printPlayer();
                     break;
@@ -310,7 +298,7 @@ void Game::loop(Player _player)
         }
         else if (command == "inventory" || command == "i")
         {
-            player.getInventory().printInventory();
+            player.getPlayerInventory().printInventory();
         }
         else if (command == "equip" || command == "e")
         {
@@ -377,7 +365,7 @@ void Game::handleLoadCommand()
         std::cout << "Loaded from " << path << "\n";
         player.updateMaxStats();
         player.printPlayer();
-        player.getInventory().printInventory();
+        player.getPlayerInventory().printInventory();
     }
     else {
         std::cout << "Load failed.\n";
@@ -406,8 +394,8 @@ void Game::handleFightCommand()
             {
                 int playerDamage = gameActions.playerAttack(enemy, player);
                 cout << "You attack the enemy for " << playerDamage << " damage! \n";
-                enemy.setBaseHealth(enemy.getBaseHealth() - playerDamage);
-                if (enemy.getBaseHealth() > 0)
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - playerDamage);
+                if (enemy.getCurrentHealth() > 0)
                 {
                     int enemyDamage = gameActions.enemyAttack(enemy, player);
                     cout << "The enemy attacks you for " << enemyDamage << " damage! \n";
@@ -416,7 +404,7 @@ void Game::handleFightCommand()
                 }
                 else
                 {
-                    enemy.setBaseHealth(0);
+                    enemy.setCurrentHealth(0);
                     enemy.setAlive(false);
                     cout << "You killed the enemy!\n";
                     return;

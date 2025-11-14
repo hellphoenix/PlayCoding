@@ -24,5 +24,5 @@ Enemy::EnemyType Enemy::getEnemyType() const
 
 void Enemy::printEnemy() const
 {
-	cout << "Enemy Name: " << Enemy::getName() << ", Health: " << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << endl;
+	cout << "Enemy Name: " << Enemy::getName() << ", Hp: " << Enemy::getCurrentHealth() << "/" << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << endl;
 }

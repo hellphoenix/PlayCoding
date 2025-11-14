@@ -11,7 +11,7 @@ private:
 	vector<Item> inventoryItems;
 
 public:
-	const vector<Item>& getItems() const { return inventoryItems; }
+	const vector<Item>& getInventory() const { return inventoryItems; }
 	void addToInventory(const Item& _item);
 	void removeFromInventory(const string& _id);
 
@@ -19,6 +19,7 @@ public:
 	vector<Item> filterInventoryBySlot(Item::ItemSlot _slot) const;
 	vector<Item> filterInventoryByType(Item::ItemType _type) const;
 	vector<Item> filterInventoryByRarity(Item::ItemRarity _rarity) const;
+	const Item searchInventoryById(const string& _id) const;
 	void printInventory();
 };
 

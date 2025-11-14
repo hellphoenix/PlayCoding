@@ -13,18 +13,11 @@ public:
     const Player& getPlayer() const;
 
 private:
-    void loadItems();
-    void createPlayer();
-    
-    void giveStartingItems();
+    void loadItems(); // Loads all items from item slot libraries
+    void createPlayer(); // Creates a player with defined stats
+    void giveStartingItems(); // Gives player some items at the start of the game. Will change when inventory testing is complete.
 
-    // data used across phases
-    const std::vector<Item>* helmets = nullptr;
-    const std::vector<Item>* chestPieces = nullptr;
-    const std::vector<Item>* pants = nullptr;
-    const std::vector<Item>* boots = nullptr;
-    const std::vector<Item>* shields = nullptr;
-    const std::vector<Item>* swords = nullptr;
+    const std::vector<Item>* items = nullptr; // pointer for items list. Not currently being used.
 
     Player playerOne{};
 };

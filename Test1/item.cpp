@@ -8,22 +8,25 @@ Item::Item() : id(), itemName(), itemAttack(0), itemDefense(0), itemHealth(0), i
 
 }
 
-Item::Item( string _id, string _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot, ItemType _itemType, ItemRarity _itemRarity) : 
-	id(std::move(_id)), itemName(std::move(_itemName)), itemAttack(_itemAttack), itemDefense(_itemDefense), itemHealth(_itemHealth), itemSlot(_itemSlot), itemType(_itemType), itemRarity(_itemRarity)
+Item::Item( const string& _id, const string& _itemName, int _itemAttack, int _itemDefense, int _itemHealth, ItemSlot _itemSlot, ItemType _itemType, ItemRarity _itemRarity) : 
+	id(_id), itemName(_itemName), itemAttack(_itemAttack), itemDefense(_itemDefense), itemHealth(_itemHealth), itemSlot(_itemSlot), itemType(_itemType), itemRarity(_itemRarity)
 {
 
 }
 
-const map<Item::ItemSlot, string> Item::itemSlotToString = 
-{ 
-	{ItemSlot::EMPTY, "Empty"}, {ItemSlot::HELMET, "Helmet"}, {ItemSlot::CHESTPIECE, "Chestpiece"}, {ItemSlot::PANTS, "Pants"}, {ItemSlot::BOOTS, "Boots"}, {ItemSlot::SHIELD, "Shield"}, {ItemSlot::SWORD, "Sword"} 
+// change me when adding item slots
+const map<Item::ItemSlot, string> Item::itemSlotToString =
+{
+	{ItemSlot::EMPTY, "Empty"}, {ItemSlot::HELMET, "Helmet"}, {ItemSlot::CHESTPIECE, "Chestpiece"}, {ItemSlot::PANTS, "Pants"}, {ItemSlot::BOOTS, "Boots"}, {ItemSlot::SHIELD, "Shield"}, {ItemSlot::WEAPON, "Weapon"}
 };
 
+// change me when adding item types
 const map<Item::ItemType, string> Item::itemTypeToString =
 {
 	{ItemType::UNKNOWN, "Unknown"}, {ItemType::EQUIPMENT, "Equipment"}, {ItemType::CONSUMABLE, "Consumable"}, {ItemType::QUEST_ITEM, "Quest Item"}
 };
 
+// change me when adding item rarities
 const map<Item::ItemRarity, string> Item::itemRarityToString =
 {
 	{ItemRarity::NONEXISTENT, "Non-Existent"}, {ItemRarity::POOR, "Poor"}, {ItemRarity::COMMON, "Common"}, {ItemRarity::UNCOMMON, "Uncommon"}, {ItemRarity::RARE, "Rare"}, {ItemRarity::EPIC, "Epic"}, {ItemRarity::LEGENDARY, "Legendary"}
@@ -67,6 +70,11 @@ Item::ItemType Item::getItemType() const
 Item::ItemRarity Item::getItemRarity() const
 {
 	return itemRarity;
+}
+
+void Item::setId(const string& _id)
+{
+	id = _id;
 }
 
 void Item::setItemName(const string& _itemName)

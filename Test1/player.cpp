@@ -2,170 +2,79 @@
 #include <iostream>
 using std::cout, std::endl;
 
-Player::Player() : Character("Player", 1, 0, 0), currentHealth(1), helmet(), chestPiece(), pants(), boots(), shield(), sword()
+Player::Player() : Character("Player", 1, 0, 0), maxHealth(1)
 {
 	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense) : Character(_name, _baseHealth, _attack, _defense), currentHealth(_currentHealth), helmet(), chestPiece(), pants(), boots(), shield(), sword()
+Player::Player(const string& _name, int _health, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
 
 {
 	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword) : 
-	Character(_name, _baseHealth, _attack, _defense), currentHealth(_currentHealth), helmet(_helmet), chestPiece(_chestPiece), pants(_pants), boots(_boots), shield(_shield), sword(_sword)
+Player::Player(const string& _name, int _health, int _currenHealth, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
 {
+	Player::setCurrentHealth(_currenHealth);
 	updateMaxStats();
 }
 
-//Getters for each item
-const Item& Player::getHelmet() const
+const Item& Player::getEquippedItem(Item::ItemSlot _slot) const
 {
-	return Player::helmet;
-}
-
-const Item& Player::getChestPiece() const
-{
-	return Player::chestPiece;
-}
-
-const Item& Player::getPants() const
-{
-	return Player::pants;
-}
-
-const Item& Player::getBoots() const
-{
-	return Player::boots;
-}
-
-const Item& Player::getShield() const
-{
-	return Player::shield;
-}
-
-const Item& Player::getSword() const
-{
-	return Player::sword;
+	return equipped[itemSlotToIndex(_slot)];
 }
 
 int Player::getMaxAttack() const
 {
 	if (maxAttack > 0)
-		return Player::maxAttack;
+		return maxAttack;
 	else return 0;
 }
 
 int Player::getMaxDefense() const
 {
 	if (maxDefense > 0)
-		return Player::maxDefense;
+		return maxDefense;
 	else return 0;
 }
 
 int Player::getMaxHealth() const
 {
 	if (maxHealth > 0)
-		return Player::maxHealth;
+		return maxHealth;
 	else return 0;
 }
 
-int Player::getCurrentHealth() const
-{
-	if (currentHealth > 0)
-		return Player::currentHealth;
-	else return 0;
-}
+void Player::equipItem(const Item& _item) // Used to equip from save files
+{ 
+	if (_item.getItemSlot() == Item::ItemSlot::EMPTY) return;
 
-void Player::setItem(const Item& _item) //used when you don't know the item slot
-{
-	switch (_item.getItemSlot())
-	{
-		case Item::ItemSlot::HELMET:
-		{
-			inventory.addToInventory(std::move(helmet));
-			Player::helmet = _item;
-			break;
-		}
-		case Item::ItemSlot::CHESTPIECE:
-		{
-			inventory.addToInventory(std::move(chestPiece));
-			Player::chestPiece = _item;
-			break;
-		}
-		case Item::ItemSlot::PANTS:
-		{
-			inventory.addToInventory(std::move(pants));
-			Player::pants = _item;
-			break;
-		}
-		case Item::ItemSlot::BOOTS:
-		{
-			inventory.addToInventory(std::move(boots));
-			Player::boots = _item;
-			break;
-		}
-		case Item::ItemSlot::SHIELD:
-		{
-			inventory.addToInventory(std::move(shield));
-			Player::shield = _item;
-			break;
-		}
-		case Item::ItemSlot::SWORD:
-		{
-			inventory.addToInventory(std::move(sword));
-			Player::sword = _item;
-			break;
-		}
-		default:
-			return;
-	}
+	inventory.addToInventory(getEquippedItem(_item.getItemSlot()));
+	equipped[itemSlotToIndex(_item.getItemSlot())] = _item;
+
 	updateMaxStats();
 }
-void Player::setItem(const Item& _item, Item::ItemSlot _itemSlot) //used when you do know the item slot
+
+void Player::equipItemFromInventory(const string& _id)
 {
-	switch (_itemSlot)
-	{
-	case Item::ItemSlot::HELMET:
-	{
-		inventory.addToInventory(std::move(helmet));
-		Player::helmet = _item;
-		break;
-	}
-	case Item::ItemSlot::CHESTPIECE:
-	{
-		inventory.addToInventory(std::move(chestPiece));
-		Player::chestPiece = _item;
-		break;
-	}
-	case Item::ItemSlot::PANTS:
-	{
-		inventory.addToInventory(std::move(pants));
-		Player::pants = _item;
-		break;
-	}
-	case Item::ItemSlot::BOOTS:
-	{
-		inventory.addToInventory(std::move(boots));
-		Player::boots = _item;
-		break;
-	}
-	case Item::ItemSlot::SHIELD:
-	{
-		inventory.addToInventory(std::move(shield));
-		Player::shield = _item;
-		break;
-	}
-	case Item::ItemSlot::SWORD:
-	{
-		inventory.addToInventory(std::move(sword));
-		Player::sword = _item;
-		break;
-	}
-	default:
-		return;
-	}
+	if (inventory.searchInventoryById(_id).getId() != _id) return; // If the search does not return the item, then we don't equip an item
+
+	inventory.addToInventory(getEquippedItem(inventory.searchInventoryById(_id).getItemSlot()));
+	equipped[itemSlotToIndex(inventory.searchInventoryById(_id).getItemSlot())] = inventory.searchInventoryById(_id);
+
+	inventory.removeFromInventory(_id);
+	updateMaxStats();
+}
+
+void Player::unequipItem(Item::ItemSlot _itemSlot) //used when you do know the item slot
+{
+	auto& current = equipped[itemSlotToIndex(_itemSlot)];
+
+	if (current.getItemSlot() == Item::ItemSlot::EMPTY) return;
+
+	inventory.addToInventory(current);
+	current = Item{};
+
 	updateMaxStats();
 }
 
@@ -176,12 +85,9 @@ void Player::printPlayer() const
 	cout << "Player equipment: "<< endl;
 	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
 	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
-	getHelmet().printItem();
-	getChestPiece().printItem();
-	getPants().printItem();
-	getBoots().printItem();
-	getShield().printItem();
-	getSword().printItem();
+	for (const auto& item : equipped)
+		item.printItem();
+
 	cout << endl;
 }
 
@@ -192,76 +98,44 @@ void Player::quickPrintPlayer() const
 
 void Player::setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense)
 {
-	Character::setBaseHealth(_baseHealth);
-	Character::setBaseAttack(_attack);
-	Character::setBaseDefense(_defense);
+	Player::setBaseHealth(_baseHealth);
+	Player::setCurrentHealth(_currentHealth);
+	Player::setBaseAttack(_attack);
+	Player::setBaseDefense(_defense);
+	
 	updateMaxStats();
-	Player::currentHealth = _currentHealth;
 }
 
 void Player::changeCurrentHealth(int _healthChanged)
 {
-	if (Player::currentHealth + _healthChanged <= 0) //Sending negative values can lower health to zero or less (also called dying)
-		Player::currentHealth = 0;
-	else if (Player::currentHealth + _healthChanged > Player::maxHealth) //Sending positive values can cause the current health to go above max health (also called overhealing)
-		Player::currentHealth = Player::maxHealth;
-	else Player::currentHealth += _healthChanged; //Normal gain or loss of current health
+	if (Player::getCurrentHealth() + _healthChanged <= 0) Player::setCurrentHealth(0); // Current health should nopt go below 0
+		
+	else if (Player::getCurrentHealth() + _healthChanged > Player::maxHealth) Player::setCurrentHealth(Player::maxHealth); // Current health should not go above max health
+		
+	else Player::setCurrentHealth(Player::getCurrentHealth() + _healthChanged); // Normal change of current health
 }
 
 void Player::updateMaxStats()
 {
+	bool fullHealth = false;
+	if (Player::getCurrentHealth() >= Player::maxHealth) fullHealth = true; // If the player currently has full health, we want them to keep their health full after updating max stats
+	
+	// We start by resetting max values to the base values before recalculating
 	Player::maxAttack = Player::getBaseAttack();
 	Player::maxDefense = Player::getBaseDefense();
 	Player::maxHealth = Player::getBaseHealth();
 
-	const Item* equipment[] = { &helmet, &chestPiece, &pants, &boots, &shield, &sword };
+	// For each item, we add their stats to the player max stats
+	for (const auto& item : equipped)
+	{
+		if (item.getItemSlot() == Item::ItemSlot::EMPTY)
+			continue;
 
-	for (auto& item : equipment)
-	{
-		Player::maxAttack += item->getItemAttack();
-		Player::maxDefense += item->getItemDefense();
-		Player::maxHealth += item->getItemHealth();
+		maxAttack += item.getItemAttack();
+		maxDefense += item.getItemDefense();
+		maxHealth += item.getItemHealth();
 	}
-	if (Player::maxHealth < Player::currentHealth) Player::currentHealth = Player::maxHealth;
-}
 
-void Player::equipFromInventory(const Item& _item)
-{
-	if (_item.getItemSlot() == Item::ItemSlot::HELMET)
-	{
-		inventory.addToInventory(std::move(helmet));
-		helmet = _item;
-	}
-	else if (_item.getItemSlot() == Item::ItemSlot::CHESTPIECE)
-	{
-		inventory.addToInventory(std::move(chestPiece));
-		chestPiece = _item;
-	}
-	else if (_item.getItemSlot() == Item::ItemSlot::PANTS)
-	{
-		inventory.addToInventory(std::move(pants));
-		pants = _item;
-	}
-	else if (_item.getItemSlot() == Item::ItemSlot::BOOTS)
-	{
-		inventory.addToInventory(std::move(boots));
-		boots = _item;
-	}
-	else if (_item.getItemSlot() == Item::ItemSlot::SHIELD)
-	{
-		inventory.addToInventory(std::move(shield));
-		shield = _item;
-	}
-	else if (_item.getItemSlot() == Item::ItemSlot::SWORD)
-	{
-		inventory.addToInventory(std::move(sword));
-		sword = _item;
-	}
-	else
-	{
-		cout << "No item of that type is in your inventory." << endl;
-		return;
-	}
-	inventory.removeFromInventory(_item.getId());
-	updateMaxStats();
+	// If the player's health was full before this recalculation, set their current health to their new max health. This can be exploited by the player to heal themselves by unequipping and re-equipping items. Bug or feature?
+	if (Player::getCurrentHealth() > maxHealth || fullHealth) Player::setCurrentHealth(maxHealth);
 }

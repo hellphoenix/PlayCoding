@@ -2,6 +2,7 @@
 #include "character.h"
 #include "item.h"
 #include "inventory.h"
+#include <array>
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -10,48 +11,41 @@ class Player : public Character
 {
 private:
 	Inventory inventory;
-	Item helmet;
-	Item chestPiece;
-	Item pants;
-	Item boots;
-	Item shield;
-	Item sword;
+
+	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)> equipped{};
+
+	// Stats derived from base stats plus equipment stats
 	int maxAttack;
 	int maxDefense;
 	int maxHealth;
-	int currentHealth;
-
-
+	
 public:
-	Player();
-	Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense);
-	Player(const string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, const Item& _helmet, const Item& _chestPiece, const Item& _pants, const Item& _boots, const Item& _shield, const Item& _sword);
+	Player(); // default constructor
+	Player(const string& _name, int _health, int _attack, int _defense); // fresh player with no equipment
+	Player(const string& _name, int _health, int _currenHealth, int _attack, int _defense); // loading saved players
 
-	Inventory& getInventory() { return Player::inventory; }
-	const Item& getHelmet() const;
-	const Item& getChestPiece() const;
-	const Item& getPants() const;
-	const Item& getBoots() const;
-	const Item& getShield() const;
-	const Item& getSword() const;
+	Inventory& getPlayerInventory() { return Player::inventory; }
+	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; }
+	const Item& getEquippedItem(Item::ItemSlot _slot) const;
 
 	int getMaxAttack() const;
 	int getMaxDefense() const;
 	int getMaxHealth() const;
-	int getCurrentHealth() const;
 
-	void setItem(const Item& _item);
-	void setItem(const Item& _item, Item::ItemSlot _itemSlot);
+	void equipItem(const Item& _item); // Equips items using Items object.
+	void equipItemFromInventory(const string& _id); // Equips items from inventory using equipment id
+	void unequipItem(Item::ItemSlot _itemSlot); // Unequips item using item slot
 
-	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense);
-	void changeCurrentHealth(int _health);
+	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense); // for debugging
+	void changeCurrentHealth(int _health); // Adds input health to change current health between 0 and max health
 
-	void equipFromInventory(const Item& _item);
+	
 
-	void printPlayer() const;
-	void quickPrintPlayer() const;
+	void printPlayer() const; // Player stats and equipment
+	void quickPrintPlayer() const; // Player stats only 
+	void updateMaxStats(); // Recalculate max stats when equipping items, unequipping items, or creating a new player
 
-	void updateMaxStats();
+	
 };
 
 #endif // !PLAYER_H

@@ -21,22 +21,26 @@ json SaveLoad::toJson(const Player& p)
         {"defense", tp.getBaseDefense()}
     };
 
-    j["equipped"] = {
-        {"helmet",     idOrEmpty(tp.getHelmet())},
-        {"chest",      idOrEmpty(tp.getChestPiece())},
-        {"pants",      idOrEmpty(tp.getPants())},
-        {"boots",      idOrEmpty(tp.getBoots())},
-        {"shield",     idOrEmpty(tp.getShield())},
-        {"sword",      idOrEmpty(tp.getSword())}
-    };
+    // equipped as list of ids
+    json equ = json::array();
+    for (const auto& it : tp.getPlayerEquipment())
+    {
+        if (it.getId() == "") continue;
+        equ.push_back(it.getId());
+    }
+        
+    j["equipped"] = equ;
 
     // inventory as list of ids
     json inv = json::array();
-    for (const auto& it : tp.getInventory().getItems())
+    for (const auto& it : tp.getPlayerInventory().getInventory())
+    {
+        if (it.getId() == "") continue;
         inv.push_back(it.getId());
+    }
+        
     j["inventory"] = inv;
 
-    
     return j;
 }
 
@@ -69,25 +73,25 @@ bool SaveLoad::fromJson(const json& j, Player& out)
         out = Player{ name, bh, ch, ba, bd };
 
         // equip
-        const auto& eq = j.at("equipped");
-        out.setItem(resolveOrEmpty(eq.value("helmet", "")));
-        out.setItem(resolveOrEmpty(eq.value("chest", "")));
-        out.setItem(resolveOrEmpty(eq.value("pants", "")));
-        out.setItem(resolveOrEmpty(eq.value("boots", "")));
-        out.setItem(resolveOrEmpty(eq.value("shield", "")));
-        out.setItem(resolveOrEmpty(eq.value("sword", "")));
+        if (j.contains("equipped") && j["equipped"].is_array())
+        {
+            for (const auto& id : j["equipped"])
+            {
+                Item it = resolveOrEmpty(id.get<std::string>());
+                out.equipItem(it);
+            }
+        }
 
         // inventory
         if (j.contains("inventory") && j["inventory"].is_array()) {
             for (const auto& id : j["inventory"]) {
                 Item it = resolveOrEmpty(id.get<std::string>());
                 if (it.getItemSlot() != Item::ItemSlot::EMPTY)
-                    out.getInventory().addToInventory(it);
+                    out.getPlayerInventory().addToInventory(it);
             }
         }
 
         // totals refresh
-        out.setBaseStats(bh,ch,ba,bd);
         out.updateMaxStats();
         return true;
     }

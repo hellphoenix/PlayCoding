@@ -1,4 +1,2 @@
-﻿  game.cpp
-  save_load.cpp
-  Generating Code...
+﻿  gameInitialize.cpp
   Test1.vcxproj -> D:\Game Dev Training\PlayCoding\x64\Debug\Test1.exe

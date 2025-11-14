@@ -222,7 +222,7 @@
 
     {
       "id": "sword_bronze",
-      "slot": "SWORD",
+      "slot": "WEAPON",
       "type": "EQUIPMENT",
       "rarity": "POOR",
       "name": "Bronze Sword",
@@ -233,7 +233,7 @@
 
     {
       "id": "sword_iron",
-      "slot": "SWORD",
+      "slot": "WEAPON",
       "type": "EQUIPMENT",
       "rarity": "COMMON",
       "name": "Iron Sword",
@@ -243,8 +243,8 @@
     },
 
     {
-      "id": "sword_steel",
-      "slot": "SWORD",
+      "id": "sword_steel_01",
+      "slot": "WEAPON",
       "type": "EQUIPMENT",
       "rarity": "RARE",
       "name": "Steel Sword",

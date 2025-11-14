@@ -17,22 +17,13 @@ void GameInitialize::run()
 
 void GameInitialize::loadItems()
 {
-	helmets = &ItemLibrary::helmets();
-	chestPieces = &ItemLibrary::chestPieces();
-	pants = &ItemLibrary::pants();
-	boots = &ItemLibrary::boots();
-	shields = &ItemLibrary::shields();
-	swords = &ItemLibrary::swords();
+	items = &ItemLibrary::items(); // not being used currently, but does point to item library map
 }
 
 void GameInitialize::createPlayer()
 {
-	playerOne = Player{ "Tony", 200, 200, 10, 10 , (*helmets)[0], (*chestPieces)[0], (*pants)[0], (*boots)[0], (*shields)[0], (*swords)[0] };
-	playerOne.updateMaxStats();
-	playerOne.changeCurrentHealth(playerOne.getMaxHealth());
+	playerOne = Player{ "Tony", 200, 10, 10};
 }
-
-
 
 const Player& GameInitialize::getPlayer() const
 {
@@ -41,15 +32,8 @@ const Player& GameInitialize::getPlayer() const
 
 void GameInitialize::giveStartingItems()
 {
-	
-	playerOne.getInventory().addToInventory((*helmets)[1]);
-	playerOne.getInventory().addToInventory((*helmets)[2]);
-	playerOne.getInventory().addToInventory((*helmets)[3]);
-	playerOne.getInventory().addToInventory((*helmets)[4]);
-	playerOne.getInventory().addToInventory((*chestPieces)[2]);
-	playerOne.getInventory().addToInventory((*pants)[2]);
-	playerOne.getInventory().addToInventory((*shields)[1]);
-	playerOne.getInventory().addToInventory((*swords)[2]);
-
-
+	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
+	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
+	playerOne.equipItem(ItemLibrary::byId("sword_steel_01"));
+	playerOne.equipItem((*items)[3]);
 }

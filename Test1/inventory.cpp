@@ -8,8 +8,8 @@ using std::cout, std::endl;
 
 void Inventory::addToInventory(const Item& _item)
 {
-	
-	inventoryItems.push_back(_item);
+	if (_item.getId() != "")
+		inventoryItems.push_back(_item);
 }
 
 void Inventory::removeFromInventory(const string& _id)
@@ -84,6 +84,15 @@ vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
 	filteredList.shrink_to_fit();
 
 	return filteredList;
+}
+
+const Item Inventory::searchInventoryById(const string& _id) const
+{
+	for (const auto& item : inventoryItems)
+	{
+		if (item.getId() == _id) return item; // if we find the item ID in our inventory, we return that item
+	}
+	return Item{}; // If the item id is found in our inventory, we return an empty item
 }
 
 void Inventory::printInventory()

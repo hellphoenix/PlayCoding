@@ -2,11 +2,11 @@
 #include <iostream>
 using std::cout, std::endl;
 
-Character::Character() :name(), baseHealth(1), baseAttack(0), baseDefense(0), alive(true)
+Character::Character() :name(), baseHealth(1), currentHealth(1), baseAttack(0), baseDefense(0), alive(true)
 {
 
 }
-Character::Character(const string& _name, int _health, int _attack, int _defense): name(_name), baseHealth(_health), baseAttack(_attack), baseDefense(_defense), alive(true)
+Character::Character(const string& _name, int _baseHealth, int _attack, int _defense) : name(_name), baseHealth(_baseHealth), currentHealth(_baseHealth), baseAttack(_attack), baseDefense(_defense), alive(true)
 {
 
 }
@@ -19,6 +19,11 @@ string Character::getName() const
 int Character::getBaseHealth() const
 {
 	return baseHealth;
+}
+
+int Character::getCurrentHealth() const
+{
+	return currentHealth;
 }
 
 int Character::getBaseAttack() const
@@ -41,10 +46,16 @@ void Character::setName(const string& _name)
 	name = _name;
 }
 
-void Character::setBaseHealth(int _health)
+void Character::setBaseHealth(int _newBaseHealth)
 {
 	
-	baseHealth = _health;
+	baseHealth = _newBaseHealth;
+}
+
+void Character::setCurrentHealth(int _newCurrentHealth)
+{
+
+	currentHealth = _newCurrentHealth;
 }
 
 void Character::setBaseAttack(int _attack)
@@ -64,5 +75,5 @@ void Character::setAlive(bool _alive)
 
 void Character::printCharacter() const
 {
-	cout << "Character Name: " << getName() << ", Health: " << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << endl;
+	cout << "Character Name: " << getName() << ", HP: " << getCurrentHealth() << "/" << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << endl;
 }
