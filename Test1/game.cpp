@@ -27,7 +27,7 @@ void Game::printHelp() const
     cout << "  [i]nventory   - show inventory\n";
     cout << "  [e]quip       - equip an item from inventory\n";
     cout << "  [u]nequip     - unequip an item back to inventory\n";
-    cout << "  [d]ebug       - change base player variables\n";
+    cout << "  [d]ebug       - change base player variables, or add items from the master item table to your inventory\n";
     cout << "  s[a]ve        - save player stats and items\n";
     cout << "  [l]oad        - load player stats and items\n";
     cout << "  [q]uit        - exit game\n";
@@ -46,7 +46,7 @@ void Game::handleEquipCommand()
     while (!slotFound)
     {
         cout << "Enter a slot number to equip item: ";
-        for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
         cout << "or cancel[0]: ";
 
         std::getline(std::cin, slot);
@@ -57,7 +57,7 @@ void Game::handleEquipCommand()
             if (slotInput > 0 && slotInput < itemSlotToIndex(Item::ItemSlot::COUNT))
             {
                 filteredList.clear();
-                filteredList = player.getPlayerInventory().filterInventoryBySlot(itemSlotFromIndex(slotInput));
+                filteredList = player.getPlayerInventory().filterInventoryBySlot(itemSlotFromIndex(slotInput + 1));
 
                 if (!filteredList.empty())
                 {
@@ -123,7 +123,7 @@ void Game::handleUnequipCommand()
     while (!slotFound)
     {
         cout << "Enter a slot number to unequip item: ";
-        for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
         cout << "or cancel[0]: ";
         std::getline(std::cin, slot);
         slot = toLowerCopy(slot);
@@ -134,7 +134,7 @@ void Game::handleUnequipCommand()
             
             if (slotInput > 0 && slotInput < itemSlotToIndex(Item::ItemSlot::COUNT))
             {
-                player.unequipItem(itemSlotFromIndex(slotInput));
+                player.unequipItem(itemSlotFromIndex(slotInput + 1));
                 cout << "Updated player:\n";
                 player.printPlayer();
                 slotFound = true;
@@ -157,7 +157,8 @@ void Game::handleDebugCommand()
 {
     std::string command;
     int commandInput = 0;
-    cout << "Select a variable to change: name[1]: " << player.getName() << ", base attack[2]: "<< player.getBaseAttack() << ", base defense[3]: "<< player.getBaseDefense() << ", base health[4]: " << player.getBaseHealth() << ", or cancel[0]: ";
+    cout << "Select a variable to change name[1] " << player.getName() << ", base attack[2] " << player.getBaseAttack() << ", base defense[3] " << player.getBaseDefense() << ",or base health[4] " << player.getBaseHealth() << "." << endl;
+     cout <<"You can also add to[5], or remove from[6], your inventory, or cancel[0]: ";
     std::getline(std::cin, command);
     command = toLowerCopy(command);
 
@@ -253,6 +254,127 @@ void Game::handleDebugCommand()
                 }
             }
         }
+        else if (commandInput == 5)
+        {
+            std::string slot;
+            int slotInput;
+            std::string itemName;
+            int itemNameInput;
+            bool slotFound = false;
+            vector<Item> filteredList;
+
+            while (!slotFound)
+            {
+                cout << "Enter a slot number to search for items: ";
+                for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
+                cout << "or cancel[0]: ";
+
+                std::getline(std::cin, slot);
+                slot = toLowerCopy(slot);
+                try
+                {
+                    slotInput = std::stoi(slot);
+                    if (slotInput > 0 && slotInput < itemSlotToIndex(Item::ItemSlot::COUNT))
+                    {
+                        filteredList.clear();
+                        filteredList = gameItems[slotInput];
+
+                        if (!filteredList.empty())
+                        {
+                            cout << "Choose an item from the list to add to inventory: " << endl;
+                            int count = 0;
+                            for (Item item : filteredList)
+                            {
+                                count++;
+                                cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << endl;
+                            }
+                        }
+                        else
+                        {
+                            cout << "No " << Item::itemSlotToString.at(itemSlotFromIndex(slotInput)) << " items found in inventory." << endl;
+                            return;
+                        }
+
+                        std::getline(std::cin, itemName);
+                        itemName = toLowerCopy(itemName);
+
+                        try
+                        {
+                            itemNameInput = std::stoi(itemName);
+
+                            if (itemNameInput < 1 || itemNameInput > filteredList.size())
+                            {
+                                std::cout << "Invalid number. Please try again.\n";
+                            }
+                            else
+                            {
+                                player.getPlayerInventory().addToInventory(filteredList[itemNameInput - 1]);
+                                cout << "Updated inventory:\n";
+                                player.getPlayerInventory().printInventory();
+                                slotFound = true;
+                            }
+                        }
+                        catch (...)
+                        {
+                            std::cout << "Invalid number. Please try again.\n";
+                        }
+                    }
+                    else if (slotInput == 0)
+                    {
+                        slotFound = true;
+                    }
+                    else
+                        cout << "Unknown slot. Please try again.\n";
+                }
+                catch (...)
+                {
+                    cout << "Unknown slot. Please try again.\n";
+                }
+            }
+            filteredList.clear();
+        }
+        else if (commandInput == 6)
+        {
+            std::string itemName;
+            int itemNameInput;
+            vector<Item> playerInventory = player.getPlayerInventory().getInventory();
+            bool itemFound = false;
+            
+            while (!itemFound)
+            {
+                
+                cout << "Choose an item to remove from your inventory: ";
+                for (int i = 0; i < playerInventory.size(); i++) cout << playerInventory[i].getItemName() << "[" << i + 1 << "], ";
+                cout << "or cancel[0]: ";
+                
+                std::getline(std::cin, itemName);
+                itemName = toLowerCopy(itemName);
+
+                try
+                {
+                    itemNameInput = std::stoi(itemName);
+
+                    if (itemNameInput > 0 && itemNameInput <= playerInventory.size())
+                    {
+                                                
+                        player.getPlayerInventory().removeFromInventory(playerInventory[itemNameInput - 1].getId());
+                        cout << "Updated inventory:\n";
+                        player.getPlayerInventory().printInventory();
+                        itemFound = true;
+                    }
+                    else if (itemNameInput == 0)
+                    {
+
+                    }
+                    else
+                        cout << "Unknown item. Please try again.\n";
+                }
+                catch (...)
+                {
+                    cout << "Unknown item. Please try again.\n";
+                }
+            }
+        }
         else if (commandInput == 0) return;
         else
         {
@@ -265,10 +387,11 @@ void Game::handleDebugCommand()
     }
 }
 
-void Game::loop(Player _player)
+void Game::loop(Player _player,const std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems)
 {
     
     Game::player = _player;
+    Game::gameItems = _gameItems;
     Game::enemy = gameActions.spawnEnemy(Enemy::EnemyType::SLIME);
     cout << "---- Game loop started ----" << endl;
     cout << "Type 'h' to see available commands.\n";

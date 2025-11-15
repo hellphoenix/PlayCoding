@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "id": "potion_health_01",
+      "slot": "CONSUMABLE",
+      "type": "CONSUMABLE",
+      "rarity": "POOR",
+      "name": "Health Potion",
+      "attack": 0,
+      "defense": 0,
+      "health": 5
+    },
+
+    {
       "id": "helmet_leather_01",
       "slot": "HELMET",
       "type": "EQUIPMENT",

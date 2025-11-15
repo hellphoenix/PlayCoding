@@ -13,9 +13,9 @@ Player::Player(const string& _name, int _health, int _attack, int _defense) : Ch
 	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _health, int _currenHealth, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
+Player::Player(const string& _name, int _health, int _currentHealth, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
 {
-	Player::setCurrentHealth(_currenHealth);
+	Player::setCurrentHealth(_currentHealth);
 	updateMaxStats();
 }
 
@@ -47,9 +47,13 @@ int Player::getMaxHealth() const
 
 void Player::equipItem(const Item& _item) // Used to equip from save files
 { 
-	if (_item.getItemSlot() == Item::ItemSlot::EMPTY) return;
+	Item::ItemSlot is = _item.getItemSlot();
+	if (is == Item::ItemSlot::EMPTY || is == Item::ItemSlot::CONSUMABLE) return;
 
-	inventory.addToInventory(getEquippedItem(_item.getItemSlot()));
+	const Item& old = getEquippedItem(_item.getItemSlot());
+	if (old.getItemSlot() != Item::ItemSlot::EMPTY && old.getId() != "")
+		inventory.addToInventory(old);
+
 	equipped[itemSlotToIndex(_item.getItemSlot())] = _item;
 
 	updateMaxStats();
@@ -57,12 +61,20 @@ void Player::equipItem(const Item& _item) // Used to equip from save files
 
 void Player::equipItemFromInventory(const string& _id)
 {
-	if (inventory.searchInventoryById(_id).getId() != _id) return; // If the search does not return the item, then we don't equip an item
+	Item found = inventory.searchInventoryById(_id);
+	if (found.getId() != _id)
+		return; // If the search does not return the item, then we don't equip an item
 
-	inventory.addToInventory(getEquippedItem(inventory.searchInventoryById(_id).getItemSlot()));
-	equipped[itemSlotToIndex(inventory.searchInventoryById(_id).getItemSlot())] = inventory.searchInventoryById(_id);
+	Item::ItemSlot slot = found.getItemSlot();
+	if (slot == Item::ItemSlot::CONSUMABLE || slot == Item::ItemSlot::EMPTY) return;
 
+	const Item& old = getEquippedItem(slot);
+	if (old.getItemSlot() != Item::ItemSlot::EMPTY && old.getId() != "")
+		inventory.addToInventory(old);
+
+	equipped[itemSlotToIndex(slot)] = found;
 	inventory.removeFromInventory(_id);
+		
 	updateMaxStats();
 }
 
@@ -70,7 +82,7 @@ void Player::unequipItem(Item::ItemSlot _itemSlot) //used when you do know the i
 {
 	auto& current = equipped[itemSlotToIndex(_itemSlot)];
 
-	if (current.getItemSlot() == Item::ItemSlot::EMPTY) return;
+	if (current.getItemSlot() == Item::ItemSlot::EMPTY || current.getId() == "") return;
 
 	inventory.addToInventory(current);
 	current = Item{};
@@ -83,8 +95,8 @@ void Player::printPlayer() const
 {
 	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense()  << endl;
 	cout << "Player equipment: "<< endl;
-	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
-	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
+	cout << "|                     Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
+	cout << "-------------------------------------------------------------------------------------------------------------------" << endl;
 	for (const auto& item : equipped)
 		item.printItem();
 

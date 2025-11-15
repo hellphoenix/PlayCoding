@@ -5,7 +5,8 @@ using nlohmann::json;
 namespace {
     // helper to get id or empty for EMPTY item
     std::string idOrEmpty(const Item& it) {
-        return it.getItemSlot() == Item::ItemSlot::EMPTY ? "" : it.getId();
+        return it.getItemSlot() == (Item::ItemSlot::EMPTY) ? "" : it.getId();
+
     }
 }
 

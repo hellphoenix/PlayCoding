@@ -13,6 +13,7 @@ public:
 	enum class ItemSlot // change me when adding item slots
 	{
 		EMPTY = 0,
+		CONSUMABLE,
 		HELMET,
 		CHESTPIECE,
 		PANTS,

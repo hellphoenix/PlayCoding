@@ -22,7 +22,7 @@ private:
 public:
 	Player(); // default constructor
 	Player(const string& _name, int _health, int _attack, int _defense); // fresh player with no equipment
-	Player(const string& _name, int _health, int _currenHealth, int _attack, int _defense); // loading saved players
+	Player(const string& _name, int _health, int _currentHealth, int _attack, int _defense); // loading saved players
 
 	Inventory& getPlayerInventory() { return Player::inventory; }
 	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; }

@@ -17,7 +17,7 @@ Item::Item( const string& _id, const string& _itemName, int _itemAttack, int _it
 // change me when adding item slots
 const map<Item::ItemSlot, string> Item::itemSlotToString =
 {
-	{ItemSlot::EMPTY, "Empty"}, {ItemSlot::HELMET, "Helmet"}, {ItemSlot::CHESTPIECE, "Chestpiece"}, {ItemSlot::PANTS, "Pants"}, {ItemSlot::BOOTS, "Boots"}, {ItemSlot::SHIELD, "Shield"}, {ItemSlot::WEAPON, "Weapon"}
+	{ItemSlot::EMPTY, "Empty"}, {ItemSlot::CONSUMABLE, "Consumable"} , {ItemSlot::HELMET, "Helmet"}, {ItemSlot::CHESTPIECE, "Chestpiece"}, {ItemSlot::PANTS, "Pants"}, {ItemSlot::BOOTS, "Boots"}, {ItemSlot::SHIELD, "Shield"}, {ItemSlot::WEAPON, "Weapon"}
 };
 
 // change me when adding item types
@@ -117,6 +117,6 @@ void Item::printItem() const
 	if (itemSlot == ItemSlot::EMPTY)
 		return;
 
-	cout << "| "  << std::setw(20) << id << " | " << std::setw(9) << itemTypeToString.at(itemType) << " | " << std::setw(9) << itemRarityToString.at(itemRarity) << " | " << std::setw(10) << itemSlotToString.at(itemSlot) 
+	cout << "| "  << std::setw(22) << id << " | " << std::setw(9) << itemTypeToString.at(itemType) << " | " << std::setw(9) << itemRarityToString.at(itemRarity) << " | " << std::setw(10) << itemSlotToString.at(itemSlot) 
 		<< " | " << std::setw(21) << itemName << " | " << std::setw(6) << itemAttack << " | " << std::setw(7) << itemDefense << " | " << std::setw(6) << itemHealth << " |" << endl;
 }
