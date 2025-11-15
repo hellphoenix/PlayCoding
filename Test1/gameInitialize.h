@@ -10,6 +10,9 @@
 class GameInitialize
 {
 public:
+
+    //Will probably alter significantly
+
     void run();
     const Player& getPlayer() const;
     std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems{};

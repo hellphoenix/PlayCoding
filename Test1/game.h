@@ -2,49 +2,82 @@
 #include "player.h"
 #include "enemy.h"
 #include "gameActions.h"
+#include "gameInitialize.h"
 #ifndef GAME_H
 #define GAME_H
 
-enum class Mode
-{
-	Normal,
-	EquipSelectSlot,
-	EquipSelectItem
-};
+
 
 
 
 class Game
 {
 private:
+
+	enum class Mode
+	{
+		Normal,
+		EquipSelectSlot,
+		EquipSelectItem,
+		UnequipSelectSlot,
+		DebugName,
+		DebugAttack,
+		DebugDefense,
+		DebugHealth,
+		DebugAddToInventorySlot,
+		DebugAddToInventoryItem,
+		DebugRemoveFromInventorySlot,
+		DebugRemoveFromInventoryItem,
+		Save,
+		Load,
+		SpawnEnemy,
+		FightEnemy,
+		Quit
+	};
+
+
+	Mode mode = Mode::Normal;
+	//int selectedSlotIndex = -1;
+	std::vector<Item> equipCandidates;
+
+
 	Player player;
 	Enemy enemy;
 	GameActions gameActions;
 	std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems;
-	void changeName();
-	void changeBaseAttack();
-	void changeBaseDefense();
-	void changeBaseHealth();
-	void addToInventory();
-	void removeFromInventory();
+
+	//Functions below this will change
+
+	//void changeName();
+	//void changeBaseAttack();
+	//void changeBaseDefense();
+	//void changeBaseHealth();
+	//void addToInventory();
+	//void removeFromInventory();
 
 	void startEquip();
-	void handleEquipSlotInput(const std::string& slot);
-	void handleEquipItemInput(const std::string& choice);
-	void handleEquipCommand();
-	void handleUnequipCommand();
-	void handleDebugCommand();
-	void handleSaveCommand();
-	void handleLoadCommand();
-	void handleFightCommand();
+	void handleEquipSlotInput(int _slotNumber);
+	void handleEquipItemInput(int _itemNumber);
+	void startUnequip();
+	void handleUnequipSlotInput(int _slotNumber);
+	void startDebug();
+	void startSave();
+	void startLoad();
+	void Quit();
+	void startFight();
+	//void handleDebugCommand();
+	//void handleSaveCommand();
+	//void handleLoadCommand();
+	//void handleFightCommand();
 	void printHelp() const;
-	Mode mode = Mode::Normal;
-	int pendingEquipSlotIndex = -1;
-	std::vector<Item> pendingFilteredItems;
+
 
 public:
 
 	void loop(Player _player, const std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
+	void handleEvent(const sf::Event& _event);
+	//void update(float dt);
+	//void draw(sf::RenderWindow& window);
 
 };
 #endif // !GAME_H
