@@ -2,6 +2,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "item_library.h"
+#include <SFML/Graphics.hpp>
 
 #ifndef GAME_INITIALIZE_H
 #define GAME_INITIALIZE_H
