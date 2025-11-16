@@ -27,7 +27,6 @@ private:
 		DebugHealth,
 		DebugAddToInventorySlot,
 		DebugAddToInventoryItem,
-		DebugRemoveFromInventorySlot,
 		DebugRemoveFromInventoryItem,
 		Save,
 		Load,
@@ -46,7 +45,10 @@ private:
 	bool pendingDebugAttack = false;
 	bool pendingDebugDefense = false;
 	bool pendingDebugHealth = false;
-	bool pendingDebugEquipmentSelection = false;
+	bool pendingDebugAddToInventoryItemInput = false;
+	bool pendingDebugRemoveFromInventory = false;
+	bool pendingSave = false;
+	bool pendingLoad = false;
 
 
 	
@@ -79,11 +81,17 @@ private:
 	void debugHealth(const sf::Event::TextEntered& _text);
 
 	void startDebugAddToInventory();
-	void debugEquipmentSlotInput(int _slotNumber);
-	void debugEquipmentItemInput(const sf::Event::TextEntered& _text); // change to text input
+	void debugAddToInventorySlotInput(int _slotNumber);
+	void debugAddToInventoryItemInput(const sf::Event::TextEntered& _text); // change to text input
+
+	void startDebugRemoveFromInventory();
+	void debugRemoveFromInventory(const sf::Event::TextEntered& _text);
 
 	void startSave();
+	void save(const sf::Event::TextEntered& _text);
+
 	void startLoad();
+	void load(const sf::Event::TextEntered& _text);
 
 	void Quit();
 
@@ -105,7 +113,7 @@ public:
 	void loop(std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
 	void handleEvent(const sf::Event& _event);
 	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed);
-	//void handleTextEntered();
+	void handleTextEntered(const sf::Event::TextEntered& _textEntered);
 	void update(float dt);
 	//void draw(sf::RenderWindow& window);
 

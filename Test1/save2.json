@@ -1,0 +1,17 @@
+{
+  "base": {
+    "attack": 10,
+    "base_health": 200,
+    "current_health": 200,
+    "defense": 10
+  },
+  "equipped": [
+    "helmet_leather_01",
+    "sword_steel_01"
+  ],
+  "inventory": [
+    "helmet_leather_05",
+    "helmet_leather_06"
+  ],
+  "name": "Tony"
+}
