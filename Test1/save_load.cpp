@@ -2,29 +2,28 @@
 #include <fstream>
 using nlohmann::json;
 
-namespace {
-    // helper to get id or empty for EMPTY item
-    std::string idOrEmpty(const Item& it) {
-        return it.getItemSlot() == (Item::ItemSlot::EMPTY) ? "" : it.getId();
+//namespace {
+//    // helper to get id or empty for EMPTY item
+//    std::string idOrEmpty(const Item& it) {
+//        return it.getItemSlot() == (Item::ItemSlot::EMPTY) ? "" : it.getId();
+//
+//    }
+//}
 
-    }
-}
-
-json SaveLoad::toJson(const Player& p)
+json SaveLoad::toJson(Player& p)
 {
-    Player tp = p;
     json j;
-    j["name"] = tp.getName();
+    j["name"] = p.getName();
     j["base"] = {
-        {"base_health", tp.getBaseHealth()},
-        {"current_health", tp.getCurrentHealth()},
-        {"attack", tp.getBaseAttack()},
-        {"defense", tp.getBaseDefense()}
+        {"base_health", p.getBaseHealth()},
+        {"current_health", p.getCurrentHealth()},
+        {"attack", p.getBaseAttack()},
+        {"defense", p.getBaseDefense()}
     };
 
     // equipped as list of ids
     json equ = json::array();
-    for (const auto& it : tp.getPlayerEquipment())
+    for (const auto& it : p.getPlayerEquipment())
     {
         if (it.getId() == "") continue;
         equ.push_back(it.getId());
@@ -34,7 +33,7 @@ json SaveLoad::toJson(const Player& p)
 
     // inventory as list of ids
     json inv = json::array();
-    for (const auto& it : tp.getPlayerInventory().getInventory())
+    for (const auto& it : p.getPlayerInventory().getInventory())
     {
         if (it.getId() == "") continue;
         inv.push_back(it.getId());
@@ -45,7 +44,7 @@ json SaveLoad::toJson(const Player& p)
     return j;
 }
 
-bool SaveLoad::saveToFile(const Player& p, const std::string& path)
+bool SaveLoad::saveToFile(Player& p, const std::string& path)
 {
     std::ofstream f(path);
     if (!f) return false;

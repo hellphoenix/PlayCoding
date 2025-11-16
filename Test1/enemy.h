@@ -1,6 +1,7 @@
 #pragma once
 #include "character.h"
 #include "inventory.h"
+#include <map>
 #include <vector>
 
 #ifndef ENEMY_H
@@ -18,10 +19,10 @@ public:
 		TROLL = 4
 	};
 
-	static const map<EnemyType, string> enemyTypeToString;
+	static const std::map<EnemyType, std::string> enemyTypeToString;
 
 	Enemy();
-	Enemy(const string& _name, int _health, int _attack, int _defense, EnemyType _enemyType);
+	Enemy(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, EnemyType _enemyType);
 	EnemyType getEnemyType() const;
 
 	Inventory& getLootTable() { return Enemy::lootTable; }

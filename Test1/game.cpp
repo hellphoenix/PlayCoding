@@ -1,50 +1,38 @@
 #include "game.h"
 #include "gameInitialize.h"
 #include "save_load.h"
+#include <algorithm>
+#include <cctype>
 #include <iostream>
 #include <string>
-#include <cctype>
-#include <algorithm>
 
-
-using std::cout;
-using std::endl;
-
-
-// helper to lower case a string
-static std::string toLowerCopy(std::string s)
-{
-    std::transform(s.begin(), s.end(), s.begin(),
-        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-    return s;
-}
 
 void Game::printHelp() const
 {
-    cout << "Commands:\n";
-    cout << "  [h]elp        - show this help\n";
-    cout << "  [c]haracter   - show player stats and equipment\n";
-    cout << "  [i]nventory   - show inventory\n";
-    cout << "  [e]quip       - equip an item from inventory\n";
-    cout << "  [u]nequip     - unequip an item back to inventory\n";
-    cout << "  [d]ebug       - change base player variables, or add items from the master item table to your inventory\n";
-    cout << "  [s]ave        - save player stats and items\n";
-    cout << "  [l]oad        - load player stats and items\n";
-    cout << "  [q]uit        - exit game\n";
-    cout << "  [f]ight       - spawn a slime and fight it\n";
-    cout << endl;
+    std::cout << "Commands:\n";
+    std::cout << "  [h]elp        - show this help\n";
+    std::cout << "  [c]haracter   - show player stats and equipment\n";
+    std::cout << "  [i]nventory   - show inventory\n";
+    std::cout << "  [e]quip       - equip an item from inventory\n";
+    std::cout << "  [u]nequip     - unequip an item back to inventory\n";
+    std::cout << "  [d]ebug       - change base player variables, or add items from the master item table to your inventory\n";
+    std::cout << "  [s]ave        - save player stats and items\n";
+    std::cout << "  [l]oad        - load player stats and items\n";
+    std::cout << "  [q]uit        - exit game\n";
+    std::cout << "  [f]ight       - spawn a slime and fight it\n";
+    std::cout << std::endl;
 }
 
 void Game::startEquip()
 {
     mode = Mode::EquipSelectSlot;
     //selectedSlotIndex = -1;
-    cout << "\nEnter a slot number to equip item: ";
-    for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    std::cout << "\nEnter a slot number to equip item: ";
+    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
     {
-        cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
+        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
     }
-    cout << "or cancel[0]: \n" << std::endl;
+    std::cout << "or cancel[0]: \n" << std::endl;
 }
 
 void Game::handleEquipSlotInput(int _slotNumber)
@@ -52,8 +40,8 @@ void Game::handleEquipSlotInput(int _slotNumber)
     
     if (_slotNumber == 0)
     {
-        cout << "Equip canceled." << endl;
-        cout << "Type 'h' to see available commands.\n";
+        std::cout << "Equip canceled." << std::endl;
+        std::cout << "Type 'h' to see available commands.\n";
         mode = Mode::Normal;
         return;
     }
@@ -64,32 +52,32 @@ void Game::handleEquipSlotInput(int _slotNumber)
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber + 1);
+        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
 
         equipCandidates = player.getPlayerInventory().filterInventoryBySlot(slot);
 
         if (equipCandidates.empty())
         {
-            cout << "No " << Item::itemSlotToString.at(slot) << " items found in inventory." << endl;
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "No " << Item::itemSlotToString.at(slot) << " items found in inventory." << std::endl;
+            std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
-        else if (slot == Item::ItemSlot::EMPTY || slot == Item::ItemSlot::CONSUMABLE)
+        else if (slot == Item::ItemSlot::EMPTY)
         {
-            cout << Item::itemSlotToString.at(slot) << " items are not equippable." << endl;
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << Item::itemSlotToString.at(slot) << " items are not equippable." << std::endl;
+            std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
         else
         {
-            cout << "Choose an item from the list to equip: " << endl;
+            std::cout << "Choose an item from the list to equip: " << std::endl;
             int count = 0;
             for (Item item : equipCandidates)
             {
                 count++;
-                cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << endl;
+                std::cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << std::endl;
             }
             
             pendingEquipSelectItem = true;
@@ -112,7 +100,7 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
                     mode = Mode::Normal;
                     equipCandidates.clear();
                     std::cout << "\nEquip canceled.\n";
-                    cout << "Type 'h' to see available commands.\n";
+                    std::cout << "Type 'h' to see available commands.\n";
                     return;
                 }
                 else if (newItem > static_cast<int>(equipCandidates.size()))
@@ -123,13 +111,13 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
                 }
                 else
                 {
-                    const Item& chosen = equipCandidates[newItem - 1];
+                    const Item& chosen = equipCandidates[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(newItem) - 1];
                     player.equipItemFromInventory(chosen.getId());
-                    cout << "\nUpdated player:\n";
+                    std::cout << "\nUpdated player:\n";
                     player.printPlayer();
                 }               
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             equipCandidates.clear();
@@ -143,7 +131,7 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
             equipCandidates.clear();
             mode = Mode::Normal;
             std::cout << "\nEquip canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -151,7 +139,7 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+            std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -159,7 +147,7 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+        std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -168,20 +156,20 @@ void Game::startUnequip()
 {
     mode = Mode::UnequipSelectSlot;
     //selectedSlotIndex = -1;
-    cout << "\nEnter a slot number to unequip an item from: ";
-    for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    std::cout << "\nEnter a slot number to unequip an item from: ";
+    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
     {
-        cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
+        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
     }
-    cout << "or cancel[0]: " << std::endl;
+    std::cout << "or cancel[0]: " << std::endl;
 }
 
 void Game::handleUnequipSlotInput(int _slotNumber)
 {
     if (_slotNumber == 0)
     {
-        cout << "\nUnequip canceled.\n" << endl;
-        cout << "Type 'h' to see available commands.\n";
+        std::cout << "\nUnequip canceled.\n" << std::endl;
+        std::cout << "Type 'h' to see available commands.\n";
         mode = Mode::Normal;
         return;
     }
@@ -192,19 +180,19 @@ void Game::handleUnequipSlotInput(int _slotNumber)
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber + 1);
-        Item item = player.getPlayerEquipment()[_slotNumber + 1];
+        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
+        Item item = player.getPlayerEquipment()[_slotNumber];
         if (item.getId() == "")
         {
             std::cout << "\nNo item in slot.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
         player.unequipItem(slot);
-        cout << "\nUpdated player:\n";
+        std::cout << "\nUpdated player:\n";
         player.printPlayer();
-        cout << "Type 'h' to see available commands.\n";
+        std::cout << "Type 'h' to see available commands.\n";
         mode = Mode::Normal;
     }  
 }
@@ -212,14 +200,15 @@ void Game::handleUnequipSlotInput(int _slotNumber)
 void Game::startDebug()
 {
     mode = Mode::DebugSelect;
-    cout << "Select a variable to change name[1] " << player.getName() << ", base attack[2] " << player.getBaseAttack() << ", base defense[3] " << player.getBaseDefense() << ",or base health[4] " << player.getBaseHealth() << "." << endl;
-    cout << "You can also add to[5], or remove from[6], your inventory, or cancel[0]:\n";
+    std::cout << "Select a variable to change name[1] " << player.getName() << ", base attack[2] " << player.getBaseAttack()
+        << ", base defense[3] " << player.getBaseDefense() << ",or base health[4] " << player.getBaseHealth() << "." << std::endl;
+    std::cout << "You can also add to[5], or remove from[6], your inventory, or cancel[0]:\n";
 }
 
 void Game::startDebugName()
 {
     textBuffer.clear();
-    cout << "Enter new name (Enter to confirm, Esc to cancel):\n";
+    std::cout << "Enter new name (Enter to confirm, Esc to cancel):\n";
     mode = Mode::DebugName;
 }
 
@@ -234,8 +223,8 @@ void Game::debugName(const sf::Event::TextEntered& _text)
             {
                 player.setName(textBuffer);
                 std::cout << "\nNew name: " << textBuffer << "\n";
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -247,7 +236,7 @@ void Game::debugName(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nName change canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -255,7 +244,7 @@ void Game::debugName(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rNew name: " << textBuffer << " " << std::flush;
+            std::cout << "\rNew name: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -263,7 +252,7 @@ void Game::debugName(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rNew name: " << textBuffer << " " << std::flush;
+        std::cout << "\rNew name: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -271,7 +260,7 @@ void Game::debugName(const sf::Event::TextEntered& _text)
 void Game::startDebugAttack()
 {
     textBuffer.clear();
-    cout << "Enter new base attack value (Enter to confirm, Esc to cancel):\n";
+    std::cout << "Enter new base attack value (Enter to confirm, Esc to cancel):\n";
     mode = Mode::DebugAttack;
 }
 
@@ -284,11 +273,12 @@ void Game::debugAttack(const sf::Event::TextEntered& _text)
             if (!textBuffer.empty())
             {
                 int newAttack = stoi(textBuffer);
-                player.setBaseAttack(newAttack);
-                player.updateMaxStats();
+                player.setBaseStats(player.getBaseHealth(), player.getCurrentHealth(), newAttack, player.getBaseDefense());
+                //player.setBaseAttack(newAttack);
+                //player.updateMaxStats();
                 std::cout << "\nNew base attack set: " << newAttack << "\n";
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -300,7 +290,7 @@ void Game::debugAttack(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nBase Attack change canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -308,7 +298,7 @@ void Game::debugAttack(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rNew base attack: " << textBuffer << " " << std::flush;
+            std::cout << "\rNew base attack: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -316,7 +306,7 @@ void Game::debugAttack(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rNew base attack: " << textBuffer << " " << std::flush;
+        std::cout << "\rNew base attack: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -324,7 +314,7 @@ void Game::debugAttack(const sf::Event::TextEntered& _text)
 void Game::startDebugDefense()
 {
     textBuffer.clear();
-    cout << "Enter new base defense value (Enter to confirm, Esc to cancel):\n";
+    std::cout << "Enter new base defense value (Enter to confirm, Esc to cancel):\n";
     mode = Mode::DebugDefense;
 }
 
@@ -337,11 +327,12 @@ void Game::debugDefense(const sf::Event::TextEntered& _text)
             if (!textBuffer.empty())
             {
                 int newDefense = stoi(textBuffer);
-                player.setBaseDefense(newDefense);
-                player.updateMaxStats();
+                player.setBaseStats(player.getBaseHealth(), player.getCurrentHealth(), player.getBaseAttack(), newDefense);
+                //player.setBaseDefense(newDefense);
+                //player.updateMaxStats();
                 std::cout << "\nNew base defense set: " << newDefense << "\n";
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -353,7 +344,7 @@ void Game::debugDefense(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nBase Defense change canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -361,7 +352,7 @@ void Game::debugDefense(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rNew base defense: " << textBuffer << " " << std::flush;
+            std::cout << "\rNew base defense: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -369,7 +360,7 @@ void Game::debugDefense(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rNew base defense: " << textBuffer << " " << std::flush;
+        std::cout << "\rNew base defense: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -377,7 +368,7 @@ void Game::debugDefense(const sf::Event::TextEntered& _text)
 void Game::startDebugHealth()
 {
     textBuffer.clear();
-    cout << "Enter new base health value (Enter to confirm, Esc to cancel):\n";
+    std::cout << "Enter new base health value (Enter to confirm, Esc to cancel):\n";
     mode = Mode::DebugHealth;
 }
 
@@ -390,11 +381,12 @@ void Game::debugHealth(const sf::Event::TextEntered& _text)
             if (!textBuffer.empty())
             {
                 int newHealth = stoi(textBuffer);
-                player.setBaseHealth(newHealth);
-                player.updateMaxStats();
+                player.setBaseStats(newHealth, player.getCurrentHealth(), player.getBaseAttack(), player.getBaseDefense());
+                //player.setBaseHealth(newHealth);
+                //player.updateMaxStats();
                 std::cout << "\nNew base health set: " << newHealth << "\n";
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -406,7 +398,7 @@ void Game::debugHealth(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nBase Health change canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -414,7 +406,7 @@ void Game::debugHealth(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rNew base health: " << textBuffer << " " << std::flush;
+            std::cout << "\rNew base health: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -422,7 +414,7 @@ void Game::debugHealth(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rNew base health: " << textBuffer << " " << std::flush;
+        std::cout << "\rNew base health: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -430,19 +422,19 @@ void Game::debugHealth(const sf::Event::TextEntered& _text)
 void Game::startDebugAddToInventory()
 {
     mode = Mode::DebugAddToInventorySlot;
-    cout << "Enter a slot number to search master item list for: ";
-    for (int i = 2; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    std::cout << "Enter a slot number to search master item list for: ";
+    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
     {
-        cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i - 1 << "], ";
+        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
     }
-    cout << "or cancel[0]: \n" << std::endl;
+    std::cout << "or cancel[0]: \n" << std::endl;
 }
 
 void Game::debugAddToInventorySlotInput(int _slotNumber)
 {
     if (_slotNumber == 0)
     {
-        cout << "Debug canceled." << endl;
+        std::cout << "Debug canceled." << std::endl;
         mode = Mode::Normal;
         return;
     }
@@ -453,34 +445,34 @@ void Game::debugAddToInventorySlotInput(int _slotNumber)
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber + 1);
+        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
 
         equipCandidates = gameItems[_slotNumber];
 
-        cout << "Getting inverntory in the chosen slot." << endl;
+        std::cout << "Getting inventory in the chosen slot." << std::endl;
 
         if (equipCandidates.empty())
         {
-            cout << "No " << Item::itemSlotToString.at(slot) << " items found in master item list." << endl;
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "No " << Item::itemSlotToString.at(slot) << " items found in master item list." << std::endl;
+            std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
-        else if (slot == Item::ItemSlot::EMPTY || slot == Item::ItemSlot::CONSUMABLE)
+        else if (slot == Item::ItemSlot::EMPTY)
         {
-            cout << Item::itemSlotToString.at(slot) << " items are not equippable." << endl;
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << Item::itemSlotToString.at(slot) << " items are not equippable." << std::endl;
+            std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
         else
         {
-            cout << "Choose an item from the filtered list to add to inventory: " << endl;
+            std::cout << "Choose an item from the filtered list to add to inventory: " << std::endl;
             int count = 0;
             for (Item item : equipCandidates)
             {
                 count++;
-                cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << endl;
+                std::cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << std::endl;
             }
 
             pendingDebugAddToInventoryItemInput = true;
@@ -503,7 +495,7 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
                     mode = Mode::Normal;
                     equipCandidates.clear();
                     std::cout << "\nDebug canceled.\n";
-                    cout << "Type 'h' to see available commands.\n";
+                    std::cout << "Type 'h' to see available commands.\n";
                     return;
                 }
                 else if (newItem > static_cast<int>(equipCandidates.size()))
@@ -514,14 +506,14 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
                 }
                 else
                 {
-                    const Item& chosen = equipCandidates[newItem - 1];
+                    const Item& chosen = equipCandidates[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(newItem) - 1];
                     player.getPlayerInventory().addToInventory(chosen);
-                    cout << "\nUpdated inventory:\n";
+                    std::cout << "\nUpdated inventory:\n";
                     player.getPlayerInventory().printInventory();
 
                 }
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             equipCandidates.clear();
@@ -535,7 +527,7 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
             equipCandidates.clear();
             mode = Mode::Normal;
             std::cout << "\nDebug canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -543,7 +535,7 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+            std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -551,7 +543,7 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+        std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -564,18 +556,18 @@ void Game::startDebugRemoveFromInventory()
     {
         mode = Mode::Normal;
         std::cout << "\nNo items in inventory.\n";
-        cout << "Type 'h' to see available commands.\n";
+        std::cout << "Type 'h' to see available commands.\n";
         return;
     }
     player.getPlayerInventory().sortInventory();
-    cout << "Choose an item to remove from your inventory: ";
+    std::cout << "Choose an item to remove from your inventory: ";
     int count = 0;
     for (Item item : player.getPlayerInventory().getInventory())
     {
         count++;
-        cout << "\n" << item.getItemName() << "[" << count << "]";
+        std::cout << "\n" << item.getItemName() << "[" << count << "]";
     }
-    cout << "\nor cancel[0]: " << std::endl;
+    std::cout << "\nor cancel[0]: " << std::endl;
 }
 
 void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
@@ -583,7 +575,7 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
     
     if (mode == Mode::DebugRemoveFromInventoryItem)
     {
-        vector<Item> playerInventory = player.getPlayerInventory().getInventory();
+        std::vector<Item> playerInventory = player.getPlayerInventory().getInventory();
 
         if (_text.unicode == '\r' || _text.unicode == '\n')
         {
@@ -595,7 +587,7 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
                 {
                     mode = Mode::Normal;
                     std::cout << "\nDebug canceled.\n";
-                    cout << "Type 'h' to see available commands.\n";
+                    std::cout << "Type 'h' to see available commands.\n";
                     return;
                 }
                 else if (itemToRemove > playerInventory.size())
@@ -607,14 +599,14 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
                 else
                 {
                     //const Item& chosen = equipCandidates[itemToRemove - 1];
-                    const Item& chosen = playerInventory[itemToRemove - 1];
+                    const Item& chosen = playerInventory[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(itemToRemove) - 1];
                     player.getPlayerInventory().removeFromInventory(chosen.getId());
-                    cout << "\nUpdated inventory:\n";
+                    std::cout << "\nUpdated inventory:\n";
                     player.getPlayerInventory().printInventory();
 
                 }
-                std::cout << endl;
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << std::endl;
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -626,7 +618,7 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nDebug canceled.\n";
-            cout << "Type 'h' to see available commands.\n";
+            std::cout << "Type 'h' to see available commands.\n";
             return;
         }
 
@@ -634,7 +626,7 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+            std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -642,7 +634,7 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
+        std::cout << "\rEquipment selection: " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -669,7 +661,7 @@ void Game::save(const sf::Event::TextEntered& _text)
                 else
                     std::cout << "Save failed.\n";
 
-                cout << "Type 'h' to see available commands.\n";
+                std::cout << "Type 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -681,7 +673,7 @@ void Game::save(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nSave canceled.\n";
-            cout << "\nType 'h' to see available commands.\n";
+            std::cout << "\nType 'h' to see available commands.\n";
             return;
         }
 
@@ -689,7 +681,7 @@ void Game::save(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rSave file name(e.g. save1) : " << textBuffer << " " << std::flush;
+            std::cout << "\rSave file name(e.g. save1) : " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -697,7 +689,7 @@ void Game::save(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rSave file name(e.g. save1) : " << textBuffer << " " << std::flush;
+        std::cout << "\rSave file name(e.g. save1) : " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
@@ -730,7 +722,7 @@ void Game::load(const sf::Event::TextEntered& _text)
                     else {
                         std::cout << "Load failed.\n";
                     }
-                cout << "\nType 'h' to see available commands.\n";
+                    std::cout << "\nType 'h' to see available commands.\n";
             }
             textBuffer.clear();
             mode = Mode::Normal;
@@ -742,7 +734,7 @@ void Game::load(const sf::Event::TextEntered& _text)
             textBuffer.clear();
             mode = Mode::Normal;
             std::cout << "\nLoad canceled.\n";
-            cout << "\nType 'h' to see available commands.\n";
+            std::cout << "\nType 'h' to see available commands.\n";
             return;
         }
 
@@ -750,7 +742,7 @@ void Game::load(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
                 textBuffer.pop_back();
-            cout << "\rLoad file name (e.g. save1): " << textBuffer << " " << std::flush;
+            std::cout << "\rLoad file name (e.g. save1): " << textBuffer << " " << std::flush;
             return;
         }
 
@@ -758,15 +750,15 @@ void Game::load(const sf::Event::TextEntered& _text)
             return;
 
         textBuffer.push_back(static_cast<char>(_text.unicode));
-        cout << "\rLoad file name (e.g. save1): " << textBuffer << " " << std::flush;
+        std::cout << "\rLoad file name (e.g. save1): " << textBuffer << " " << std::flush;
         // You can draw this on screen instead of printing
     }
 }
 
 void Game::Quit()
 {
-    cout << "Exiting game.\n";
-    cout << "Game ended. Final player state:\n";
+    std::cout << "Exiting game.\n";
+    std::cout << "Game ended. Final player state:\n";
     player.printPlayer();
     mode = Mode::Quit;
 }
@@ -776,22 +768,23 @@ void Game::startFight()
 
 }
 
-void Game::loop(std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems)
+void Game::loop(std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems)
 {
 
     sf::Clock clock;
    
     enemy = gameActions.spawnEnemy(Enemy::EnemyType::SLIME);
 
+    //gameItems = gameInitialize.getGameItems();
     gameItems = _gameItems;
     giveStartingItems();
 
     float windowWidth = 800;
     float windowHeight = 800;
     sf::RenderWindow window(sf::VideoMode({ (unsigned)windowWidth, (unsigned)windowHeight }), "Play Coding");
-    cout << "---- Game loop started ----" << endl;
-    cout << "Type 'h' to see available commands.\n";
-    cout << endl;
+    std::cout << "---- Game loop started ----" << std::endl;
+    std::cout << "Type 'h' to see available commands.\n";
+    std::cout << std::endl;
     //window.setKeyRepeatEnabled(false);
 
 
@@ -901,8 +894,8 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
         switch (_keyPressed.scancode)
         {
             case sf::Keyboard::Scancode::H: { printHelp(); break; }
-            case sf::Keyboard::Scancode::C: { player.printPlayer(); cout << "\nType 'h' to see available commands.\n"; break; }
-            case sf::Keyboard::Scancode::I: { player.getPlayerInventory().printInventory(); cout << "\nType 'h' to see available commands.\n"; break; }
+            case sf::Keyboard::Scancode::C: { player.printPlayer(); std::cout << "\nType 'h' to see available commands.\n"; break; }
+            case sf::Keyboard::Scancode::I: { player.getPlayerInventory().printInventory(); std::cout << "\nType 'h' to see available commands.\n"; break; }
             case sf::Keyboard::Scancode::E: { startEquip(); break; }
             case sf::Keyboard::Scancode::U: { startUnequip(); break; }
             case sf::Keyboard::Scancode::D: { startDebug(); break; }
@@ -912,7 +905,7 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
             case sf::Keyboard::Scancode::F: { startFight(); break; }
             default: 
             { 
-                cout << "Not an option. Please try again.\n" << endl;
+                std::cout << "Not an option. Please try again.\n" << std::endl;
                 break; 
             }
         }
@@ -956,7 +949,7 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
         switch (_keyPressed.scancode)
         {
             case sf::Keyboard::Scancode::Num0: {
-                cout << "Canceled debug mode.\n" << endl;
+                std::cout << "Canceled debug mode.\n" << std::endl;
                 mode = Mode::Normal;
                 break;
             }
@@ -968,7 +961,7 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
             case sf::Keyboard::Scancode::Num6: { pendingDebugRemoveFromInventory = true; break; }
             default: 
             { 
-                cout << "Not a debug mode option.\n" << endl;
+                std::cout << "Not a debug mode option.\n" << std::endl;
                 mode = Mode::Normal;
                 break; 
             }

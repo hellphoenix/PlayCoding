@@ -20,6 +20,6 @@ int GameActions::enemyAttack(const Enemy& _enemy, const Player& _player)
 Enemy GameActions::spawnEnemy(Enemy::EnemyType _enemyType)
 {
 
-	Enemy enemy("King Slime", 1000, 50, 40, _enemyType);
+	Enemy enemy("King Slime", 1000, 1000, 50, 40, _enemyType);
 	return enemy;
 }

@@ -1,18 +1,17 @@
 #include "inventory.h"
 #include <algorithm>
-#include <unordered_map>
 #include <iostream>
+#include <unordered_map>
 
-using std::cout, std::endl;
-
-
+// Adds item to inventory if it has a proper item ID. Input is Item object. 
 void Inventory::addToInventory(const Item& _item)
 {
 	if (_item.getId() != "")
 		inventoryItems.push_back(_item);
 }
 
-void Inventory::removeFromInventory(const string& _id)
+// Removes item from inventory if it exists. Input is item ID.
+void Inventory::removeFromInventory(const std::string& _id)
 {
 	auto tempItem = std::remove_if(inventoryItems.begin(), inventoryItems.end(),[&](const Item& _item) 
 		{ 
@@ -22,6 +21,7 @@ void Inventory::removeFromInventory(const string& _id)
 	inventoryItems.erase(tempItem, inventoryItems.end());
 }
 
+// Sorts inventory by slot type, then rarity, then name.
 void Inventory::sortInventory()
 {
 	std::sort(inventoryItems.begin(), inventoryItems.end(),[](const Item& a, const Item& b)
@@ -34,9 +34,10 @@ void Inventory::sortInventory()
 		});
 }
 
-vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
+// Filters inventory by ItemSlot. Input is ItemSlot. Returns a vector of Items.
+std::vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
 {
-	vector<Item> filteredList;
+	std::vector<Item> filteredList;
 	filteredList.reserve(inventoryItems.size());
 
 	for (const auto& item : inventoryItems)
@@ -51,9 +52,9 @@ vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
 	return filteredList;
 }
 
-vector<Item> Inventory::filterInventoryByType(Item::ItemType _type) const
+std::vector<Item> Inventory::filterInventoryByType(Item::ItemType _type) const
 {
-	vector<Item> filteredList;
+	std::vector<Item> filteredList;
 	filteredList.reserve(inventoryItems.size());
 
 	for (const auto& item : inventoryItems)
@@ -69,9 +70,9 @@ vector<Item> Inventory::filterInventoryByType(Item::ItemType _type) const
 
 }
 
-vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
+std::vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
 {
-	vector<Item> filteredList;
+	std::vector<Item> filteredList;
 	filteredList.reserve(inventoryItems.size());
 
 	for (const auto& item : inventoryItems)
@@ -86,7 +87,7 @@ vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
 	return filteredList;
 }
 
-const Item Inventory::searchInventoryById(const string& _id) const
+Item Inventory::findById(const std::string& _id) const
 {
 	for (const auto& item : inventoryItems)
 	{
@@ -98,12 +99,12 @@ const Item Inventory::searchInventoryById(const string& _id) const
 void Inventory::printInventory()
 {
 	sortInventory();
-	std::cout << "=== Player Inventory ===" << endl;
-	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
-	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
+	std::cout << "=== Player Inventory ===" << std::endl;
+	std::cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << std::endl;
+	std::cout << "-----------------------------------------------------------------------------------------------------------------" << std::endl;
 	for (const auto& item : inventoryItems)
 		item.printItem();
-	cout << "========================" << endl;
-	cout << endl;
-	cout << endl;
+	std::cout << "========================" << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
 }

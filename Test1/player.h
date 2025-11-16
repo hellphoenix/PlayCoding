@@ -1,8 +1,9 @@
 #pragma once
 #include "character.h"
-#include "item.h"
 #include "inventory.h"
+#include "item.h"
 #include <array>
+#include <string>
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -20,12 +21,11 @@ private:
 	int maxHealth;
 	
 public:
-	Player(); // default constructor
-	Player(const string& _name, int _health, int _attack, int _defense); // fresh player with no equipment
-	Player(const string& _name, int _health, int _currentHealth, int _attack, int _defense); // loading saved players
+	Player(); // default player constructor
+	Player(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense); // player constructor with values for name and stats
 
-	Inventory& getPlayerInventory() { return Player::inventory; }
-	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; }
+	Inventory& getPlayerInventory() { return Player::inventory; } // Returns an inventory object attached to the Player
+	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; } // Returns an array of equipped items attached to the Player
 	const Item& getEquippedItem(Item::ItemSlot _slot) const;
 
 	int getMaxAttack() const;
@@ -33,7 +33,7 @@ public:
 	int getMaxHealth() const;
 
 	void equipItem(const Item& _item); // Equips items using Items object.
-	void equipItemFromInventory(const string& _id); // Equips items from inventory using equipment id
+	void equipItemFromInventory(const std::string& _id); // Equips items from inventory using equipment id
 	void unequipItem(Item::ItemSlot _itemSlot); // Unequips item using item slot
 
 	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense); // for debugging
@@ -41,8 +41,8 @@ public:
 
 	
 
-	void printPlayer() const; // Player stats and equipment
-	void quickPrintPlayer() const; // Player stats only 
+	void printPlayer() const; // Prints player stats and equipment
+	void quickPrintPlayer() const; // Prints player stats only 
 	void updateMaxStats(); // Recalculate max stats when equipping items, unequipping items, or creating a new player
 
 	

@@ -1,17 +1,19 @@
 #include "character.h"
 #include <iostream>
-using std::cout, std::endl;
 
+// Default Character constructor. Sets base health and current health to 1, and all other stats to 0.
 Character::Character() :name(), baseHealth(1), currentHealth(1), baseAttack(0), baseDefense(0), alive(true)
 {
 
 }
-Character::Character(const string& _name, int _baseHealth, int _attack, int _defense) : name(_name), baseHealth(_baseHealth), currentHealth(_baseHealth), baseAttack(_attack), baseDefense(_defense), alive(true)
+
+// Character constructor. Input is all basic stats, plus current health
+Character::Character(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense) : name(_name), baseHealth(_baseHealth), currentHealth(_currentHealth), baseAttack(_attack), baseDefense(_defense), alive(true)
 {
 
 }
 
-string Character::getName() const
+std::string Character::getName() const
 {
 	return name;
 }
@@ -41,7 +43,7 @@ bool Character::isAlive() const
 	return alive;
 }
 
-void Character::setName(const string& _name)
+void Character::setName(const std::string& _name)
 {
 	name = _name;
 }
@@ -75,5 +77,5 @@ void Character::setAlive(bool _alive)
 
 void Character::printCharacter() const
 {
-	cout << "Character Name: " << getName() << ", HP: " << getCurrentHealth() << "/" << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << endl;
+	std::cout << "Character Name: " << getName() << ", HP: " << getCurrentHealth() << "/" << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << std::endl;
 }

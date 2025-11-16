@@ -1,15 +1,10 @@
 #pragma once
-#include "player.h"
+#ifndef GAME_H
+#define GAME_H
 #include "enemy.h"
 #include "gameActions.h"
 #include "gameInitialize.h"
-#ifndef GAME_H
-#define GAME_H
-
-
-
-
-
+#include "player.h"
 class Game
 {
 private:
@@ -54,9 +49,8 @@ private:
 	
 	Enemy enemy;
 	GameActions gameActions ;
-	GameInitialize gameInitialize;
-	Player player = Player{ "Tony", 200, 10, 10 };
-	std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems;
+	Player player = Player{ "Tony", 200, 200, 10, 10 };
+	std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems;
 
 
 	void startEquip();
@@ -101,6 +95,7 @@ private:
 
 	void giveStartingItems()
 	{
+
 		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
 		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
 		player.equipItem(ItemLibrary::byId("sword_steel_01"));
@@ -110,7 +105,7 @@ private:
 
 public:
 
-	void loop(std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
+	void loop(std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
 	void handleEvent(const sf::Event& _event);
 	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed);
 	void handleTextEntered(const sf::Event::TextEntered& _textEntered);
