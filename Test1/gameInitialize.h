@@ -14,18 +14,19 @@ public:
     //Will probably alter significantly
 
     void run();
-    const Player& getPlayer() const;
+   // Player& getPlayer();
     std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems{};
+    const std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& getGameItems() const;
 
 private:
     void loadItems(); // Loads all items from item slot libraries
-    void createPlayer(); // Creates a player with defined stats
-    void giveStartingItems(); // Gives player some items at the start of the game. Will change when inventory testing is complete.
+    //void createPlayer(); // Creates a player with defined stats
+    //void giveStartingItems(); // Gives player some items at the start of the game. Will change when inventory testing is complete.
 
     const std::vector<Item>* items = nullptr; // pointer for master items list.
 
 
-    Player playerOne{};
+    //Player playerOne;
 };
 
 

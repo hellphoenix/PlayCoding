@@ -8,11 +8,11 @@ void GameInitialize::run()
 {
 
 	loadItems();
-	createPlayer();
-	giveStartingItems();
+	//createPlayer();
+	//giveStartingItems();
 
 	Game game;
-	game.loop(playerOne, gameItems);
+	game.loop(gameItems);
 }
 
 void GameInitialize::loadItems()
@@ -33,22 +33,27 @@ void GameInitialize::loadItems()
 	}	
 }
 
-void GameInitialize::createPlayer()
+//void GameInitialize::createPlayer()
+//{
+//	playerOne = Player{ "Tony", 200, 10, 10};
+//}
+
+//Player& GameInitialize::getPlayer()
+//{
+//	return playerOne;
+//}
+
+const std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& GameInitialize::getGameItems() const
 {
-	playerOne = Player{ "Tony", 200, 10, 10};
+	return gameItems;
 }
 
-const Player& GameInitialize::getPlayer() const
-{
-	return playerOne;
-}
-
-void GameInitialize::giveStartingItems()
-{
-
-	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
-	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
-	playerOne.equipItem(ItemLibrary::byId("sword_steel_01"));
-	playerOne.equipItem((*items)[3]);
-	playerOne.equipItem(gameItems[1][0]);
-}
+//void GameInitialize::giveStartingItems()
+//{
+//
+//	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
+//	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
+//	playerOne.equipItem(ItemLibrary::byId("sword_steel_01"));
+//	playerOne.equipItem((*items)[3]);
+//	playerOne.equipItem(gameItems[1][0]);
+//}

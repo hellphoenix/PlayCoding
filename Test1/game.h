@@ -20,6 +20,7 @@ private:
 		EquipSelectSlot,
 		EquipSelectItem,
 		UnequipSelectSlot,
+		DebugSelect,
 		DebugName,
 		DebugAttack,
 		DebugDefense,
@@ -39,44 +40,73 @@ private:
 	Mode mode = Mode::Normal;
 	//int selectedSlotIndex = -1;
 	std::vector<Item> equipCandidates;
+	std::string textBuffer;
+	bool pendingEquipSelectItem = false;
+	bool pendingDebugName = false;
+	bool pendingDebugAttack = false;
+	bool pendingDebugDefense = false;
+	bool pendingDebugHealth = false;
+	bool pendingDebugEquipmentSelection = false;
 
 
-	Player player;
+	
 	Enemy enemy;
-	GameActions gameActions;
+	GameActions gameActions ;
+	GameInitialize gameInitialize;
+	Player player = Player{ "Tony", 200, 10, 10 };
 	std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems;
 
-	//Functions below this will change
-
-	//void changeName();
-	//void changeBaseAttack();
-	//void changeBaseDefense();
-	//void changeBaseHealth();
-	//void addToInventory();
-	//void removeFromInventory();
 
 	void startEquip();
 	void handleEquipSlotInput(int _slotNumber);
-	void handleEquipItemInput(int _itemNumber);
+	void handleEquipItemInput(const sf::Event::TextEntered& _text);
+
 	void startUnequip();
 	void handleUnequipSlotInput(int _slotNumber);
+
 	void startDebug();
+
+	void startDebugName();
+	void debugName(const sf::Event::TextEntered& _text);
+
+	void startDebugAttack();
+	void debugAttack(const sf::Event::TextEntered& _text);
+
+	void startDebugDefense();
+	void debugDefense(const sf::Event::TextEntered& _text);
+
+	void startDebugHealth();
+	void debugHealth(const sf::Event::TextEntered& _text);
+
+	void startDebugAddToInventory();
+	void debugEquipmentSlotInput(int _slotNumber);
+	void debugEquipmentItemInput(const sf::Event::TextEntered& _text); // change to text input
+
 	void startSave();
 	void startLoad();
+
 	void Quit();
+
 	void startFight();
-	//void handleDebugCommand();
-	//void handleSaveCommand();
-	//void handleLoadCommand();
-	//void handleFightCommand();
+
 	void printHelp() const;
+
+	void giveStartingItems()
+	{
+		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
+		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
+		player.equipItem(ItemLibrary::byId("sword_steel_01"));
+		player.equipItem(gameItems[1][0]);
+	}
 
 
 public:
 
-	void loop(Player _player, const std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
+	void loop(std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
 	void handleEvent(const sf::Event& _event);
-	//void update(float dt);
+	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed);
+	//void handleTextEntered();
+	void update(float dt);
 	//void draw(sf::RenderWindow& window);
 
 };
