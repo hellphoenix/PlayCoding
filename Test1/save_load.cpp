@@ -2,14 +2,6 @@
 #include <fstream>
 using nlohmann::json;
 
-//namespace {
-//    // helper to get id or empty for EMPTY item
-//    std::string idOrEmpty(const Item& it) {
-//        return it.getItemSlot() == (Item::ItemSlot::EMPTY) ? "" : it.getId();
-//
-//    }
-//}
-
 json SaveLoad::toJson(Player& p)
 {
     json j;
@@ -33,13 +25,13 @@ json SaveLoad::toJson(Player& p)
 
     // inventory as list of ids
     json inv = json::array();
-    for (const auto& it : p.getPlayerInventory().getInventory())
+    for (const auto& it : p.getPlayerInventory().getEquipmentInventory())
     {
         if (it.getId() == "") continue;
         inv.push_back(it.getId());
     }
         
-    j["inventory"] = inv;
+    j["equipment_inventory"] = inv;
 
     return j;
 }
@@ -52,10 +44,10 @@ bool SaveLoad::saveToFile(Player& p, const std::string& path)
     return true;
 }
 
-static Item resolveOrEmpty(const std::string& id)
+static Equipment resolveOrEmpty(const std::string& id)
 {
-    if (id.empty()) return Item();
-    const Item& ref = ItemLibrary::byId(id);
+    if (id.empty()) return Equipment();
+    const Equipment& ref = ItemLibrary::equipmentById(id);
     return ref; // copy into Player or Inventory
 }
 
@@ -77,17 +69,17 @@ bool SaveLoad::fromJson(const json& j, Player& out)
         {
             for (const auto& id : j["equipped"])
             {
-                Item it = resolveOrEmpty(id.get<std::string>());
+                Equipment it = resolveOrEmpty(id.get<std::string>());
                 out.equipItem(it);
             }
         }
 
         // inventory
-        if (j.contains("inventory") && j["inventory"].is_array()) {
-            for (const auto& id : j["inventory"]) {
-                Item it = resolveOrEmpty(id.get<std::string>());
-                if (it.getItemSlot() != Item::ItemSlot::EMPTY)
-                    out.getPlayerInventory().addToInventory(it);
+        if (j.contains("equipment_inventory") && j["equipment_inventory"].is_array()) {
+            for (const auto& id : j["equipment_inventory"]) {
+                Equipment it = resolveOrEmpty(id.get<std::string>());
+                if (it.getEquipmentSlot() != Equipment::EquipmentSlot::EMPTY)
+                    out.getPlayerInventory().addEquipmentToInventory(it);
             }
         }
 

@@ -2,6 +2,7 @@
 #include "item_library.h"
 #include "json.hpp"
 #include "player.h"
+#include "equipment.h"
 
 #ifndef SAVE_LOAD_H
 #define SAVE_LOAD_H

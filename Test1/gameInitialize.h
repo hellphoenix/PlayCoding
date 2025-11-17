@@ -12,19 +12,14 @@ class GameInitialize
 {
 public:
 
-    //Will probably alter significantly
-
     void run();
-    std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems{};
-    const std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& getGameItems() const;
+    std::array < std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT )> gameEquipment{};
+    const std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& getGameEquipment() const;
 
 private:
-    void loadItems(); // Loads all items from item slot libraries
+    void loadEquipment(); // Loads all items from item slot libraries
 
-    const std::vector<Item>* items = nullptr; // pointer for master items list.
-
-
-    //Player playerOne;
+    const std::vector<Equipment>* equipment = nullptr; // pointer for master items list.
 };
 
 

@@ -9,24 +9,24 @@
 using json = nlohmann::json;
 
 // Internal storage
-static std::vector<Item> g_items;
+static std::vector<Equipment> g_equipment;
 static bool g_loaded = false;
 
-static std::unordered_map<std::string, std::size_t> g_byId;
+static std::unordered_map<std::string, std::size_t> g_EquipmentById;
 
 // Determines an ItemSlot based on a string. Input is a string name of the item slot. Returns an ItemSlot (EMPTY if not found).
-static Item::ItemSlot itemSlotFromString(const std::string& slotStr)
+static Equipment::EquipmentSlot equipmentSlotFromString(const std::string& slotStr)
 {
     std::string slot = slotStr;
     std::transform(slot.begin(), slot.end(), slot.begin(),::toupper);
-    for (int i = 0; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
     {
-        std::string upperSlot = Item::itemSlotToString.at(itemSlotFromIndex(i));
+        std::string upperSlot = Equipment::equipmentSlotToString.at(equipmentSlotFromIndex(i));
         std::transform(upperSlot.begin(), upperSlot.end(), upperSlot.begin(), ::toupper);
         if (slot.compare(upperSlot) == 0)
-            return itemSlotFromIndex(i);
+            return equipmentSlotFromIndex(i);
     }
-    return Item::ItemSlot::EMPTY;
+    return Equipment::EquipmentSlot::EMPTY;
 }
 
 // Determines an ItemType based on a string. Input is a string name of the item type. Returns an ItemType (UNKNOWN if not found).
@@ -70,7 +70,7 @@ static void loadIfNeeded()
 
     json j;
     file >> j;
-    for (const auto& jitem : j["items"])
+    for (const auto& jitem : j["equipment"])
     {
         
         std::string id = jitem["id"];
@@ -82,18 +82,15 @@ static void loadIfNeeded()
         int defense = jitem["defense"];
         int health = jitem["health"];
 
-        Item::ItemSlot itemSlot = itemSlotFromString(slot);
+        Equipment::EquipmentSlot itemSlot = equipmentSlotFromString(slot);
         Item::ItemType itemType = itemTypeFromString(type);
         Item::ItemRarity itemRarity = itemRarityFromString(rarity);
 
-        //Item item(id, name, attack, defense, health, itemSlot, itemType, itemRarity);
-
-        //g_items.push_back(item);
-        g_items.emplace_back(Item(id, name, attack, defense, health, itemSlot, itemType, itemRarity));
-
-        // id registry
-        
-        g_byId.emplace(id, g_items.size() - 1);
+        if (itemType == Item::ItemType::EQUIPMENT)
+        {
+            g_equipment.emplace_back(Equipment(id, name, attack, defense, health, itemSlot, itemRarity));
+            g_EquipmentById.emplace(id, g_equipment.size() - 1);
+        }       
     }
 
     g_loaded = true;
@@ -101,20 +98,20 @@ static void loadIfNeeded()
 
 // Public API
 
-const std::vector<Item>& ItemLibrary::items()
+const std::vector<Equipment>& ItemLibrary::equipment()
 {
     loadIfNeeded();
-    return g_items;
+    return g_equipment;
 }
 
-const Item& ItemLibrary::byId(const std::string& _id)
+const Equipment& ItemLibrary::equipmentById(const std::string& _id)
 {
     loadIfNeeded();
-    auto it = g_byId.find(_id);
-    if (it != g_byId.end()) return g_items[it->second];
-    else std::cout << _id << " not found in master inventory.\n";
+    auto it = g_EquipmentById.find(_id);
+    if (it != g_EquipmentById.end()) return g_equipment[it->second];
+    else std::cout << _id << " not found in master equipment inventory.\n";
 
-    static Item EMPTY; // default-constructed EMPTY
+    static Equipment EMPTY; // default-constructed EMPTY
     return EMPTY;
 }
 

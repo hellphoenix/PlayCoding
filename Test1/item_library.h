@@ -1,16 +1,16 @@
 #pragma once
 #ifndef ITEM_LIBRARY_H
 #define ITEM_LIBRARY_H
-#include "item.h"
+#include "equipment.h"
 #include <vector>
 
 class ItemLibrary
 {
 public:
 
-	static const std::vector<Item>& items();
+	static const std::vector<Equipment>& equipment();
 
-	static const Item& byId(const std::string& _id);
+	static const Equipment& equipmentById(const std::string& _id);
 };
 
 #endif // !ITEM_LIBRARY_H

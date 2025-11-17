@@ -28,9 +28,10 @@ void Game::startEquip()
     mode = Mode::EquipSelectSlot;
     //selectedSlotIndex = -1;
     std::cout << "\nEnter a slot number to equip item: ";
-    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
     {
-        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        //std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        std::cout << Equipment::equipmentSlotToString.at(equipmentSlotFromIndex(i)) << "[" << i << "], ";
     }
     std::cout << "or cancel[0]: \n" << std::endl;
 }
@@ -45,27 +46,27 @@ void Game::handleEquipSlotInput(int _slotNumber)
         mode = Mode::Normal;
         return;
     }
-    else if (_slotNumber >= itemSlotToIndex(Item::ItemSlot::COUNT))
+    else if (_slotNumber >= equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
     {
         std::cout << "Invalid choice.\n";
         return;
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
+        Equipment::EquipmentSlot slot = equipmentSlotFromIndex(_slotNumber);
 
-        equipCandidates = player.getPlayerInventory().filterInventoryBySlot(slot);
+        equipCandidates = player.getPlayerInventory().filterEquipmentInventoryBySlot(slot);
 
         if (equipCandidates.empty())
         {
-            std::cout << "No " << Item::itemSlotToString.at(slot) << " items found in inventory." << std::endl;
+            std::cout << "No " << Equipment::equipmentSlotToString.at(slot) << " items found in equipment inventory." << std::endl;
             std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
-        else if (slot == Item::ItemSlot::EMPTY)
+        else if (slot == Equipment::EquipmentSlot::EMPTY)
         {
-            std::cout << Item::itemSlotToString.at(slot) << " items are not equippable." << std::endl;
+            std::cout << Equipment::equipmentSlotToString.at(slot) << " items are not equippable." << std::endl;
             std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
@@ -74,10 +75,10 @@ void Game::handleEquipSlotInput(int _slotNumber)
         {
             std::cout << "Choose an item from the list to equip: " << std::endl;
             int count = 0;
-            for (Item item : equipCandidates)
+            for (Equipment equipment : equipCandidates)
             {
                 count++;
-                std::cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << std::endl;
+                std::cout << equipment.itemRarityToString.at(equipment.getItemRarity()) << " " << equipment.getItemName() << "[" << count << "]  " << std::endl;
             }
             
             pendingEquipSelectItem = true;
@@ -93,9 +94,9 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
         {
             if (!textBuffer.empty())
             {
-                int newItem = stoi(textBuffer);
+                int newEquipment = stoi(textBuffer);
 
-                if (newItem == 0)
+                if (newEquipment == 0)
                 {
                     mode = Mode::Normal;
                     equipCandidates.clear();
@@ -103,7 +104,7 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
                     std::cout << "Type 'h' to see available commands.\n";
                     return;
                 }
-                else if (newItem > static_cast<int>(equipCandidates.size()))
+                else if (newEquipment > static_cast<int>(equipCandidates.size()))
                 {
                     textBuffer.clear();
                     std::cout << "\nInvalid choice.\n";
@@ -111,8 +112,8 @@ void Game::handleEquipItemInput(const sf::Event::TextEntered& _text)
                 }
                 else
                 {
-                    const Item& chosen = equipCandidates[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(newItem) - 1];
-                    player.equipItemFromInventory(chosen.getId());
+                    const Equipment& chosen = equipCandidates[static_cast<std::vector<Equipment, std::allocator<Equipment>>::size_type>(newEquipment) - 1];
+                    player.equipFromInventory(chosen.getId()); // start back here
                     std::cout << "\nUpdated player:\n";
                     player.printPlayer();
                 }               
@@ -157,9 +158,9 @@ void Game::startUnequip()
     mode = Mode::UnequipSelectSlot;
     //selectedSlotIndex = -1;
     std::cout << "\nEnter a slot number to unequip an item from: ";
-    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
     {
-        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        std::cout << Equipment::equipmentSlotToString.at(equipmentSlotFromIndex(i)) << "[" << i << "], ";
     }
     std::cout << "or cancel[0]: " << std::endl;
 }
@@ -173,16 +174,16 @@ void Game::handleUnequipSlotInput(int _slotNumber)
         mode = Mode::Normal;
         return;
     }
-    else if (_slotNumber >= itemSlotToIndex(Item::ItemSlot::COUNT))
+    else if (_slotNumber >= equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
     {
         std::cout << "\nInvalid choice.\n";
         return;
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
-        Item item = player.getPlayerEquipment()[_slotNumber];
-        if (item.getId() == "")
+        Equipment::EquipmentSlot slot = equipmentSlotFromIndex(_slotNumber);
+        Equipment equipment = player.getPlayerEquipment()[_slotNumber];
+        if (equipment.getId() == "")
         {
             std::cout << "\nNo item in slot.\n";
             std::cout << "Type 'h' to see available commands.\n";
@@ -423,9 +424,9 @@ void Game::startDebugAddToInventory()
 {
     mode = Mode::DebugAddToInventorySlot;
     std::cout << "Enter a slot number to search master item list for: ";
-    for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+    for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
     {
-        std::cout << Item::itemSlotToString.at(itemSlotFromIndex(i)) << "[" << i << "], ";
+        std::cout << Equipment::equipmentSlotToString.at(equipmentSlotFromIndex(i)) << "[" << i << "], ";
     }
     std::cout << "or cancel[0]: \n" << std::endl;
 }
@@ -438,29 +439,29 @@ void Game::debugAddToInventorySlotInput(int _slotNumber)
         mode = Mode::Normal;
         return;
     }
-    else if (_slotNumber >= itemSlotToIndex(Item::ItemSlot::COUNT))
+    else if (_slotNumber >= equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
     {
         std::cout << "Invalid choice.\n";
         return;
     }
     else
     {
-        Item::ItemSlot slot = itemSlotFromIndex(_slotNumber);
+        Equipment::EquipmentSlot slot = equipmentSlotFromIndex(_slotNumber);
 
-        equipCandidates = gameItems[_slotNumber];
+        equipCandidates = gameEquipment[_slotNumber];
 
         std::cout << "Getting inventory in the chosen slot." << std::endl;
 
         if (equipCandidates.empty())
         {
-            std::cout << "No " << Item::itemSlotToString.at(slot) << " items found in master item list." << std::endl;
+            std::cout << "No " << Equipment::equipmentSlotToString.at(slot) << " items found in master equipment list." << std::endl;
             std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
         }
-        else if (slot == Item::ItemSlot::EMPTY)
+        else if (slot == Equipment::EquipmentSlot::EMPTY)
         {
-            std::cout << Item::itemSlotToString.at(slot) << " items are not equippable." << std::endl;
+            std::cout << Equipment::equipmentSlotToString.at(slot) << " items are not equippable." << std::endl;
             std::cout << "Type 'h' to see available commands.\n";
             mode = Mode::Normal;
             return;
@@ -469,10 +470,10 @@ void Game::debugAddToInventorySlotInput(int _slotNumber)
         {
             std::cout << "Choose an item from the filtered list to add to inventory: " << std::endl;
             int count = 0;
-            for (Item item : equipCandidates)
+            for (Equipment equipment : equipCandidates)
             {
                 count++;
-                std::cout << item.itemRarityToString.at(item.getItemRarity()) << " " << item.getItemName() << "[" << count << "]  " << std::endl;
+                std::cout << equipment.itemRarityToString.at(equipment.getItemRarity()) << " " << equipment.getItemName() << "[" << count << "]  " << std::endl;
             }
 
             pendingDebugAddToInventoryItemInput = true;
@@ -506,10 +507,10 @@ void Game::debugAddToInventoryItemInput(const sf::Event::TextEntered& _text)
                 }
                 else
                 {
-                    const Item& chosen = equipCandidates[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(newItem) - 1];
-                    player.getPlayerInventory().addToInventory(chosen);
+                    const Equipment& chosen = equipCandidates[static_cast<std::vector<Equipment, std::allocator<Equipment>>::size_type>(newItem) - 1];
+                    player.getPlayerInventory().addEquipmentToInventory(chosen);
                     std::cout << "\nUpdated inventory:\n";
-                    player.getPlayerInventory().printInventory();
+                    player.getPlayerInventory().printEquipmentInventory();
 
                 }
                 std::cout << std::endl;
@@ -552,20 +553,20 @@ void Game::startDebugRemoveFromInventory()
 {
     mode = Mode::DebugRemoveFromInventoryItem;
     
-    if (player.getPlayerInventory().getInventory().empty())
+    if (player.getPlayerInventory().getEquipmentInventory().empty())
     {
         mode = Mode::Normal;
-        std::cout << "\nNo items in inventory.\n";
+        std::cout << "\nNo items in equipment inventory.\n";
         std::cout << "Type 'h' to see available commands.\n";
         return;
     }
-    player.getPlayerInventory().sortInventory();
+    player.getPlayerInventory().sortEquipmentInventory();
     std::cout << "Choose an item to remove from your inventory: ";
     int count = 0;
-    for (Item item : player.getPlayerInventory().getInventory())
+    for (Equipment equipment : player.getPlayerInventory().getEquipmentInventory())
     {
         count++;
-        std::cout << "\n" << item.getItemName() << "[" << count << "]";
+        std::cout << "\n" << equipment.getItemName() << "[" << count << "]";
     }
     std::cout << "\nor cancel[0]: " << std::endl;
 }
@@ -575,22 +576,22 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
     
     if (mode == Mode::DebugRemoveFromInventoryItem)
     {
-        std::vector<Item> playerInventory = player.getPlayerInventory().getInventory();
+        std::vector<Equipment> playerEquipmentInventory = player.getPlayerInventory().getEquipmentInventory();
 
         if (_text.unicode == '\r' || _text.unicode == '\n')
         {
             if (!textBuffer.empty())
             {
-                int itemToRemove = stoi(textBuffer);
+                int equipmentToRemove = stoi(textBuffer);
 
-                if (itemToRemove == 0)
+                if (equipmentToRemove == 0)
                 {
                     mode = Mode::Normal;
                     std::cout << "\nDebug canceled.\n";
                     std::cout << "Type 'h' to see available commands.\n";
                     return;
                 }
-                else if (itemToRemove > playerInventory.size())
+                else if (equipmentToRemove > playerEquipmentInventory.size())
                 {
                     textBuffer.clear();
                     std::cout << "\nInvalid choice.\n";
@@ -599,10 +600,10 @@ void Game::debugRemoveFromInventory(const sf::Event::TextEntered& _text)
                 else
                 {
                     //const Item& chosen = equipCandidates[itemToRemove - 1];
-                    const Item& chosen = playerInventory[static_cast<std::vector<Item, std::allocator<Item>>::size_type>(itemToRemove) - 1];
-                    player.getPlayerInventory().removeFromInventory(chosen.getId());
+                    const Equipment& chosen = playerEquipmentInventory[static_cast<std::vector<Equipment, std::allocator<Equipment>>::size_type>(equipmentToRemove) - 1];
+                    player.getPlayerInventory().removeEquipmentFromInventory(chosen.getId());
                     std::cout << "\nUpdated inventory:\n";
-                    player.getPlayerInventory().printInventory();
+                    player.getPlayerInventory().printEquipmentInventory();
 
                 }
                 std::cout << std::endl;
@@ -717,7 +718,7 @@ void Game::load(const sf::Event::TextEntered& _text)
                         std::cout << "Loaded from " << loadName << "\n";
                         player.updateMaxStats();
                         player.printPlayer();
-                        player.getPlayerInventory().printInventory();
+                        player.getPlayerInventory().printEquipmentInventory();
                     }
                     else {
                         std::cout << "Load failed.\n";
@@ -768,7 +769,7 @@ void Game::startFight()
 
 }
 
-void Game::loop(std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems)
+void Game::loop(std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& _gameEquipment)
 {
 
     sf::Clock clock;
@@ -776,7 +777,7 @@ void Game::loop(std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::CO
     enemy = gameActions.spawnEnemy(Enemy::EnemyType::SLIME);
 
     //gameItems = gameInitialize.getGameItems();
-    gameItems = _gameItems;
+    gameEquipment = _gameEquipment;
     giveStartingItems();
 
     float windowWidth = 800;
@@ -895,7 +896,7 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
         {
             case sf::Keyboard::Scancode::H: { printHelp(); break; }
             case sf::Keyboard::Scancode::C: { player.printPlayer(); std::cout << "\nType 'h' to see available commands.\n"; break; }
-            case sf::Keyboard::Scancode::I: { player.getPlayerInventory().printInventory(); std::cout << "\nType 'h' to see available commands.\n"; break; }
+            case sf::Keyboard::Scancode::I: { player.getPlayerInventory().printEquipmentInventory(); std::cout << "\nType 'h' to see available commands.\n"; break; }
             case sf::Keyboard::Scancode::E: { startEquip(); break; }
             case sf::Keyboard::Scancode::U: { startUnequip(); break; }
             case sf::Keyboard::Scancode::D: { startDebug(); break; }

@@ -1,7 +1,7 @@
 #pragma once
 #include "character.h"
 #include "inventory.h"
-#include "item.h"
+#include "equipment.h"
 #include <array>
 #include <string>
 
@@ -13,7 +13,7 @@ class Player : public Character
 private:
 	Inventory inventory;
 
-	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)> equipped{};
+	std::array<Equipment, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipped{};
 
 	// Stats derived from base stats plus equipment stats
 	int maxAttack;
@@ -25,16 +25,16 @@ public:
 	Player(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense); // player constructor with values for name and stats
 
 	Inventory& getPlayerInventory() { return Player::inventory; } // Returns an inventory object attached to the Player
-	std::array<Item, itemSlotToIndex(Item::ItemSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; } // Returns an array of equipped items attached to the Player
-	const Item& getEquippedItem(Item::ItemSlot _slot) const;
+	std::array<Equipment, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& getPlayerEquipment() { return Player::equipped; } // Returns an array of equipped items attached to the Player
+	const Equipment& getEquippedItem(Equipment::EquipmentSlot _slot) const;
 
 	int getMaxAttack() const;
 	int getMaxDefense() const;
 	int getMaxHealth() const;
 
-	void equipItem(const Item& _item); // Equips items using Items object.
-	void equipItemFromInventory(const std::string& _id); // Equips items from inventory using equipment id
-	void unequipItem(Item::ItemSlot _itemSlot); // Unequips item using item slot
+	void equipItem(const Equipment& _equipment); // Equips items using Items object.
+	void equipFromInventory(const std::string& _id); // Equips items from inventory using equipment id
+	void unequipItem(Equipment::EquipmentSlot _equipmentSlot); // Unequips item using item slot
 
 	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense); // for debugging
 	void changeCurrentHealth(int _health); // Adds input health to change current health between 0 and max health

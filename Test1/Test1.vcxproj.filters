@@ -48,6 +48,9 @@
     <ClCompile Include="gameActions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="equipment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gameActions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="equipment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

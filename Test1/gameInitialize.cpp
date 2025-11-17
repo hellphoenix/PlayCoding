@@ -6,26 +6,26 @@
 void GameInitialize::run()
 {
 
-	loadItems();
+	loadEquipment();
 
 	Game game;
-	game.loop(gameItems);
+	game.loop(gameEquipment);
 }
 
-void GameInitialize::loadItems()
+void GameInitialize::loadEquipment()
 {
 	try
 	{
-		items = &ItemLibrary::items(); // point to item library master list
+		equipment = &ItemLibrary::equipment(); // point to item library master list
 
-		// Creates an array of vectors(gameItems) for all item slots
-		for (int i = 0; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++)
+		// Creates an array of vectors(gameEquipment) for all equipment slots
+		for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
 		{
-			for (const auto& it : (*items))
+			for (const auto& it : (*equipment))
 			{
-				if (itemSlotToIndex(it.getItemSlot()) == i)
+				if (equipmentSlotToIndex(it.getEquipmentSlot()) == i)
 				{
-					gameItems[i].push_back(it);
+					gameEquipment[i].push_back(it);
 				}
 			}
 		}
@@ -37,7 +37,7 @@ void GameInitialize::loadItems()
 		
 }
 
-const std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& GameInitialize::getGameItems() const
+const std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& GameInitialize::getGameEquipment() const
 {
-	return gameItems;
+	return gameEquipment;
 }

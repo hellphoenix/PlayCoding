@@ -5,6 +5,7 @@
 #include "gameActions.h"
 #include "gameInitialize.h"
 #include "player.h"
+#include "equipment.h"
 class Game
 {
 private:
@@ -32,8 +33,7 @@ private:
 
 
 	Mode mode = Mode::Normal;
-	//int selectedSlotIndex = -1;
-	std::vector<Item> equipCandidates;
+	std::vector<Equipment> equipCandidates;
 	std::string textBuffer;
 	bool pendingEquipSelectItem = false;
 	bool pendingDebugName = false;
@@ -50,7 +50,7 @@ private:
 	Enemy enemy;
 	GameActions gameActions ;
 	Player player = Player{ "Tony", 200, 200, 10, 10 };
-	std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems;
+	std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> gameEquipment;
 
 
 	void startEquip();
@@ -96,16 +96,16 @@ private:
 	void giveStartingItems()
 	{
 
-		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
-		player.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
-		player.equipItem(ItemLibrary::byId("sword_steel_01"));
-		player.equipItem(gameItems[1][0]);
+		player.getPlayerInventory().addEquipmentToInventory(ItemLibrary::equipmentById("helmet_leather_05"));
+		player.getPlayerInventory().addEquipmentToInventory(ItemLibrary::equipmentById("helmet_leather_06"));
+		player.equipItem(ItemLibrary::equipmentById("sword_steel_01"));
+		player.equipItem(gameEquipment[1][0]);
 	}
 
 
 public:
 
-	void loop(std::array<std::vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)>& _gameItems);
+	void loop(std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& _gameEquipment);
 	void handleEvent(const sf::Event& _event);
 	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed);
 	void handleTextEntered(const sf::Event::TextEntered& _textEntered);
