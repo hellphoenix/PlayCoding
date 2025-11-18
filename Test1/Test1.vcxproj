@@ -135,9 +135,10 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="equipment.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gameActions.cpp" />
+    <ClCompile Include="combatActions.cpp" />
     <ClCompile Include="gameInitialize.cpp" />
     <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="inventoryActions.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="item_library.cpp" />
     <ClCompile Include="main.cpp" />
@@ -149,9 +150,10 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="equipment.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gameActions.h" />
+    <ClInclude Include="combatActions.h" />
     <ClInclude Include="gameInitialize.h" />
     <ClInclude Include="inventory.h" />
+    <ClInclude Include="inventoryActions.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="item_library.h" />
     <ClInclude Include="player.h" />

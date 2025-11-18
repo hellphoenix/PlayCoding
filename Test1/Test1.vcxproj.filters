@@ -45,10 +45,13 @@
     <ClCompile Include="enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gameActions.cpp">
+    <ClCompile Include="combatActions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="equipment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inventoryActions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,10 +83,13 @@
     <ClInclude Include="enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gameActions.h">
+    <ClInclude Include="combatActions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="equipment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inventoryActions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

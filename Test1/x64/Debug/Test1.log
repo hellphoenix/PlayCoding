@@ -1,13 +1,5 @@
-﻿  enemy.cpp
-  equipment.cpp
-  game.cpp
-  gameActions.cpp
+﻿  game.cpp
   gameInitialize.cpp
-  inventory.cpp
-  item.cpp
-  item_library.cpp
-  main.cpp
-  player.cpp
-  save_load.cpp
+  inventoryActions.cpp
   Generating Code...
   Test1.vcxproj -> D:\Game Dev Training\PlayCoding\x64\Debug\Test1.exe
