@@ -970,16 +970,16 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
     {
         switch (_keyPressed.scancode)
         {
-        case sf::Keyboard::Scancode::Num0: { inventoryActions.debugAddToInventorySlotInput(0, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num1: { inventoryActions.debugAddToInventorySlotInput(1, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num2: { inventoryActions.debugAddToInventorySlotInput(2, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num3: { inventoryActions.debugAddToInventorySlotInput(3, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num4: { inventoryActions.debugAddToInventorySlotInput(4, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num5: { inventoryActions.debugAddToInventorySlotInput(5, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num6: { inventoryActions.debugAddToInventorySlotInput(6, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num7: { inventoryActions.debugAddToInventorySlotInput(7, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num8: { inventoryActions.debugAddToInventorySlotInput(8, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
-        case sf::Keyboard::Scancode::Num9: { inventoryActions.debugAddToInventorySlotInput(9, gameEquipment, normal, pendingDebugAddToInventoryItemInput); break; }
+        case sf::Keyboard::Scancode::Num0: { inventoryActions.debugAddToInventorySlotInput(0, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num1: { inventoryActions.debugAddToInventorySlotInput(1, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num2: { inventoryActions.debugAddToInventorySlotInput(2, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num3: { inventoryActions.debugAddToInventorySlotInput(3, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num4: { inventoryActions.debugAddToInventorySlotInput(4, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num5: { inventoryActions.debugAddToInventorySlotInput(5, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num6: { inventoryActions.debugAddToInventorySlotInput(6, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num7: { inventoryActions.debugAddToInventorySlotInput(7, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num8: { inventoryActions.debugAddToInventorySlotInput(8, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
+        case sf::Keyboard::Scancode::Num9: { inventoryActions.debugAddToInventorySlotInput(9, gameEquipment, pendingDebugAddToInventoryItemInput, normal); break; }
         default: { break; }
         }
     }
