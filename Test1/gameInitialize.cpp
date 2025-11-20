@@ -36,8 +36,3 @@ void GameInitialize::loadEquipment()
 	}
 		
 }
-
-const std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& GameInitialize::getGameEquipment() const
-{
-	return gameEquipment;
-}

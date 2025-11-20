@@ -65,4 +65,12 @@ constexpr Equipment::EquipmentSlot equipmentSlotFromIndex(int _index)
 		return Equipment::EquipmentSlot::EMPTY;
 }
 
+constexpr Equipment::EquipmentSlot equipmentSlotFromIndex(size_t _index)
+{
+	if (_index > 0 && _index < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
+		return static_cast<Equipment::EquipmentSlot>(_index);
+	else
+		return Equipment::EquipmentSlot::EMPTY;
+}
+
 #endif // !EQUIPMENT_H
