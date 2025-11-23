@@ -61,24 +61,14 @@ void Player::equipFromInventory(const std::string& _id)
 	if (found.getId() != _id)
 		return; // If the search does not return the item, then we don't equip an item
 
-	Equipment::EquipmentSlot slot = found.getEquipmentSlot();
-	if (slot == Equipment::EquipmentSlot::EMPTY) return;
-
-	const Equipment& old = getEquippedItem(slot);
-	if (old.getEquipmentSlot() != Equipment::EquipmentSlot::EMPTY && old.getId() != "")
-		inventory.addEquipmentToInventory(old);
-
-	equipped[equipmentSlotToIndex(slot)] = found;
-	inventory.removeEquipmentFromInventory(_id);
-		
-	updateMaxStats();
+	equipItem(found); // Equip the found equipment
+	inventory.removeEquipmentFromInventory(_id); // Remove found equipment from inventory
 }
 
 // Used to unequip item and store it in the Player's inventory. Input is ItemSlot.
 void Player::unequipItem(Equipment::EquipmentSlot _itemSlot)
 {
 	auto& current = equipped[equipmentSlotToIndex(_itemSlot)];
-
 	if (current.getEquipmentSlot() == Equipment::EquipmentSlot::EMPTY || current.getId() == "") return;
 
 	inventory.addEquipmentToInventory(current);
@@ -87,24 +77,24 @@ void Player::unequipItem(Equipment::EquipmentSlot _itemSlot)
 	updateMaxStats();
 }
 
-// Prints the complete Player character sheet, not including inventory
-void Player::printPlayer() const 
-{
-	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense()  << endl;
-	cout << "Player equipment: "<< endl;
-	cout << "|                     Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
-	cout << "-------------------------------------------------------------------------------------------------------------------" << endl;
-	for (const auto& equipment : equipped)
-		equipment.printEquipment();
-
-	cout << endl;
-}
-
-// Prints Player stats only
-void Player::quickPrintPlayer() const 
-{
-	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense() << endl;
-}
+//// Prints the complete Player character sheet, not including inventory
+//void Player::printPlayer() const 
+//{
+//	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense()  << endl;
+//	cout << "Player equipment: "<< endl;
+//	cout << "|                     Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
+//	cout << "-------------------------------------------------------------------------------------------------------------------" << endl;
+//	for (const auto& equipment : equipped)
+//		equipment.printEquipment();
+//
+//	cout << endl;
+//}
+//
+//// Prints Player stats only
+//void Player::quickPrintPlayer() const 
+//{
+//	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense() << endl;
+//}
 
 void Player::setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense) // Set Player base stats. Used for debugging. Input is an integer for each stat.
 {

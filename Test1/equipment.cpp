@@ -52,11 +52,11 @@ void Equipment::setEquipmentSlot(EquipmentSlot _equipmentSlot)
 	equipmentSlot = _equipmentSlot;
 }
 
-void Equipment::printEquipment() const
-{
-	if (equipmentSlot == EquipmentSlot::EMPTY)
-		return;
-
-	std::cout << "| " << std::setw(22) << this->getId() << " | " << std::setw(9) << itemTypeToString.at(this->getItemType()) << " | " << std::setw(9) << itemRarityToString.at(this->getItemRarity()) << " | " << std::setw(10) << equipmentSlotToString.at(equipmentSlot)
-		<< " | " << std::setw(21) << this->getItemName() << " | " << std::setw(6) << equipmentAttack << " | " << std::setw(7) << equipmentDefense << " | " << std::setw(6) << equipmentHealth << " |" << std::endl;
-}
+//void Equipment::printEquipment() const
+//{
+//	if (equipmentSlot == EquipmentSlot::EMPTY)
+//		return;
+//
+//	std::cout << "| " << std::setw(22) << this->getId() << " | " << std::setw(9) << itemTypeToString.at(this->getItemType()) << " | " << std::setw(9) << itemRarityToString.at(this->getItemRarity()) << " | " << std::setw(10) << equipmentSlotToString.at(equipmentSlot)
+//		<< " | " << std::setw(21) << this->getItemName() << " | " << std::setw(6) << equipmentAttack << " | " << std::setw(7) << equipmentDefense << " | " << std::setw(6) << equipmentHealth << " |" << std::endl;
+//}

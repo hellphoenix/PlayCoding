@@ -40,8 +40,6 @@ struct Equipment : public Item
 	void setEquipmentHealth(int _equipmentHealth);
 	void setEquipmentSlot(EquipmentSlot _itemSlot);
 
-	void printEquipment() const;
-
 private:
 
 	EquipmentSlot equipmentSlot;

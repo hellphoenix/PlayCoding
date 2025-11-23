@@ -77,16 +77,3 @@ Equipment Inventory::findEquipmentById(const std::string& _id) const
 	}
 	return Equipment{}; // If the item id is found in our inventory, we return an empty item
 }
-
-void Inventory::printEquipmentInventory()
-{
-	sortEquipmentInventory();
-	std::cout << "=== Player Equipment Inventory ===" << std::endl;
-	std::cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << std::endl;
-	std::cout << "-----------------------------------------------------------------------------------------------------------------" << std::endl;
-	for (const auto& equipment : equipmentInventory)
-		equipment.printEquipment();
-	std::cout << "========================" << std::endl;
-	std::cout << std::endl;
-	std::cout << std::endl;
-}

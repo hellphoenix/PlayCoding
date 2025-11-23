@@ -19,7 +19,6 @@ public:
 	std::vector<Equipment> filterEquipmentInventoryBySlot(Equipment::EquipmentSlot _slot) const;
 	std::vector<Equipment> filterEquipmentInventoryByRarity(Item::ItemRarity _rarity) const;
 	Equipment findEquipmentById(const std::string& _id) const;
-	void printEquipmentInventory();
 };
 
 

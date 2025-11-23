@@ -5,7 +5,7 @@
 #include <string>
 class Character
 {
-private:
+protected:
 	std::string name;
 	int baseHealth;
 	int currentHealth;
@@ -13,10 +13,10 @@ private:
 	int baseDefense;
 	bool alive;
 
-public:
 	Character();
 	Character(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense);
-	
+
+public:
 	std::string getName() const;
 	int getBaseHealth() const; 
 	int getCurrentHealth() const;
@@ -31,7 +31,7 @@ public:
 	void setBaseDefense(int _defense);
 	void setAlive(bool _isAlive);
 
-	void printCharacter() const; // For debugging
+	//void printCharacter() const; // For debugging
 };
 
 

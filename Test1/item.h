@@ -49,7 +49,7 @@ public:
 	void printItem() const;
 
 
-private:
+protected:
 	std::string id;
 	std::string itemName;
 	ItemType itemType;

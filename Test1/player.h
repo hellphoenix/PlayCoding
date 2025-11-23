@@ -39,10 +39,8 @@ public:
 	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense); // for debugging
 	void changeCurrentHealth(int _health); // Adds input health to change current health between 0 and max health
 
-	
-
-	void printPlayer() const; // Prints player stats and equipment
-	void quickPrintPlayer() const; // Prints player stats only 
+	//void printPlayer() const; // Prints player stats and equipment
+	//void quickPrintPlayer() const; // Prints player stats only 
 	void updateMaxStats(); // Recalculate max stats when equipping items, unequipping items, or creating a new player
 
 	

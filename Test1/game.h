@@ -16,17 +16,6 @@ public:
 	enum class Mode
 	{
 		Normal,
-		EquipSelectSlot,
-		EquipSelectItem,
-		UnequipSelectSlot,
-		DebugSelect,
-		DebugName,
-		DebugAttack,
-		DebugDefense,
-		DebugHealth,
-		DebugAddToInventorySlot,
-		DebugAddToInventoryItem,
-		DebugRemoveFromInventoryItem,
 		Save,
 		Load,
 		SpawnEnemy,
@@ -49,13 +38,6 @@ public:
 private:
 
 	bool normal = false;
-	bool pendingDebugName = false;
-	bool pendingDebugAttack = false;
-	bool pendingDebugDefense = false;
-	bool pendingDebugHealth = false;
-	bool pendingDebugAddToInventoryItemInput = false;
-	bool pendingDebugRemoveFromInventory = false;
-	bool pendingEquipSelectItem = false;
 	bool pendingSave = false;
 	bool pendingLoad = false;
 
@@ -76,40 +58,15 @@ private:
 
 	sf::Font uiFont;
 
+	/*void startSave();*/
+	/*void save(const sf::Event::TextEntered& _text);*/
 
-	//void startEquip();
-
-	void startUnequip();
-
-	void startDebug();
-
-	void startDebugName();
-	void debugName(const sf::Event::TextEntered& _text);
-
-	void startDebugAttack();
-	void debugAttack(const sf::Event::TextEntered& _text);
-
-	void startDebugDefense();
-	void debugDefense(const sf::Event::TextEntered& _text);
-
-	void startDebugHealth();
-	void debugHealth(const sf::Event::TextEntered& _text);
-
-	void startDebugAddToInventory();
-
-	void startDebugRemoveFromInventory();
-
-	void startSave();
-	void save(const sf::Event::TextEntered& _text);
-
-	void startLoad();
-	void load(const sf::Event::TextEntered& _text);
+	/*void startLoad();*/
+	/*void load(const sf::Event::TextEntered& _text);*/
 
 	void Quit();
 
 	void startFight();
-
-	void printHelp() const;
 
 	void giveStartingItems()
 	{

@@ -75,7 +75,7 @@ void Character::setAlive(bool _alive)
 	alive = _alive;
 }
 
-void Character::printCharacter() const
-{
-	std::cout << "Character Name: " << getName() << ", HP: " << getCurrentHealth() << "/" << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << std::endl;
-}
+//void Character::printCharacter() const
+//{
+//	std::cout << "Character Name: " << getName() << ", HP: " << getCurrentHealth() << "/" << getBaseHealth() << ", Attack: " << getBaseAttack() << ", Defense: " << getBaseDefense() << std::endl;
+//}

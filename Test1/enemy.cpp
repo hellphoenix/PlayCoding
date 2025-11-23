@@ -22,8 +22,8 @@ Enemy::EnemyType Enemy::getEnemyType() const
 	return enemyType;
 }
 
-void Enemy::printEnemy() const
-{
-	std::cout << "Enemy Name: " << Enemy::getName() << ", Hp: " << Enemy::getCurrentHealth() 
-		<< "/" << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << std::endl;
-}
+//void Enemy::printEnemy() const
+//{
+//	std::cout << "Enemy Name: " << Enemy::getName() << ", Hp: " << Enemy::getCurrentHealth() 
+//		<< "/" << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << std::endl;
+//}

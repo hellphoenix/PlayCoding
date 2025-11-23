@@ -64,36 +64,40 @@ static void loadIfNeeded()
 {
     if (g_loaded) return;
 
-    std::ifstream file("items.json");
-    if (!file)
-        throw std::runtime_error("Could not open items.json");
-
-    json j;
-    file >> j;
-    for (const auto& jitem : j["equipment"])
+    try
     {
-        
-        std::string id = jitem["id"];
-        std::string slot = jitem["slot"];
-        std::string type = jitem["type"];
-        std::string rarity = jitem["rarity"];
-        std::string name = jitem["name"];
-        int attack = jitem["attack"];
-        int defense = jitem["defense"];
-        int health = jitem["health"];
-
-        Equipment::EquipmentSlot itemSlot = equipmentSlotFromString(slot);
-        Item::ItemType itemType = itemTypeFromString(type);
-        Item::ItemRarity itemRarity = itemRarityFromString(rarity);
-
-        if (itemType == Item::ItemType::EQUIPMENT)
+        std::ifstream file("items.json");
+        json j;
+        file >> j;
+        for (const auto& jitem : j["equipment"])
         {
-            g_equipment.emplace_back(Equipment(id, name, attack, defense, health, itemSlot, itemRarity));
-            g_EquipmentById.emplace(id, g_equipment.size() - 1);
-        }       
-    }
 
-    g_loaded = true;
+            std::string id = jitem["id"];
+            std::string slot = jitem["slot"];
+            std::string type = jitem["type"];
+            std::string rarity = jitem["rarity"];
+            std::string name = jitem["name"];
+            int attack = jitem["attack"];
+            int defense = jitem["defense"];
+            int health = jitem["health"];
+
+            Equipment::EquipmentSlot itemSlot = equipmentSlotFromString(slot);
+            Item::ItemType itemType = itemTypeFromString(type);
+            Item::ItemRarity itemRarity = itemRarityFromString(rarity);
+
+            if (itemType == Item::ItemType::EQUIPMENT)
+            {
+                g_equipment.emplace_back(Equipment(id, name, attack, defense, health, itemSlot, itemRarity));
+                g_EquipmentById.emplace(id, g_equipment.size() - 1);
+            }
+        }
+
+        g_loaded = true;
+    }
+    catch (...)
+    {
+        std::cout << "Could not open items.json";
+    }
 }
 
 // Public API
