@@ -32,15 +32,12 @@ public:
 	int getMaxDefense() const;
 	int getMaxHealth() const;
 
-	void equipItem(const Equipment& _equipment); // Equips items using Items object.
+	void equipEquipment(const Equipment& _equipment); // Equips items using Items object.
 	void equipFromInventory(const std::string& _id); // Equips items from inventory using equipment id
-	void unequipItem(Equipment::EquipmentSlot _equipmentSlot); // Unequips item using item slot
+	void unequipEquipment(Equipment::EquipmentSlot _equipmentSlot); // Unequips item using item slot
 
 	void setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense); // for debugging
 	void changeCurrentHealth(int _health); // Adds input health to change current health between 0 and max health
-
-	//void printPlayer() const; // Prints player stats and equipment
-	//void quickPrintPlayer() const; // Prints player stats only 
 	void updateMaxStats(); // Recalculate max stats when equipping items, unequipping items, or creating a new player
 
 	

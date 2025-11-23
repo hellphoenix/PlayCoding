@@ -1,7 +1,7 @@
 #include "enemy.h"
 #include <iostream>
 
-Enemy::Enemy() : Character(" ", 1, 1, 0, 0), enemyType(EnemyType::EMPTY)
+Enemy::Enemy() : Character("Casper", 1, 1, 0, 0), enemyType(EnemyType::EMPTY)
 {
 
 }
@@ -19,11 +19,5 @@ const std::map<Enemy::EnemyType, std::string> Enemy::enemyTypeToString =
 
 Enemy::EnemyType Enemy::getEnemyType() const
 {
-	return enemyType;
+	return this->enemyType;
 }
-
-//void Enemy::printEnemy() const
-//{
-//	std::cout << "Enemy Name: " << Enemy::getName() << ", Hp: " << Enemy::getCurrentHealth() 
-//		<< "/" << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << std::endl;
-//}

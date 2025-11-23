@@ -73,8 +73,8 @@ private:
 
 		player.getPlayerInventory().addEquipmentToInventory(ItemLibrary::equipmentById("helmet_leather_05"));
 		player.getPlayerInventory().addEquipmentToInventory(ItemLibrary::equipmentById("helmet_leather_06"));
-		player.equipItem(ItemLibrary::equipmentById("sword_steel_01"));
-		player.equipItem(gameEquipment[1][0]);
+		player.equipEquipment(ItemLibrary::equipmentById("sword_steel_01"));
+		player.equipEquipment(gameEquipment[1][0]);
 	}
 
 

@@ -721,6 +721,11 @@ void Game::handleDropOnCharacter(const sf::Vector2f& dropPos)
 			return;
 
 		const auto& draggedItem = inventory[drag.inventoryIndex];
+		if (draggedItem.getId() == "" || draggedItem.getItemName() == "")
+		{
+			player.getPlayerInventory().removeEquipmentFromInventory(draggedItem.getId());
+			return;
+		}
 
 		// find which slot rect, if any, we dropped on
 		for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); ++i)
@@ -754,12 +759,14 @@ void Game::handleDropOnCharacter(const sf::Vector2f& dropPos)
 		const auto& masterEquipmentList = gameEquipment;
 		const auto slotIndex = equipmentSlotToIndex(drag.slot);
 
-		if (slotIndex >= masterEquipmentList.size())
-			return;
-		if (drag.inventoryIndex >= masterEquipmentList[slotIndex].size())
+		if (slotIndex >= masterEquipmentList.size() || drag.inventoryIndex >= masterEquipmentList[slotIndex].size())
 			return;
 
 		Equipment draggedItem = masterEquipmentList[slotIndex][drag.inventoryIndex];
+		if (draggedItem.getId() == "" || draggedItem.getItemName() == "")
+		{
+			return;
+		}
 
 		// find which slot rect, if any, we dropped on
 		for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); ++i)
@@ -779,7 +786,8 @@ void Game::handleDropOnCharacter(const sf::Vector2f& dropPos)
 					return;
 				}
 
-				player.equipItem(draggedItem);
+				player.equipEquipment(draggedItem);
+
 
 				const Equipment& equipped = player.getEquippedItem(slot);
 
@@ -801,7 +809,7 @@ void Game::handleDropOnInventory(const sf::Vector2f& dropPos)
 		const auto& playerEquipment = player.getPlayerEquipment();
 		const auto& old = player.getEquippedItem(equipmentSlotFromIndex(drag.inventoryIndex));
 
-		player.unequipItem(old.getEquipmentSlot());
+		player.unequipEquipment(old.getEquipmentSlot());
 		
 	}
 	else if (drag.source == DragSource::MasterList)
@@ -809,9 +817,7 @@ void Game::handleDropOnInventory(const sf::Vector2f& dropPos)
 		const auto& masterEquipmentList = gameEquipment;
 		const auto slotIndex = equipmentSlotToIndex(drag.slot);
 
-		if (slotIndex >= masterEquipmentList.size())
-			return;
-		if (drag.inventoryIndex >= masterEquipmentList[slotIndex].size())
+		if (slotIndex >= masterEquipmentList.size() || drag.inventoryIndex >= masterEquipmentList[slotIndex].size())
 			return;
 
 		Equipment draggedItem = masterEquipmentList[slotIndex][drag.inventoryIndex];

@@ -25,9 +25,7 @@ public:
 	Enemy(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, EnemyType _enemyType);
 
 	EnemyType getEnemyType() const;
-	Inventory& getLootTable() { return Enemy::lootTable; }
-
-	/*void printEnemy() const;*/
+	Inventory& getLootTable() { return this->lootTable; }
 
 private:
 	Inventory lootTable;

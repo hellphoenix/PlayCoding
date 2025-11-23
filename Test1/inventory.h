@@ -11,7 +11,7 @@ private:
 	std::vector<Equipment> equipmentInventory;
 
 public:
-	const std::vector<Equipment>& getEquipmentInventory() const { return equipmentInventory; }
+	const std::vector<Equipment>& getEquipmentInventory() const { return this->equipmentInventory; }
 	void addEquipmentToInventory(const Equipment& _equipment);
 	void removeEquipmentFromInventory(const std::string& _id);
 

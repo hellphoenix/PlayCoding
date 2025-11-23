@@ -13,50 +13,49 @@ const std::map<Equipment::EquipmentSlot, std::string> Equipment::equipmentSlotTo
 
 int Equipment::getEquipmentAttack() const
 {
-	return equipmentAttack;
+	return this->equipmentAttack;
 }
 
 int Equipment::getEquipmentDefense() const
 {
-	return equipmentDefense;
+	return this->equipmentDefense;
 }
 
 int Equipment::getEquipmentHealth() const
 {
-	return equipmentHealth;
+	return this->equipmentHealth;
 }
 
 Equipment::EquipmentSlot Equipment::getEquipmentSlot() const
 {
-	return equipmentSlot;
+	return this->equipmentSlot;
 }
 
 
 void Equipment::setEquipmentAttack(int _equipmentAttack)
 {
-	equipmentAttack = _equipmentAttack;
+	this->equipmentAttack = _equipmentAttack;
 }
 
 void Equipment::setEquipmentDefense(int _equipmentDefense)
 {
-	equipmentDefense = _equipmentDefense;
+	this->equipmentDefense = _equipmentDefense;
 }
 
 void Equipment::setEquipmentHealth(int _equipmentHealth)
 {
-	equipmentHealth = _equipmentHealth;
+	this->equipmentHealth = _equipmentHealth;
 }
 
 void Equipment::setEquipmentSlot(EquipmentSlot _equipmentSlot)
 {	
-	equipmentSlot = _equipmentSlot;
+	for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
+	{
+		if (_equipmentSlot == equipmentSlotFromIndex(i))
+		{
+			this->equipmentSlot = _equipmentSlot;
+			return;
+		}
+	}
+	this->equipmentSlot = Equipment::EquipmentSlot::EMPTY;
 }
-
-//void Equipment::printEquipment() const
-//{
-//	if (equipmentSlot == EquipmentSlot::EMPTY)
-//		return;
-//
-//	std::cout << "| " << std::setw(22) << this->getId() << " | " << std::setw(9) << itemTypeToString.at(this->getItemType()) << " | " << std::setw(9) << itemRarityToString.at(this->getItemRarity()) << " | " << std::setw(10) << equipmentSlotToString.at(equipmentSlot)
-//		<< " | " << std::setw(21) << this->getItemName() << " | " << std::setw(6) << equipmentAttack << " | " << std::setw(7) << equipmentDefense << " | " << std::setw(6) << equipmentHealth << " |" << std::endl;
-//}

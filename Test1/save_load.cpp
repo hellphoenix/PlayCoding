@@ -70,7 +70,7 @@ bool SaveLoad::fromJson(const json& j, Player& out)
             for (const auto& id : j["equipped"])
             {
                 Equipment it = resolveOrEmpty(id.get<std::string>());
-                out.equipItem(it);
+                out.equipEquipment(it);
             }
         }
 

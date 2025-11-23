@@ -7,18 +7,24 @@
 void Inventory::addEquipmentToInventory(const Equipment& _equipment)
 {
 	if (_equipment.getId() != "")
+	{
 		equipmentInventory.push_back(_equipment);
+		sortEquipmentInventory();
+	}
+		
 }
 
 // Removes item from inventory if it exists. Input is item ID.
 void Inventory::removeEquipmentFromInventory(const std::string& _id)
 {
-	auto tempItem = std::remove_if(equipmentInventory.begin(), equipmentInventory.end(),[&](const Equipment& _equipment)
-		{ 
-			return _equipment.getId() == _id;
+	auto tempItem = std::find_if(equipmentInventory.begin(), equipmentInventory.end(), [&](const Equipment& _equipment)
+		{
+			return _equipment.getId() == _id || _equipment.getId() == "";
 		});
 
-	equipmentInventory.erase(tempItem, equipmentInventory.end());
+	equipmentInventory.erase(tempItem);
+	equipmentInventory.shrink_to_fit();
+	sortEquipmentInventory();
 }
 
 // Sorts inventory by slot type, then rarity, then name.
@@ -75,5 +81,5 @@ Equipment Inventory::findEquipmentById(const std::string& _id) const
 	{
 		if (equipment.getId() == _id) return equipment; // if we find the item ID in our inventory, we return that item
 	}
-	return Equipment{}; // If the item id is found in our inventory, we return an empty item
+	return Equipment{}; // If the item id is not found in our inventory, we return an empty item
 }
