@@ -19,5 +19,22 @@ const std::map<Enemy::EnemyType, std::string> Enemy::enemyTypeToString =
 
 Enemy::EnemyType Enemy::getEnemyType() const
 {
-	return this->enemyType;
+        return this->enemyType;
+}
+
+int Enemy::getMaxHealth() const
+{
+        return this->baseHealth;
+}
+
+void Enemy::changeCurrentHealth(int _healthChanged)
+{
+        int newHealth = this->currentHealth + _healthChanged;
+        if (newHealth < 0)
+                newHealth = 0;
+        if (newHealth > this->baseHealth)
+                newHealth = this->baseHealth;
+
+        this->currentHealth = newHealth;
+        this->setAlive(this->currentHealth > 0);
 }
