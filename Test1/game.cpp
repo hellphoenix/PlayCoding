@@ -3,15 +3,18 @@
 #include "save_load.h"
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <iostream>
 #include <string>
 
 Game::Game()
 {
-	if (!uiFont.openFromFile("assets/Arial.ttf"))
-	{
-		std::cout << "Failed to load UI font. Check path.\n";
-	}
+        if (!uiFont.openFromFile("assets/Arial.ttf"))
+        {
+                std::cout << "Failed to load UI font. Check path.\n";
+        }
+
+        refreshAbilitySlotsFromEquipment();
 }
 
 //void Game::save(const sf::Event::TextEntered& _text)
@@ -122,17 +125,26 @@ void Game::Quit()
 
 void Game::startFight()
 {
-	//TODO
+        mode = Mode::FightEnemy;
+        enemy = combatActions.spawnEnemy(Enemy::EnemyType::SLIME);
+        enemy.changeCurrentHealth(enemy.getMaxHealth() - enemy.getCurrentHealth());
+        player.changeCurrentHealth(player.getMaxHealth()); // heal to full before combat
+
+        playerAutoAttackTimer = 0.f;
+        enemyAutoAttackTimer = 0.f;
+        refreshAbilitySlotsFromEquipment();
+        std::cout << "Engaged " << enemy.getName() << "!\n";
 }
 
 void Game::loop(std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& _gameEquipment)
 {
 
 	sf::Clock clock;
-	enemy = combatActions.spawnEnemy(Enemy::EnemyType::SLIME);
+        enemy = combatActions.spawnEnemy(Enemy::EnemyType::SLIME);
 
-	gameEquipment = _gameEquipment;
-	giveStartingItems();
+        gameEquipment = _gameEquipment;
+        giveStartingItems();
+        refreshAbilitySlotsFromEquipment();
 
 	float windowWidth = 1920;
 	float windowHeight = 1080;
@@ -189,32 +201,47 @@ void Game::handleEvent(const sf::Event& _event)
 
 void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
 {
-	if (mode == Mode::Normal)
-	{
-		switch (_keyPressed.scancode)
-		{
-		case sf::Keyboard::Scancode::C: {
-			showCharacterSheet = !showCharacterSheet;
-			break;
-		}
-		case sf::Keyboard::Scancode::I: {
-			showInventorySheet = !showInventorySheet;
-			break;
-		}
-		case sf::Keyboard::Scancode::M: {
-			showMasterEquipmentSheet = !showMasterEquipmentSheet;
-			break;
-		}
-		case sf::Keyboard::Scancode::S: { pendingSave = true; break; }
-		case sf::Keyboard::Scancode::L: { pendingLoad = true; break; }
-		case sf::Keyboard::Scancode::Escape: { Quit(); break; }
-		default:
-		{
-			break;
-		}
-		}
-	}
-}
+          if (mode == Mode::Normal)
+          {
+                  switch (_keyPressed.scancode)
+                  {
+                  case sf::Keyboard::Scancode::C: {
+                          showCharacterSheet = !showCharacterSheet;
+                          break;
+                  }
+                  case sf::Keyboard::Scancode::I: {
+                          showInventorySheet = !showInventorySheet;
+                          break;
+                  }
+                  case sf::Keyboard::Scancode::M: {
+                          showMasterEquipmentSheet = !showMasterEquipmentSheet;
+                          break;
+                  }
+                  case sf::Keyboard::Scancode::F: { startFight(); break; }
+                  case sf::Keyboard::Scancode::S: { pendingSave = true; break; }
+                  case sf::Keyboard::Scancode::L: { pendingLoad = true; break; }
+                  case sf::Keyboard::Scancode::Escape: { Quit(); break; }
+                  default:
+                  {
+                          break;
+                  }
+                  }
+          }
+          if (mode == Mode::FightEnemy)
+          {
+                  switch (_keyPressed.scancode)
+                  {
+                  case sf::Keyboard::Scancode::Num1: { useAbility(0); break; }
+                  case sf::Keyboard::Scancode::Num2: { useAbility(1); break; }
+                  case sf::Keyboard::Scancode::Num3: { useAbility(2); break; }
+                  case sf::Keyboard::Scancode::Num4: { useAbility(3); break; }
+                  case sf::Keyboard::Scancode::Num5: { useAbility(4); break; }
+                  case sf::Keyboard::Scancode::Escape: { mode = Mode::Normal; break; }
+                  default:
+                          break;
+                  }
+          }
+  }
 
 void Game::handleTextEntered(const sf::Event::TextEntered& _textEntered)
 {
@@ -393,27 +420,80 @@ void Game::handleMouseMoved(const sf::Event::MouseMoved _mouseMoved)
 
 void Game::update(float dt)
 {
-	if (pendingSave)
-	{
-		pendingSave = false;
-	}
-	else if (pendingLoad)
-	{
-		pendingLoad = false;
-	}
-	else if (normal)
-	{
-		normal = false;
-		mode = Mode::Normal;
-	}
+        if (pendingSave)
+        {
+                pendingSave = false;
+        }
+        else if (pendingLoad)
+        {
+                pendingLoad = false;
+        }
+        else if (mode == Mode::FightEnemy)
+        {
+                updateCombat(dt);
+        }
+        else if (normal)
+        {
+                normal = false;
+                mode = Mode::Normal;
+        }
+}
+
+void Game::updateCombat(float dt)
+{
+        playerAutoAttackTimer += dt;
+        enemyAutoAttackTimer += dt;
+
+        for (auto& slot : abilitySlots)
+        {
+                slot.update(dt);
+        }
+
+        if (mode != Mode::FightEnemy)
+                return;
+
+        if (playerAutoAttackTimer >= playerAutoAttackInterval && enemy.isAlive())
+        {
+                playerAutoAttackTimer = 0.f;
+                int damage = combatActions.playerAttack(enemy, player);
+                enemy.changeCurrentHealth(-damage);
+                std::cout << "Auto attack deals " << damage << " damage. Enemy HP: " << enemy.getCurrentHealth() << "/" << enemy.getMaxHealth() << "\n";
+        }
+
+        if (enemyAutoAttackTimer >= enemyAutoAttackInterval && enemy.isAlive())
+        {
+                enemyAutoAttackTimer = 0.f;
+                int damage = combatActions.enemyAttack(enemy, player);
+                player.changeCurrentHealth(-damage);
+                std::cout << enemy.getName() << " hits for " << damage << " damage. Player HP: " << player.getCurrentHealth() << "/" << player.getMaxHealth() << "\n";
+        }
+
+        if (!enemy.isAlive())
+        {
+                mode = Mode::Normal;
+                std::cout << "Enemy defeated!\n";
+                return;
+        }
+
+        if (player.getCurrentHealth() <= 0)
+        {
+                std::cout << "You were defeated. Returning to hub.\n";
+                player.changeCurrentHealth(player.getMaxHealth());
+                mode = Mode::Normal;
+        }
 }
 
 void Game::draw(sf::RenderWindow& window, float windowWidth, float windowHeight)
 {
-	if (showCharacterSheet)
-	{
-		drawCharacterSheet(window, windowWidth, windowHeight);
-	}
+        if (mode == Mode::FightEnemy)
+        {
+                drawCombat(window, windowWidth, windowHeight);
+        }
+
+        if (showCharacterSheet)
+        {
+                drawCharacterSheet(window, windowWidth, windowHeight);
+        }
 	if (showInventorySheet)
 	{
 		drawInventorySheet(window, windowWidth, windowHeight);
@@ -424,9 +504,9 @@ void Game::draw(sf::RenderWindow& window, float windowWidth, float windowHeight)
 	}
 
 
-	if (drag.active)
-	{
-		if (drag.source == DragSource::Inventory)
+        if (drag.active)
+        {
+                if (drag.source == DragSource::Inventory)
 		{
 			const auto& inventory = player.getPlayerInventory().getEquipmentInventory();
 			if (drag.inventoryIndex < inventory.size())
@@ -492,11 +572,118 @@ void Game::draw(sf::RenderWindow& window, float windowWidth, float windowHeight)
 
 				window.draw(box);
 				window.draw(text);
-			
-		}
 
-	}
+        }
 
+}
+
+void Game::drawCombat(sf::RenderWindow& window, float windowWidth, float windowHeight)
+{
+        float panelHeight = 240.f;
+        sf::RectangleShape panel({ windowWidth - 40.f, panelHeight });
+        panel.setPosition(sf::Vector2f{ 20.f, 20.f });
+        panel.setFillColor(sf::Color(25, 25, 25, 220));
+        panel.setOutlineThickness(2.f);
+        panel.setOutlineColor(sf::Color::Red);
+        window.draw(panel);
+
+        if (uiFont.getInfo().family.empty())
+                return;
+
+        sf::Text text(uiFont, "", 18);
+        text.setFillColor(sf::Color::White);
+
+        auto drawBar = [&](float x, float y, float width, float height, int current, int max, const std::string& label, const sf::Color& fill)
+                {
+                        float pct = max > 0 ? static_cast<float>(current) / static_cast<float>(max) : 0.f;
+                        pct = std::clamp(pct, 0.f, 1.f);
+
+                        sf::RectangleShape back({ width, height });
+                        back.setPosition({ x, y });
+                        back.setFillColor(sf::Color(40, 40, 40, 200));
+                        back.setOutlineThickness(1.f);
+                        back.setOutlineColor(sf::Color::White);
+
+                        sf::RectangleShape front({ width * pct, height });
+                        front.setPosition({ x, y });
+                        front.setFillColor(fill);
+
+                        text.setString(label + " " + std::to_string(current) + "/" + std::to_string(max));
+                        text.setPosition({ x + 10.f, y - 24.f });
+
+                        window.draw(back);
+                        window.draw(front);
+                        window.draw(text);
+                };
+
+        float barWidth = panel.getSize().x - 80.f;
+        drawBar(panel.getPosition().x + 30.f, panel.getPosition().y + 40.f, barWidth, 24.f, player.getCurrentHealth(), player.getMaxHealth(), "Player HP", sf::Color(70, 200, 90));
+        drawBar(panel.getPosition().x + 30.f, panel.getPosition().y + 110.f, barWidth, 24.f, enemy.getCurrentHealth(), enemy.getMaxHealth(), enemy.getName() + " HP", sf::Color(200, 60, 60));
+
+        // auto-attack timers
+        float timerY = panel.getPosition().y + 170.f;
+        float timerWidth = 220.f;
+        auto drawTimer = [&](float x, const std::string& label, float timer, float interval)
+                {
+                        float pct = std::clamp(1.f - (timer / interval), 0.f, 1.f);
+                        sf::RectangleShape back({ timerWidth, 16.f });
+                        back.setPosition({ x, timerY });
+                        back.setFillColor(sf::Color(30, 30, 30, 200));
+                        back.setOutlineThickness(1.f);
+                        back.setOutlineColor(sf::Color::White);
+
+                        sf::RectangleShape front({ timerWidth * pct, 16.f });
+                        front.setPosition({ x, timerY });
+                        front.setFillColor(sf::Color(120, 120, 220));
+
+                        text.setString(label);
+                        text.setPosition({ x, timerY - 22.f });
+
+                        window.draw(back);
+                        window.draw(front);
+                        window.draw(text);
+                };
+
+        drawTimer(panel.getPosition().x + 30.f, "Player auto", playerAutoAttackTimer, playerAutoAttackInterval);
+        drawTimer(panel.getPosition().x + 300.f, "Enemy auto", enemyAutoAttackTimer, enemyAutoAttackInterval);
+
+        // ability bar
+        float abilityY = panel.getPosition().y + panelHeight - 50.f;
+        float abilityWidth = 180.f;
+        float abilityX = panel.getPosition().x + 30.f;
+
+        for (std::size_t i = 0; i < abilitySlots.size(); ++i)
+        {
+                const auto& ability = abilitySlots[i];
+                sf::RectangleShape slotBox({ abilityWidth, 26.f });
+                slotBox.setPosition({ abilityX + static_cast<float>(i) * (abilityWidth + 10.f), abilityY });
+                slotBox.setFillColor(sf::Color(50, 50, 50, 220));
+                slotBox.setOutlineThickness(1.f);
+                slotBox.setOutlineColor(sf::Color::White);
+
+                std::string label = std::to_string(i + 1) + ") " + (ability.name.empty() ? "Empty" : ability.name);
+                if (!ability.isReady() && ability.cooldown > 0.f)
+                {
+                        float remaining = std::max(0.f, ability.timer);
+                        label += " (" + std::to_string(static_cast<int>(std::ceil(remaining))) + "s)";
+                }
+
+                text.setString(label);
+                text.setPosition(slotBox.getPosition() + sf::Vector2f{ 6.f, 2.f });
+
+                window.draw(slotBox);
+
+                if (!ability.isReady())
+                {
+                        float pct = ability.cooldown > 0.f ? std::clamp(ability.timer / ability.cooldown, 0.f, 1.f) : 0.f;
+                        sf::RectangleShape cooldownMask({ abilityWidth, 26.f * pct });
+                        cooldownMask.setPosition(slotBox.getPosition());
+                        cooldownMask.setFillColor(sf::Color(0, 0, 0, 120));
+                        window.draw(cooldownMask);
+                }
+
+                window.draw(text);
+        }
 }
 
 void Game::drawCharacterSheet(sf::RenderWindow& window, float windowWidth, float windowHeight)
@@ -738,21 +925,22 @@ void Game::handleDropOnCharacter(const sf::Vector2f& dropPos)
 
 			if (rect.contains(dropPos))
 			{
-				if (draggedItem.getEquipmentSlot() != slot)
-				{
-					std::cout << "Item does not fit that slot.\n";
-					return;
-				}
+                                  if (draggedItem.getEquipmentSlot() != slot)
+                                  {
+                                          std::cout << "Item does not fit that slot.\n";
+                                          return;
+                                  }
 
-				player.equipFromInventory(draggedItem.getId());
+                                  player.equipFromInventory(draggedItem.getId());
 
-				const Equipment& equipped = player.getEquippedItem(slot);
+                                  const Equipment& equipped = player.getEquippedItem(slot);
 
-				std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
-				return;
-			}
-		}
-	}
+                                  std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
+                                  refreshAbilitySlotsFromEquipment();
+                                  return;
+                          }
+                  }
+          }
 	else if (drag.source == DragSource::MasterList)
 	{
 
@@ -786,43 +974,123 @@ void Game::handleDropOnCharacter(const sf::Vector2f& dropPos)
 					return;
 				}
 
-				player.equipEquipment(draggedItem);
+                                  player.equipEquipment(draggedItem);
 
 
-				const Equipment& equipped = player.getEquippedItem(slot);
+                                  const Equipment& equipped = player.getEquippedItem(slot);
 
-				std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
-				return;
-			}
-		}
+                                  std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
+                                  refreshAbilitySlotsFromEquipment();
+                                  return;
+                          }
+                  }
 
 	}
 }
 
 void Game::handleDropOnInventory(const sf::Vector2f& dropPos)
 {
-	if (!showInventorySheet || !inventoryRect.getGlobalBounds().contains(dropPos))
-		return;
+        if (!showInventorySheet || !inventoryRect.getGlobalBounds().contains(dropPos))
+                return;
 
-	if (drag.source == DragSource::EquippedSlot)
-	{
-		const auto& playerEquipment = player.getPlayerEquipment();
-		const auto& old = player.getEquippedItem(equipmentSlotFromIndex(drag.inventoryIndex));
+          if (drag.source == DragSource::EquippedSlot)
+          {
+                  const auto& playerEquipment = player.getPlayerEquipment();
+                  const auto& old = player.getEquippedItem(equipmentSlotFromIndex(drag.inventoryIndex));
 
-		player.unequipEquipment(old.getEquipmentSlot());
-		
-	}
-	else if (drag.source == DragSource::MasterList)
-	{
-		const auto& masterEquipmentList = gameEquipment;
-		const auto slotIndex = equipmentSlotToIndex(drag.slot);
+                  player.unequipEquipment(old.getEquipmentSlot());
+                  refreshAbilitySlotsFromEquipment();
+
+          }
+        else if (drag.source == DragSource::MasterList)
+        {
+                const auto& masterEquipmentList = gameEquipment;
+                const auto slotIndex = equipmentSlotToIndex(drag.slot);
 
 		if (slotIndex >= masterEquipmentList.size() || drag.inventoryIndex >= masterEquipmentList[slotIndex].size())
 			return;
 
 		Equipment draggedItem = masterEquipmentList[slotIndex][drag.inventoryIndex];
 
-		player.getPlayerInventory().addEquipmentToInventory(draggedItem);
-	}
+                player.getPlayerInventory().addEquipmentToInventory(draggedItem);
+        }
 
+}
+
+void Game::refreshAbilitySlotsFromEquipment()
+{
+        auto setSlot = [&](std::size_t index, const std::string& name, float cooldown)
+                {
+                        if (index >= abilitySlots.size())
+                                return;
+                        abilitySlots[index].name = name;
+                        abilitySlots[index].reset(cooldown);
+                };
+
+        auto clearSlot = [&](std::size_t index)
+                {
+                        if (index >= abilitySlots.size())
+                                return;
+                        abilitySlots[index].name.clear();
+                        abilitySlots[index].reset(0.f);
+                };
+
+        const Equipment& mainHand = player.getEquippedItem(Equipment::EquipmentSlot::WEAPON);
+        if (mainHand.getId().empty())
+        {
+                setSlot(0, "Jab", 1.2f);
+                setSlot(1, "Guard", 3.0f);
+                setSlot(2, "Heavy Punch", 4.0f);
+        }
+        else
+        {
+                std::string base = mainHand.getItemName();
+                setSlot(0, base + " Slash", 1.0f);
+                setSlot(1, base + " Parry", 2.5f);
+                setSlot(2, base + " Finisher", 4.0f);
+        }
+
+        const Equipment& offHand = player.getEquippedItem(Equipment::EquipmentSlot::SHIELD);
+        if (offHand.getId().empty())
+        {
+                clearSlot(3);
+                clearSlot(4);
+        }
+        else
+        {
+                std::string base = offHand.getItemName();
+                setSlot(3, base + " Bash", 3.0f);
+                setSlot(4, base + " Surge", 5.0f);
+        }
+}
+
+void Game::useAbility(std::size_t slotIndex)
+{
+        if (mode != Mode::FightEnemy || slotIndex >= abilitySlots.size())
+                return;
+
+        auto& slot = abilitySlots[slotIndex];
+        if (!slot.isReady() || slot.name.empty() || !enemy.isAlive())
+                return;
+
+        int baseDamage = combatActions.playerAttack(enemy, player);
+        float modifier = 1.0f;
+        if (slotIndex == 1)
+                modifier = 0.7f; // guard-style move
+        else if (slotIndex == 2)
+                modifier = 1.5f;
+        else if (slotIndex >= 3)
+                modifier = 1.1f;
+
+        int damage = static_cast<int>(std::max(1.f, std::round(baseDamage * modifier)));
+        enemy.changeCurrentHealth(-damage);
+        slot.trigger();
+
+        std::cout << "Used " << slot.name << " for " << damage << " damage. Enemy HP: " << enemy.getCurrentHealth() << "/" << enemy.getMaxHealth() << "\n";
+
+        if (!enemy.isAlive())
+        {
+                mode = Mode::Normal;
+                std::cout << "Enemy defeated!\n";
+        }
 }

@@ -8,6 +8,7 @@
 #include "gameInitialize.h"
 #include "player.h"
 #include "equipment.h"
+#include <array>
 class Game
 {
 
@@ -32,14 +33,41 @@ public:
 	};
 
 	Player player = Player{ "Tony", 200, 200, 10, 10 };
-	void loop(std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& _gameEquipment);
-	Game();
+          void loop(std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& _gameEquipment);
+          Game();
 
-private:
+  private:
 
-	bool normal = false;
-	bool pendingSave = false;
-	bool pendingLoad = false;
+          struct AbilitySlot
+          {
+                  std::string name;
+                  float cooldown = 0.f;
+                  float timer = 0.f;
+
+                  bool isReady() const { return timer <= 0.f && !name.empty(); }
+                  void reset(float _cooldown)
+                  {
+                          cooldown = _cooldown;
+                          timer = 0.f;
+                  }
+                  void trigger()
+                  {
+                          timer = cooldown;
+                  }
+                  void update(float dt)
+                  {
+                          if (timer > 0.f)
+                          {
+                                  timer -= dt;
+                                  if (timer < 0.f)
+                                          timer = 0.f;
+                          }
+                  }
+          };
+
+          bool normal = false;
+          bool pendingSave = false;
+          bool pendingLoad = false;
 
 	bool showCharacterSheet = false;
 	bool showInventorySheet = false;
@@ -51,12 +79,19 @@ private:
 
 	Mode mode = Mode::Normal;
 	std::string textBuffer;	
-	Enemy enemy;
-	CombatActions combatActions ;
-	InventoryActions inventoryActions;
-	std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> gameEquipment;
+          Enemy enemy;
+          CombatActions combatActions ;
+          InventoryActions inventoryActions;
+          std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> gameEquipment;
 
-	sf::Font uiFont;
+          // combat state
+          float playerAutoAttackTimer = 0.f;
+          float enemyAutoAttackTimer = 0.f;
+          float playerAutoAttackInterval = 1.0f;
+          float enemyAutoAttackInterval = 1.4f;
+          std::array<AbilitySlot, 5> abilitySlots{};
+
+          sf::Font uiFont;
 
 	/*void startSave();*/
 	/*void save(const sf::Event::TextEntered& _text);*/
@@ -84,19 +119,24 @@ private:
 	void handleTextEntered(const sf::Event::TextEntered& _textEntered);
 	void handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed);
 	void handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleased);
-	void handleMouseMoved(const sf::Event::MouseMoved _mouseMoved);
-	void update(float dt);
+          void handleMouseMoved(const sf::Event::MouseMoved _mouseMoved);
+          void update(float dt);
+          void updateCombat(float dt);
 
-	void draw(sf::RenderWindow& window, float windowWidth, float windowHeight);
-	void drawCharacterSheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
-	void drawInventorySheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
-	void drawMasterEquipmentSheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
+          void draw(sf::RenderWindow& window, float windowWidth, float windowHeight);
+          void drawCombat(sf::RenderWindow& window, float windowWidth, float windowHeight);
+          void drawCharacterSheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
+          void drawInventorySheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
+          void drawMasterEquipmentSheet(sf::RenderWindow& window, float windowWidth, float windowHeight);
 
-	void handleDropOnCharacter(const sf::Vector2f& dropPos);
-	void handleDropOnInventory(const sf::Vector2f& dropPos);
+          void handleDropOnCharacter(const sf::Vector2f& dropPos);
+          void handleDropOnInventory(const sf::Vector2f& dropPos);
 
-	// new: drag state
-	struct DragState
+          void refreshAbilitySlotsFromEquipment();
+          void useAbility(std::size_t slotIndex);
+
+          // new: drag state
+          struct DragState
 	{
 		bool active = false;
 		DragSource source = DragSource::None;
