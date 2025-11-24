@@ -1,4 +1,9 @@
-﻿  game.cpp
-  inventory.cpp
+﻿  characterRenderer.cpp
+  game.cpp
+  gameInitialize.cpp
+  hudRenderer.cpp
+  inventoryActions.cpp
+  inventoryRenderer.cpp
+  main.cpp
   Generating Code...
   Test1.vcxproj -> D:\Game Dev Training\PlayCoding\x64\Debug\Test1.exe

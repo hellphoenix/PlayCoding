@@ -12,6 +12,8 @@ public:
 	int playerAttack(const Enemy& _enemy, const Player& _player);
 	int enemyAttack(const Enemy& _enemy, const Player& _player);
 	Enemy spawnEnemy(Enemy::EnemyType _type);
+
+private:
 };
 
 #endif // !COMBAT_ACTIONS_H

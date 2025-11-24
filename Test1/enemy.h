@@ -24,10 +24,10 @@
           Enemy();
           Enemy(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, EnemyType _enemyType);
 
-          EnemyType getEnemyType() const;
-          Inventory& getLootTable() { return this->lootTable; }
-          int getMaxHealth() const;
-          void changeCurrentHealth(int _healthChanged);
+	EnemyType getEnemyType() const;
+	Inventory& getLootTable() { return this->lootTable; }
+	int getMaxHealth() const;
+	void changeCurrentHealth(int _healthChanged);
 
   private:
           Inventory lootTable;
