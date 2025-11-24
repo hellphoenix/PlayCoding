@@ -1,7 +1,9 @@
 #pragma once
-#include "player.h"
 #include "enemy.h"
 #include "item_library.h"
+#include "player.h"
+#include "uiFonts.h"
+#include <vector>
 
 #ifndef GAME_INITIALIZE_H
 #define GAME_INITIALIZE_H
@@ -9,20 +11,20 @@
 class GameInitialize
 {
 public:
-    void run();
-    const Player& getPlayer() const;
-    std::array<vector<Item>, itemSlotToIndex(Item::ItemSlot::COUNT)> gameItems{};
+
+	void run();
+	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
+	UiFonts uiFont;
+	equipmentArray gameEquipment{};
 
 private:
-    void loadItems(); // Loads all items from item slot libraries
-    void createPlayer(); // Creates a player with defined stats
-    void giveStartingItems(); // Gives player some items at the start of the game. Will change when inventory testing is complete.
+	void loadEquipment(); // Loads all items from item slot libraries
 
-    const std::vector<Item>* items = nullptr; // pointer for master items list.
-
-
-    Player playerOne{};
+	const std::vector<Equipment>* equipment = nullptr; // pointer for master items list.
 };
+
+//constexpr std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)>& getGameEquipment();
+
 
 
 #endif // !GAME_INITIALIZE_H

@@ -1,47 +1,54 @@
 #include "inventory.h"
 #include <algorithm>
-#include <unordered_map>
 #include <iostream>
+#include <unordered_map>
 
-using std::cout, std::endl;
-
-
-void Inventory::addToInventory(const Item& _item)
+// Adds item to inventory if it has a proper item ID. Input is Item object. 
+void Inventory::addEquipmentToInventory(const Equipment& _equipment)
 {
-	if (_item.getId() != "")
-		inventoryItems.push_back(_item);
+	if (_equipment.getId() != "")
+	{
+		equipmentInventory.push_back(_equipment);
+		sortEquipmentInventory();
+	}
+		
 }
 
-void Inventory::removeFromInventory(const string& _id)
+// Removes item from inventory if it exists. Input is item ID.
+void Inventory::removeEquipmentFromInventory(const std::string& _id)
 {
-	auto tempItem = std::remove_if(inventoryItems.begin(), inventoryItems.end(),[&](const Item& _item) 
-		{ 
-			return _item.getId() == _id;
+	auto tempItem = std::find_if(equipmentInventory.begin(), equipmentInventory.end(), [&](const Equipment& _equipment)
+		{
+			return _equipment.getId() == _id || _equipment.getId() == "";
 		});
 
-	inventoryItems.erase(tempItem, inventoryItems.end());
+	equipmentInventory.erase(tempItem);
+	equipmentInventory.shrink_to_fit();
+	sortEquipmentInventory();
 }
 
-void Inventory::sortInventory()
+// Sorts inventory by slot type, then rarity, then name.
+void Inventory::sortEquipmentInventory()
 {
-	std::sort(inventoryItems.begin(), inventoryItems.end(),[](const Item& a, const Item& b)
+	std::sort(equipmentInventory.begin(), equipmentInventory.end(),[](const Equipment& a, const Equipment& b)
 		{
-			if (a.getItemSlot() != b.getItemSlot())
-				return a.getItemSlot() < b.getItemSlot();
+			if (a.getEquipmentSlot() != b.getEquipmentSlot())
+				return a.getEquipmentSlot() < b.getEquipmentSlot();
 			if (a.getItemRarity() != b.getItemRarity())
 				return a.getItemRarity() > b.getItemRarity();
 			return a.getItemName() < b.getItemName();
 		});
 }
 
-vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
+// Filters inventory by ItemSlot. Input is ItemSlot. Returns a vector of Items.
+std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(Equipment::EquipmentSlot _slot) const
 {
-	vector<Item> filteredList;
-	filteredList.reserve(inventoryItems.size());
+	std::vector<Equipment> filteredList;
+	filteredList.reserve(equipmentInventory.size());
 
-	for (const auto& item : inventoryItems)
+	for (const auto& item : equipmentInventory)
 	{
-		if (item.getItemSlot() == _slot)
+		if (item.getEquipmentSlot() == _slot)
 		{
 			filteredList.push_back(item);
 		}
@@ -51,34 +58,16 @@ vector<Item> Inventory::filterInventoryBySlot(Item::ItemSlot _slot) const
 	return filteredList;
 }
 
-vector<Item> Inventory::filterInventoryByType(Item::ItemType _type) const
+std::vector<Equipment> Inventory::filterEquipmentInventoryByRarity(Item::ItemRarity _rarity) const
 {
-	vector<Item> filteredList;
-	filteredList.reserve(inventoryItems.size());
+	std::vector<Equipment> filteredList;
+	filteredList.reserve(equipmentInventory.size());
 
-	for (const auto& item : inventoryItems)
+	for (const auto& equipment : equipmentInventory)
 	{
-		if (item.getItemType() == _type)
+		if (equipment.getItemRarity() == _rarity)
 		{
-			filteredList.push_back(item);
-		}
-	}
-	filteredList.shrink_to_fit();
-
-	return filteredList;
-
-}
-
-vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
-{
-	vector<Item> filteredList;
-	filteredList.reserve(inventoryItems.size());
-
-	for (const auto& item : inventoryItems)
-	{
-		if (item.getItemRarity() == _rarity)
-		{
-			filteredList.push_back(item);
+			filteredList.push_back(equipment);
 		}
 	}
 	filteredList.shrink_to_fit();
@@ -86,24 +75,11 @@ vector<Item> Inventory::filterInventoryByRarity(Item::ItemRarity _rarity) const
 	return filteredList;
 }
 
-const Item Inventory::searchInventoryById(const string& _id) const
+Equipment Inventory::findEquipmentById(const std::string& _id) const
 {
-	for (const auto& item : inventoryItems)
+	for (const auto& equipment : equipmentInventory)
 	{
-		if (item.getId() == _id) return item; // if we find the item ID in our inventory, we return that item
+		if (equipment.getId() == _id) return equipment; // if we find the item ID in our inventory, we return that item
 	}
-	return Item{}; // If the item id is found in our inventory, we return an empty item
-}
-
-void Inventory::printInventory()
-{
-	sortInventory();
-	std::cout << "=== Player Inventory ===" << endl;
-	cout << "|                   Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
-	cout << "-----------------------------------------------------------------------------------------------------------------" << endl;
-	for (const auto& item : inventoryItems)
-		item.printItem();
-	cout << "========================" << endl;
-	cout << endl;
-	cout << endl;
+	return Equipment{}; // If the item id is not found in our inventory, we return an empty item
 }

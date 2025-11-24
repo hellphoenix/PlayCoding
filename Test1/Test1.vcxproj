@@ -103,11 +103,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Game Dev Training\PlayCoding\Test1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\SFML\SFML-3.0.2\include;D:\Game Dev Training\PlayCoding\Test1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\SFML\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;FLACd.lib;oggd.lib;vorbisd.lib;vorbisencd.lib;vorbisfiled.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,40 +121,60 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Game Dev Training\PlayCoding\Test1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\SFML\SFML-3.0.2\include;D:\Game Dev Training\PlayCoding\Test1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\SFML\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;FLACd.lib;oggd.lib;vorbisd.lib;vorbisencd.lib;vorbisfiled.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="characterRenderer.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="equipment.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gameActions.cpp" />
+    <ClCompile Include="combatActions.cpp" />
     <ClCompile Include="gameInitialize.cpp" />
+    <ClCompile Include="hudRenderer.cpp" />
     <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="inventoryActions.cpp" />
+    <ClCompile Include="inventoryRenderer.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="item_library.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menuRenderer.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="save_load.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
+    <ClInclude Include="characterRenderer.h" />
+    <ClInclude Include="dragSource.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="equipment.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gameActions.h" />
+    <ClInclude Include="combatActions.h" />
     <ClInclude Include="gameInitialize.h" />
+    <ClInclude Include="gameMode.h" />
+    <ClInclude Include="hudRenderer.h" />
     <ClInclude Include="inventory.h" />
+    <ClInclude Include="inventoryActions.h" />
+    <ClInclude Include="inventoryRenderer.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="item_library.h" />
+    <ClInclude Include="menuRenderer.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="save_load.h" />
+    <ClInclude Include="uiFonts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="items.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\Arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

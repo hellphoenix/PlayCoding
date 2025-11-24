@@ -1,26 +1,24 @@
 #pragma once
-#include "item_library.h"
-using std::vector;
-
 #ifndef INVENTORY_H
 #define INVENTORY_H
+#include "item_library.h"
+#include "equipment.h"
+#include <vector>
 
 class Inventory
 {
 private:
-	vector<Item> inventoryItems;
+	std::vector<Equipment> equipmentInventory;
 
 public:
-	const vector<Item>& getInventory() const { return inventoryItems; }
-	void addToInventory(const Item& _item);
-	void removeFromInventory(const string& _id);
+	const std::vector<Equipment>& getEquipmentInventory() const { return this->equipmentInventory; }
+	void addEquipmentToInventory(const Equipment& _equipment);
+	void removeEquipmentFromInventory(const std::string& _id);
 
-	void sortInventory();
-	vector<Item> filterInventoryBySlot(Item::ItemSlot _slot) const;
-	vector<Item> filterInventoryByType(Item::ItemType _type) const;
-	vector<Item> filterInventoryByRarity(Item::ItemRarity _rarity) const;
-	const Item searchInventoryById(const string& _id) const;
-	void printInventory();
+	void sortEquipmentInventory();
+	std::vector<Equipment> filterEquipmentInventoryBySlot(Equipment::EquipmentSlot _slot) const;
+	std::vector<Equipment> filterEquipmentInventoryByRarity(Item::ItemRarity _rarity) const;
+	Equipment findEquipmentById(const std::string& _id) const;
 };
 
 

@@ -1,28 +1,38 @@
 #include "enemy.h"
 #include <iostream>
-using std::cout, std::endl;
 
-Enemy::Enemy() : Character(" ", 1, 0, 0), enemyType(EnemyType::EMPTY)
+Enemy::Enemy() : Character("Casper", 1, 1, 0, 0), enemyType(EnemyType::EMPTY)
 {
 
 }
 
-Enemy::Enemy(const string& _name, int _health, int _attack, int _defense, EnemyType _enemyType) : Character(_name, _health, _attack, _defense), enemyType(_enemyType)
+Enemy::Enemy(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense, EnemyType _enemyType) : 
+	Character(_name, _baseHealth, _currentHealth, _attack, _defense), enemyType(_enemyType)
 {
 
 }
 
-const map<Enemy::EnemyType, string> Enemy::enemyTypeToString =
+const std::map<Enemy::EnemyType, std::string> Enemy::enemyTypeToString =
 {
 	{EnemyType::EMPTY, "Empty"}, {EnemyType::SLIME, "Slime"}, {EnemyType::BAT, "Bat"}, {EnemyType::GOBLIN, "Goblin"}, {EnemyType::TROLL, "Troll"}
 };
 
 Enemy::EnemyType Enemy::getEnemyType() const
 {
-	return enemyType;
+	return this->enemyType;
 }
 
-void Enemy::printEnemy() const
+int Enemy::getMaxHealth() const
 {
-	cout << "Enemy Name: " << Enemy::getName() << ", Hp: " << Enemy::getCurrentHealth() << "/" << Enemy::getBaseHealth() << ", Attack: " << Enemy::getBaseAttack() << ", Defense: " << Enemy::getBaseDefense() << endl;
+    return this->baseHealth;
+}
+
+void Enemy::changeCurrentHealth(int _healthChanged)
+{
+    int newHealth = this->currentHealth + _healthChanged;
+    if (newHealth < 0) newHealth = 0;
+    else if (newHealth > this->baseHealth) newHealth = this->baseHealth;
+
+    this->currentHealth = newHealth;
+    this->setAlive(this->currentHealth > 0);
 }

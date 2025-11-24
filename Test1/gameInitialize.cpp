@@ -1,54 +1,38 @@
-#include "gameInitialize.h"
 #include "game.h"
+#include "gameInitialize.h"
 #include <iostream>
-using std::cout, std::endl;
 
 
 void GameInitialize::run()
 {
 
-	loadItems();
-	createPlayer();
-	giveStartingItems();
+	loadEquipment();
 
 	Game game;
-	game.loop(playerOne, gameItems);
+	game.loop(gameEquipment);
 }
 
-void GameInitialize::loadItems()
+void GameInitialize::loadEquipment()
 {
-	items = &ItemLibrary::items(); // point to item library master list
-
-	// Creates an array of vectors(gameItems) for all item slots, excluding EMPTY.
-	// Currently, Consumables are in gameItems[0], Helmets are in gameItems[1], Chestpieces are in gameItems[2], etc.
-	for (int i = 1; i < itemSlotToIndex(Item::ItemSlot::COUNT); i++) 
+	try
 	{
-		for (const auto& it : (*items))
+		equipment = &ItemLibrary::equipment(); // point to item library master list
+
+		// Creates an array of vectors(gameEquipment) for all equipment slots
+		for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
 		{
-			if (itemSlotToIndex(it.getItemSlot()) == i)
+			for (const auto& it : (*equipment))
 			{
-				gameItems[i-1].emplace_back(it);
-			}		
-		}		
-	}	
-}
-
-void GameInitialize::createPlayer()
-{
-	playerOne = Player{ "Tony", 200, 10, 10};
-}
-
-const Player& GameInitialize::getPlayer() const
-{
-	return playerOne;
-}
-
-void GameInitialize::giveStartingItems()
-{
-
-	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_05"));
-	playerOne.getPlayerInventory().addToInventory(ItemLibrary::byId("helmet_leather_06"));
-	playerOne.equipItem(ItemLibrary::byId("sword_steel_01"));
-	playerOne.equipItem((*items)[3]);
-	playerOne.equipItem(gameItems[1][0]);
+				if (equipmentSlotToIndex(it.getEquipmentSlot()) == i)
+				{
+					gameEquipment[i].push_back(it);
+				}
+			}
+		}
+	}
+	catch (...)
+	{
+		std::cout << "Could not load master game items list\n";
+	}
+		
 }

@@ -2,152 +2,123 @@
 #include <iostream>
 using std::cout, std::endl;
 
-Player::Player() : Character("Player", 1, 0, 0), maxHealth(1)
+Player::Player() : Character("Player", 1, 1, 0, 0), maxHealth(1)
 {
 	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _health, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
-
+Player::Player(const std::string& _name, int _baseHealth, int _currentHealth, int _attack, int _defense) : 
+	Character(_name, _baseHealth, _currentHealth, _attack, _defense), maxHealth(_baseHealth)
 {
 	updateMaxStats();
 }
 
-Player::Player(const string& _name, int _health, int _currentHealth, int _attack, int _defense) : Character(_name, _health, _attack, _defense), maxHealth(_health)
+const Equipment& Player::getEquippedItem(Equipment::EquipmentSlot _slot) const
 {
-	Player::setCurrentHealth(_currentHealth);
-	updateMaxStats();
-}
-
-const Item& Player::getEquippedItem(Item::ItemSlot _slot) const
-{
-	return equipped[itemSlotToIndex(_slot)];
+	return this->equipped[equipmentSlotToIndex(_slot)];
 }
 
 int Player::getMaxAttack() const
 {
-	if (maxAttack > 0)
-		return maxAttack;
-	else return 0;
+	if (this->maxAttack > this->baseAttack)
+		return this->maxAttack;
+	else return this->baseAttack;
 }
 
 int Player::getMaxDefense() const
 {
-	if (maxDefense > 0)
-		return maxDefense;
-	else return 0;
+	if (this->maxDefense > this->baseDefense)
+		return this->maxDefense;
+	else return this->baseDefense;
 }
 
 int Player::getMaxHealth() const
 {
-	if (maxHealth > 0)
-		return maxHealth;
-	else return 0;
+	if (this->maxHealth > this->baseHealth)
+		return this->maxHealth;
+	else return this->baseHealth;
 }
 
-void Player::equipItem(const Item& _item) // Used to equip from save files
+// Used to equip items. Input is an Equipment object.
+void Player::equipEquipment(const Equipment& _equipment)
 { 
-	Item::ItemSlot is = _item.getItemSlot();
-	if (is == Item::ItemSlot::EMPTY || is == Item::ItemSlot::CONSUMABLE) return;
+	Equipment::EquipmentSlot is = _equipment.getEquipmentSlot();
+	if (is == Equipment::EquipmentSlot::EMPTY) return;
 
-	const Item& old = getEquippedItem(_item.getItemSlot());
-	if (old.getItemSlot() != Item::ItemSlot::EMPTY && old.getId() != "")
-		inventory.addToInventory(old);
+	const Equipment& old = this->getEquippedItem(is);
+	if (old.getEquipmentSlot() != Equipment::EquipmentSlot::EMPTY || old.getId() != "" || old.getItemName() != "")
+		this->inventory.addEquipmentToInventory(old);
 
-	equipped[itemSlotToIndex(_item.getItemSlot())] = _item;
+	this->equipped[equipmentSlotToIndex(is)] = _equipment;
 
 	updateMaxStats();
 }
 
-void Player::equipItemFromInventory(const string& _id)
+// Used to equip items from the player's inventory. Input is item ID.
+void Player::equipFromInventory(const std::string& _id)
 {
-	Item found = inventory.searchInventoryById(_id);
+	Equipment found = this->inventory.findEquipmentById(_id);
 	if (found.getId() != _id)
 		return; // If the search does not return the item, then we don't equip an item
 
-	Item::ItemSlot slot = found.getItemSlot();
-	if (slot == Item::ItemSlot::CONSUMABLE || slot == Item::ItemSlot::EMPTY) return;
-
-	const Item& old = getEquippedItem(slot);
-	if (old.getItemSlot() != Item::ItemSlot::EMPTY && old.getId() != "")
-		inventory.addToInventory(old);
-
-	equipped[itemSlotToIndex(slot)] = found;
-	inventory.removeFromInventory(_id);
-		
-	updateMaxStats();
+	this->equipEquipment(found); // Equip the found equipment
+	this->inventory.removeEquipmentFromInventory(_id); // Remove found equipment from inventory
 }
 
-void Player::unequipItem(Item::ItemSlot _itemSlot) //used when you do know the item slot
+// Used to unequip item and store it in the Player's inventory. Input is ItemSlot.
+void Player::unequipEquipment(Equipment::EquipmentSlot _itemSlot)
 {
-	auto& current = equipped[itemSlotToIndex(_itemSlot)];
+	auto& current = this->equipped[equipmentSlotToIndex(_itemSlot)];
+	if (current.getEquipmentSlot() == Equipment::EquipmentSlot::EMPTY || current.getId() == "") return;
 
-	if (current.getItemSlot() == Item::ItemSlot::EMPTY || current.getId() == "") return;
-
-	inventory.addToInventory(current);
-	current = Item{};
+	this->inventory.addEquipmentToInventory(current);
+	current = Equipment{};
 
 	updateMaxStats();
 }
 
-
-void Player::printPlayer() const
+void Player::setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense) // Set Player base stats. Used for debugging. Input is an integer for each stat.
 {
-	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense()  << endl;
-	cout << "Player equipment: "<< endl;
-	cout << "|                     Id |      Type |    Rarity |       Slot |                  Name | Attack | Defense | Health |" << endl;
-	cout << "-------------------------------------------------------------------------------------------------------------------" << endl;
-	for (const auto& item : equipped)
-		item.printItem();
-
-	cout << endl;
-}
-
-void Player::quickPrintPlayer() const
-{
-	cout << "Player Name: " << Player::getName() << ", HP: " << Player::getCurrentHealth() << "/" << Player::getMaxHealth() << ", Attack: " << Player::getMaxAttack() << ", Defense: " << Player::getMaxDefense() << endl;
-}
-
-void Player::setBaseStats(int _baseHealth, int _currentHealth, int _attack, int _defense)
-{
-	Player::setBaseHealth(_baseHealth);
-	Player::setCurrentHealth(_currentHealth);
-	Player::setBaseAttack(_attack);
-	Player::setBaseDefense(_defense);
+	this->setBaseHealth(_baseHealth);
+	this->setCurrentHealth(_currentHealth);
+	this->setBaseAttack(_attack);
+	this->setBaseDefense(_defense);
 	
 	updateMaxStats();
 }
 
-void Player::changeCurrentHealth(int _healthChanged)
+// Set Player current health. Used mainly for fighting. Input is integer for change in health. Can be positive for healing, or negative for taking damage.
+void Player::changeCurrentHealth(int _healthChanged) 
 {
-	if (Player::getCurrentHealth() + _healthChanged <= 0) Player::setCurrentHealth(0); // Current health should nopt go below 0
+	if (this->currentHealth + _healthChanged <= 0) this->setCurrentHealth(0); // Current health should not go below 0
 		
-	else if (Player::getCurrentHealth() + _healthChanged > Player::maxHealth) Player::setCurrentHealth(Player::maxHealth); // Current health should not go above max health
+	else if (this->currentHealth + _healthChanged > this->maxHealth) this->setCurrentHealth(this->maxHealth); // Current health should not go above max health
 		
-	else Player::setCurrentHealth(Player::getCurrentHealth() + _healthChanged); // Normal change of current health
+	else this->setCurrentHealth(this->currentHealth + _healthChanged); // Normal change of current health
 }
 
-void Player::updateMaxStats()
+// Updates Player max stats. Used when creating a new player, setting Player base stats, or Equipping and unequipping items.
+void Player::updateMaxStats() 
 {
 	bool fullHealth = false;
-	if (Player::getCurrentHealth() >= Player::maxHealth) fullHealth = true; // If the player currently has full health, we want them to keep their health full after updating max stats
+	if (this->currentHealth >= this->maxHealth) fullHealth = true; // If the player currently has full health, we want them to keep their health full after updating max stats
 	
 	// We start by resetting max values to the base values before recalculating
-	Player::maxAttack = Player::getBaseAttack();
-	Player::maxDefense = Player::getBaseDefense();
-	Player::maxHealth = Player::getBaseHealth();
+	this->maxAttack = this->baseAttack;
+	this->maxDefense = this->baseDefense;
+	this->maxHealth = this->baseHealth;
 
-	// For each item, we add their stats to the player max stats
-	for (const auto& item : equipped)
+	// For each piece of equipment, we add their stats to the player max stats
+	for (const auto& equipment : equipped)
 	{
-		if (item.getItemSlot() == Item::ItemSlot::EMPTY)
+		if (equipment.getEquipmentSlot() == Equipment::EquipmentSlot::EMPTY)
 			continue;
 
-		maxAttack += item.getItemAttack();
-		maxDefense += item.getItemDefense();
-		maxHealth += item.getItemHealth();
+		maxAttack += equipment.getEquipmentAttack();
+		maxDefense += equipment.getEquipmentDefense();
+		maxHealth += equipment.getEquipmentHealth();
 	}
 
 	// If the player's health was full before this recalculation, set their current health to their new max health. This can be exploited by the player to heal themselves by unequipping and re-equipping items. Bug or feature?
-	if (Player::getCurrentHealth() > maxHealth || fullHealth) Player::setCurrentHealth(maxHealth);
+	if (this->currentHealth > maxHealth || fullHealth) this->setCurrentHealth(maxHealth);
 }
