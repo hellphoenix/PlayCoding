@@ -124,20 +124,19 @@ void Game::startFight()
 	std::cout << "Engaged " << enemy.getName() << "!\n";
 }
 
-void Game::loop(equipmentArray& _gameEquipment)
+void Game::loop(const equipmentArray& _gameEquipment)
 {
+	
+	gameEquipment = _gameEquipment;
+
 
 	sf::Clock clock;
-	enemy = combatActions.spawnEnemy(Enemy::EnemyType::SLIME);
-
-	gameEquipment = _gameEquipment;
 	giveStartingItems();
 	hudRenderer.refreshAbilitySlotsFromEquipment(player);
 
 	float windowWidth = 1920;
 	float windowHeight = 1080;
 	sf::RenderWindow window(sf::VideoMode({ (unsigned)windowWidth, (unsigned)windowHeight }), "Inferno");
-	std::cout << std::endl;
 	//window.setKeyRepeatEnabled(false);
 
 
@@ -150,23 +149,29 @@ void Game::loop(equipmentArray& _gameEquipment)
 				window.close();
 			}
 
-			handleEvent(*event);
+			handleEvent(*event, window);
 		}
 
 		float dt = clock.restart().asSeconds();
-		update(dt);
+		update(dt, window);
 
 		window.clear();
+
 		draw(window, windowWidth, windowHeight);
 		window.display();
 	}
+
+	for (size_t i = 0; i < buttonVectors.size(); i++)
+	{
+		delete buttonVectors[i];
+	}
 }
 
-void Game::handleEvent(const sf::Event& _event)
+void Game::handleEvent(const sf::Event& _event, const sf::RenderWindow& window)
 {
 	if (auto* key = _event.getIf<sf::Event::KeyPressed>())
 	{
-		handleKeyPressed(*key);
+		handleKeyPressed(*key, window);
 	}
 	else if (auto* text = _event.getIf<sf::Event::TextEntered>())
 	{
@@ -174,20 +179,21 @@ void Game::handleEvent(const sf::Event& _event)
 	}
 	else if (auto* mousePressed = _event.getIf<sf::Event::MouseButtonPressed>())
 	{
-		handleMousePressed(*mousePressed);
+		handleMousePressed(*mousePressed, window);
 	}
 	else if (auto* mouseReleased = _event.getIf<sf::Event::MouseButtonReleased>())
 	{
-		handleMouseReleased(*mouseReleased);
+		handleMouseReleased(*mouseReleased, window);
 	}
 	else if (auto* mouseMoved = _event.getIf<sf::Event::MouseMoved>())
 	{
-		handleMouseMoved(*mouseMoved);
+		handleMouseMoved(*mouseMoved, window);
 	}
 }
 
-void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
+void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed, const sf::RenderWindow& window)
 {
+	sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	if (gameMode == GameMode::Normal)
 	{
 		switch (_keyPressed.scancode)
@@ -208,6 +214,16 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed)
 		case sf::Keyboard::Scancode::S: { pendingSave = true; break; }
 		case sf::Keyboard::Scancode::L: { pendingLoad = true; break; }
 		case sf::Keyboard::Scancode::Escape: { Quit(); break; }
+		case sf::Keyboard::Scancode::B: 
+		{
+			if (keyTime >= keyTimeMax)
+			{
+				buttonVectors.emplace_back(new Button(pos));
+				buttonVectors[buttonVectors.size()-1]->setButtonPosition(pos);
+				keyTime = 0.f;
+			}
+			break;
+		}
 		default:
 		{
 			break;
@@ -235,15 +251,12 @@ void Game::handleTextEntered(const sf::Event::TextEntered& _textEntered)
 
 }
 
-void Game::handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed)
+void Game::handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed, const sf::RenderWindow& window)
 {
 	if (_mousePressed.button == sf::Mouse::Button::Left)
 	{
 		leftMouseButtonPressed = true;
-		sf::Vector2f clickPos{
-				static_cast<float>(_mousePressed.position.x),
-				static_cast<float>(_mousePressed.position.y)
-		};
+		sf::Vector2f clickPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		// check for starting drag from inventory sheet
 		if (showInventorySheet)
 		{
@@ -317,7 +330,7 @@ void Game::handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed)
 	}
 }
 
-void Game::handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleased)
+void Game::handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleased, const sf::RenderWindow& window)
 {
 	if (_mouseReleased.button == sf::Mouse::Button::Left)
 	{
@@ -325,10 +338,7 @@ void Game::handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleas
 
 		if (dragState.active)
 		{
-			sf::Vector2f releasePos{
-				static_cast<float>(_mouseReleased.position.x),
-				static_cast<float>(_mouseReleased.position.y)
-			};
+			sf::Vector2f releasePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 			// try to drop on a slot
 			handleDropOnCharacter(releasePos);
@@ -344,9 +354,9 @@ void Game::handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleas
 	}
 }
 
-void Game::handleMouseMoved(const sf::Event::MouseMoved _mouseMoved)
+void Game::handleMouseMoved(const sf::Event::MouseMoved _mouseMoved, const sf::RenderWindow& window)
 {
-	sf::Vector2f pos{ static_cast<float>(_mouseMoved.position.x), static_cast<float>(_mouseMoved.position.y) };
+	sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 	dragState.cursorPos = pos;
 
 	if (leftMouseButtonPressed)
@@ -359,7 +369,7 @@ void Game::handleMouseMoved(const sf::Event::MouseMoved _mouseMoved)
 	}
 }
 
-void Game::update(float dt)
+void Game::update(float dt, const sf::RenderWindow& window)
 {
 	if (pendingSave)
 	{
@@ -372,6 +382,16 @@ void Game::update(float dt)
 	else if (gameMode == GameMode::Combat)
 	{
 		hudRenderer.updateCombat(dt, player, enemy, gameMode);
+	}
+
+	for (size_t i = 0; i < buttonVectors.size(); i++)
+	{
+		buttonVectors[i]->updateButton(window);
+	}
+
+	if (keyTime < keyTimeMax)
+	{
+		keyTime += 100.f;
 	}
 }
 
@@ -394,6 +414,10 @@ void Game::draw(sf::RenderWindow& window, float windowWidth, float windowHeight)
 		if (showMasterEquipmentSheet)
 		{
 			inventoryRenderer.drawMasterEquipmentSheet(window, masterItemRects, gameEquipment, windowWidth, windowHeight);
+			for (size_t i = 0; i < buttonVectors.size(); i++)
+			{
+				buttonVectors[i]->render(window);
+			}
 		}
 		if (dragState.active)
 		{

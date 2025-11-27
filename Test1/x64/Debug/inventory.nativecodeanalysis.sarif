@@ -1,0 +1,67 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "MSVC Code Analysis",
+          "version": "14.44.35220.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/inventory.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "79f6ec593e91d68af112ed3dceaa61b84d7a478ab8cb82172fe8357e2dc58388"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/inventory.h"
+          },
+          "hashes": {
+            "sha-256": "fec18926c3a5a2fd29641762c6ec88898efdb104989a68bdbbfc29b411c00e69"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/item_library.h"
+          },
+          "hashes": {
+            "sha-256": "05e7bd095843c13e7f3df8ec89af775608592cd30fac24cc802546817de9fcbd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/equipment.h"
+          },
+          "hashes": {
+            "sha-256": "a6735f25b46df3f18e2a0abb2e0006911aa7ba70035e3400f5afb329246f4050"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/item.h"
+          },
+          "hashes": {
+            "sha-256": "0596ce0b40674166adfd776459964b1ad85c860902ef75e552ec38f11333d548"
+          }
+        }
+      ]
+    }
+  ]
+}

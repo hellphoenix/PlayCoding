@@ -1,12 +1,12 @@
 #pragma once
 #ifndef GAME_H
 #define GAME_H
+#include "button.h"
 #include "characterRenderer.h"
 #include "combatActions.h"
 #include "dragSource.h"
 #include "enemy.h"
 #include "equipment.h"
-#include "gameInitialize.h"
 #include "gameMode.h"
 #include "hudRenderer.h"
 #include "inventoryActions.h"
@@ -14,8 +14,10 @@
 #include "menuRenderer.h"
 #include "player.h"
 #include "uiFonts.h"
+#include "textures.h"
 #include <array>
 #include <SFML/Graphics.hpp>
+#include <vector>
 class Game
 {
 
@@ -24,8 +26,12 @@ public:
 	typedef std::array<sf::FloatRect, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> slotFloatRects;
 
 	Player player = Player{ "Tony", 200, 200, 10, 10 };
-	void loop(equipmentArray& _gameEquipment);
+	void loop(const equipmentArray& _gameEquipment);
 	Game() {}
+
+	std::vector<Button*> buttonVectors;
+	float keyTimeMax = 1000.f;
+	float keyTime = keyTimeMax;
 
 private:
 
@@ -48,7 +54,7 @@ private:
 
 	Enemy enemy;
 	CombatActions combatActions;
-
+	Textures texture;
 	InventoryActions inventoryActions = InventoryActions(uiFont);
 	HudRenderer hudRenderer = HudRenderer(uiFont);
 	CharacterRenderer characterRenderer = CharacterRenderer(uiFont);
@@ -78,13 +84,13 @@ private:
 
 
 
-	void handleEvent(const sf::Event& _event);
-	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed);
+	void handleEvent(const sf::Event& _event, const sf::RenderWindow& window);
+	void handleKeyPressed(const sf::Event::KeyPressed& _keyPressed, const sf::RenderWindow& window);
 	void handleTextEntered(const sf::Event::TextEntered& _textEntered);
-	void handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed);
-	void handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleased);
-	void handleMouseMoved(const sf::Event::MouseMoved _mouseMoved);
-	void update(float dt);
+	void handleMousePressed(const sf::Event::MouseButtonPressed _mousePressed, const sf::RenderWindow& window);
+	void handleMouseReleased(const sf::Event::MouseButtonReleased _mouseReleased, const sf::RenderWindow& window);
+	void handleMouseMoved(const sf::Event::MouseMoved _mouseMoved, const sf::RenderWindow& window);
+	void update(float dt, const sf::RenderWindow& window);
 
 	void draw(sf::RenderWindow& window, float windowWidth, float windowHeight);
 

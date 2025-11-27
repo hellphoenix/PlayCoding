@@ -1,4 +1,3 @@
-#include "game.h"
 #include "gameInitialize.h"
 #include <iostream>
 
@@ -7,8 +6,6 @@ void GameInitialize::run()
 {
 
 	loadEquipment();
-
-	Game game;
 	game.loop(gameEquipment);
 }
 

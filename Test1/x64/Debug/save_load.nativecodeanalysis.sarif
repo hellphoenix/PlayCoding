@@ -1,0 +1,135 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'nlohmann::json_abi_v3_12_0::basic_json<std::map,std::vector,std::basic_string<char,std::char_traits<char>,std::allocator<char> >,bool,__int64,unsigned __int64,double,std::allocator,nlohmann::json_abi_v3_12_0::adl_serializer,std::vector<unsigned char,std::allocator<unsigned char> >,void>::m_data' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "analysisTarget": {
+            "uri": "file:///d:/game dev training/playcoding/test1/save_load.cpp"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/Game Dev Training/PlayCoding/Test1/include/json.hpp"
+                },
+                "region": {
+                  "startLine": 21165,
+                  "startColumn": 5
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "nlohmann::json_abi_v3_12_0::basic_json<std::map,std::vector,std::basic_string<char,std::char_traits<char>,std::allocator<char> >,bool,__int64,unsigned __int64,double,std::allocator,nlohmann::json_abi_v3_12_0::adl_serializer,std::vector<unsigned char,std::allocator<unsigned char> >,void>::{ctor}",
+                  "decoratedName": "??$?0V?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_12_0@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_12_0@nlohmann@@@detail@json_abi_v3_12_0@nlohmann@@$0A@@?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_12_0@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_12_0@nlohmann@@QEAA@AEBV?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_12_0@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_12_0@nlohmann@@@detail@12@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "nlohmann::json_abi_v3_12_0::basic_json<std::map,std::vector,std::basic_string<char,std::char_traits<char>,std::allocator<char> >,bool,__int64,unsigned __int64,double,std::allocator,nlohmann::json_abi_v3_12_0::adl_serializer,std::vector<unsigned char,std::allocator<unsigned char> >,void>::m_data"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "MSVC Code Analysis",
+          "version": "14.44.35220.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/save_load.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "ae190c3487b4bdc78e4138905b7265e34169110ad91a5da73c438e6b8f05c89a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///D:/Game Dev Training/PlayCoding/Test1/include/json.hpp"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "05b3a8c389fdb743de6d1ccb676dc6ea8b001b9347f74a9e59035a62742cc840"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/save_load.h"
+          },
+          "hashes": {
+            "sha-256": "6de3b7725870c718f6e95d151c4e6a26bc7af398b3702128486dbaf520b6d2f3"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/item_library.h"
+          },
+          "hashes": {
+            "sha-256": "05e7bd095843c13e7f3df8ec89af775608592cd30fac24cc802546817de9fcbd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/equipment.h"
+          },
+          "hashes": {
+            "sha-256": "a6735f25b46df3f18e2a0abb2e0006911aa7ba70035e3400f5afb329246f4050"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/item.h"
+          },
+          "hashes": {
+            "sha-256": "0596ce0b40674166adfd776459964b1ad85c860902ef75e552ec38f11333d548"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/player.h"
+          },
+          "hashes": {
+            "sha-256": "9d71a41d6dd29786acf6e0e0d597e91d23adcd7162b92867cad51dcc2bb4c1f6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/character.h"
+          },
+          "hashes": {
+            "sha-256": "94a579ff3c914c82bf8e4321194c60fe74773bb091e286aaf85c7aaa66216deb"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/inventory.h"
+          },
+          "hashes": {
+            "sha-256": "fec18926c3a5a2fd29641762c6ec88898efdb104989a68bdbbfc29b411c00e69"
+          }
+        }
+      ]
+    }
+  ]
+}

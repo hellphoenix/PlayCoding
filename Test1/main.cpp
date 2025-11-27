@@ -5,6 +5,4 @@ int main()
 {
 	GameInitialize game;
 	game.run();
-
-
 }

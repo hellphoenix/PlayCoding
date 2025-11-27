@@ -3,6 +3,7 @@
 #include "item_library.h"
 #include "player.h"
 #include "uiFonts.h"
+#include "game.h"
 #include <vector>
 
 #ifndef GAME_INITIALIZE_H
@@ -16,6 +17,7 @@ public:
 	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
 	UiFonts uiFont;
 	equipmentArray gameEquipment{};
+	Game game;
 
 private:
 	void loadEquipment(); // Loads all items from item slot libraries

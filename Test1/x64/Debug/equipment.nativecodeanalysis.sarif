@@ -1,0 +1,51 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "MSVC Code Analysis",
+          "version": "14.44.35220.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/equipment.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "cef0cb6079c17ddc05d3aa77e83ca161b3288a02b898f0bde3229ecb75993ba4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/equipment.h"
+          },
+          "hashes": {
+            "sha-256": "a6735f25b46df3f18e2a0abb2e0006911aa7ba70035e3400f5afb329246f4050"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/game dev training/playcoding/test1/item.h"
+          },
+          "hashes": {
+            "sha-256": "0596ce0b40674166adfd776459964b1ad85c860902ef75e552ec38f11333d548"
+          }
+        }
+      ]
+    }
+  ]
+}

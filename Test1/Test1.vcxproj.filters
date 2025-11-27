@@ -78,6 +78,12 @@
     <ClCompile Include="character.cpp">
       <Filter>Source Files\Character</Filter>
     </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="item.h">
@@ -137,6 +143,12 @@
     <ClInclude Include="uiFonts.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="textures.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="items.json">
@@ -147,5 +159,16 @@
     <Font Include="assets\Arial.ttf">
       <Filter>Resource Files</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\button_pressed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\button_idle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\button_hover.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
