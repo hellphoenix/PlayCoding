@@ -8,7 +8,7 @@
 class InventoryRenderer
 {
 public:
-	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
+	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(EquipmentSlot::COUNT)> equipmentArray;
 
 	InventoryRenderer() {}
 	InventoryRenderer(const sf::Font& uiFont) { this->uiFont = uiFont; }

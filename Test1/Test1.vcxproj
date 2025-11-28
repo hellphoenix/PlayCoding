@@ -155,7 +155,7 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="characterRenderer.h" />
-    <ClInclude Include="dragSource.h" />
+    <ClInclude Include="mouseDragCheck.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="equipment.h" />
     <ClInclude Include="game.h" />
@@ -175,6 +175,7 @@
     <ClInclude Include="uiFonts.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="items.json" />
   </ItemGroup>
   <ItemGroup>

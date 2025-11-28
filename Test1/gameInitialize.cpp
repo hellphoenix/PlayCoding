@@ -1,5 +1,6 @@
 #include "gameInitialize.h"
 #include <iostream>
+#include <stdexcept>
 
 
 void GameInitialize::run()
@@ -11,25 +12,18 @@ void GameInitialize::run()
 
 void GameInitialize::loadEquipment()
 {
-	try
-	{
-		equipment = &ItemLibrary::equipment(); // point to item library master list
+	equipment = &ItemLibrary::equipment(); // point to item library master list
 
-		// Creates an array of vectors(gameEquipment) for all equipment slots
-		for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
+	if (!equipment->empty())
+	{
+		for (const auto& it : *equipment)
 		{
-			for (const auto& it : (*equipment))
-			{
-				if (equipmentSlotToIndex(it.getEquipmentSlot()) == i)
-				{
-					gameEquipment[i].push_back(it);
-				}
-			}
+			auto index = equipmentSlotToIndex(it.getEquipmentSlot());
+			gameEquipment[index].push_back(it);
 		}
 	}
-	catch (...)
+	else
 	{
-		std::cout << "Could not load master game items list\n";
+		throw std::runtime_error("Game Equipment Failed to Load. items.json may be missing, empty, or invalid.\n");
 	}
-		
 }

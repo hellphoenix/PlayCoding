@@ -10,8 +10,8 @@ class CharacterRenderer
 
 
 public:
-	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
-	typedef std::array<sf::FloatRect, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> slotFloatRects;
+	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(EquipmentSlot::COUNT)> equipmentArray;
+	typedef std::array<sf::FloatRect, equipmentSlotToIndex(EquipmentSlot::COUNT)> slotFloatRects;
 	sf::Font uiFont;
 
 	CharacterRenderer() {}

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef INVENTORY_ACTIONS_H
 #define INVENTORY_ACTIONS_H
-#include "dragSource.h"
+#include "mouseDragCheck.h"
 #include "equipment.h"
 #include "hudRenderer.h"
 #include "player.h"
@@ -20,19 +20,19 @@ enum class NumberInputKey
 class InventoryActions
 {
 public:
-	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
-	typedef std::array<sf::FloatRect, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> slotFloatRects;
+	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(EquipmentSlot::COUNT)> equipmentArray;
+	typedef std::array<sf::FloatRect, equipmentSlotToIndex(EquipmentSlot::COUNT)> slotFloatRects;
 	HudRenderer hudRenderer;
 	sf::Font uiFont;
 	InventoryActions() {}
 	InventoryActions(const sf::Font& uiFont) { this->uiFont = uiFont; }
-	void dragFromInventory(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState) const;
-	void dragFromEquippedSlot(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState) const;
-	void dragFromMasterList(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment) const;
-	void dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment, slotFloatRects& slotRects);
-	void dropOnInventory(Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment);
+	void dragFromInventory(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState) const;
+	void dragFromEquippedSlot(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState) const;
+	void dragFromMasterList(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment) const;
+	void dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment, slotFloatRects& slotRects);
+	void dropOnInventory(Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment);
 
-	void drawBoxHelper(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState, Equipment equipment) const;
+	void drawBoxHelper(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState, Equipment equipment) const;
 
 
 private:

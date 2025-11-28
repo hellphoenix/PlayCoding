@@ -14,7 +14,7 @@ class GameInitialize
 public:
 
 	void run();
-	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT)> equipmentArray;
+	typedef std::array<std::vector<Equipment>, equipmentSlotToIndex(EquipmentSlot::COUNT)> equipmentArray;
 	UiFonts uiFont;
 	equipmentArray gameEquipment{};
 	Game game;

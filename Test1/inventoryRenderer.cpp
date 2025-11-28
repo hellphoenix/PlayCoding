@@ -59,7 +59,7 @@ void InventoryRenderer::drawInventorySheet(sf::RenderWindow& window, Player& pla
 
 	auto printEquipment = [&](const Equipment equipment)
 		{
-			std::string rarity = equipment.itemRarityToString.at(equipment.getItemRarity());
+			std::string rarity = itemRarityToString.at(equipment.getItemRarity());
 			std::string name = equipment.getItemName();
 			writeLine(rarity + " " + name);
 		};
@@ -126,14 +126,14 @@ void InventoryRenderer::drawMasterEquipmentSheet(sf::RenderWindow& window, std::
 
 	auto printEquipment = [&](const Equipment equipment)
 		{
-			std::string rarity = equipment.itemRarityToString.at(equipment.getItemRarity());
+			std::string rarity = itemRarityToString.at(equipment.getItemRarity());
 			std::string name = equipment.getItemName();
 			writeLine(rarity + " " + name);
 		};
 
-	for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
+	for (const auto& eqs : masterEquipmentList)
 	{
-		for (const auto& eq : masterEquipmentList[i])
+		for (const auto& eq : eqs)
 		{
 			count++;
 			printEquipment(eq);

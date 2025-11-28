@@ -16,8 +16,8 @@ public:
 	void removeEquipmentFromInventory(const std::string& _id);
 
 	void sortEquipmentInventory();
-	std::vector<Equipment> filterEquipmentInventoryBySlot(Equipment::EquipmentSlot _slot) const;
-	std::vector<Equipment> filterEquipmentInventoryByRarity(Item::ItemRarity _rarity) const;
+	std::vector<Equipment> filterEquipmentInventoryBySlot(EquipmentSlot _slot) const;
+	std::vector<Equipment> filterEquipmentInventoryByRarity(ItemRarity _rarity) const;
 	Equipment findEquipmentById(const std::string& _id) const;
 };
 

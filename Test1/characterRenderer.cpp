@@ -48,11 +48,11 @@ void CharacterRenderer::drawPlayerCharacterSheet(sf::RenderWindow& window, Playe
 	// equipped items
 	const auto& equipped = player.getPlayerEquipment();
 
-	auto printSlot = [&](Equipment::EquipmentSlot slot, const std::string& label)
+	auto printSlot = [&](EquipmentSlot slot, const std::string& label)
 		{
 			std::size_t index = equipmentSlotToIndex(slot);
 			const auto& item = equipped[index];
-			std::string rarity = item.getId().empty() ? " " : item.itemRarityToString.at(item.getItemRarity());
+			std::string rarity = item.getId().empty() ? " " : itemRarityToString.at(item.getItemRarity());
 			std::string name = item.getId().empty() ? "(none)" : item.getItemName();
 
 			// compute position but do not move y yet
@@ -66,9 +66,9 @@ void CharacterRenderer::drawPlayerCharacterSheet(sf::RenderWindow& window, Playe
 			y += 20.f;
 		};
 
-	for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
+	for (int i = 1; i < equipmentSlotToIndex(EquipmentSlot::COUNT); i++)
 	{
 		auto slot = equipmentSlotFromIndex(i);
-		printSlot(slot, Equipment::equipmentSlotToString.at(slot));
+		printSlot(slot, equipmentSlotToString.at(slot));
 	}
 }

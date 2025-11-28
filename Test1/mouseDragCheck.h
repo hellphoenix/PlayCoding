@@ -1,33 +1,32 @@
 #pragma once
-#ifndef DRAG_SOURCE_H
-#define DRAG_SOURCE_H
+#ifndef MOUSE_DRAG_CHECK_H
+#define MOUSE_DRAG_CHECK_H
 #include "equipment.h"
 #include "SFML/Graphics.hpp"
 
-class DragSource
+enum class DragSource
 {
-public:
-	enum class Source
-	{
-		None,
-		Inventory,
-		EquippedSlot,
-		MasterList
-	};
+	None,
+	Inventory,
+	EquippedSlot,
+	MasterList
+};
 
+struct MouseDragCheck
+{
 	struct DragState
 	{
 		bool active = false;
-		DragSource::Source source = DragSource::Source::None;
+		DragSource source = DragSource::None;
 		std::size_t inventoryIndex = 0;           // which item in inventory
-		Equipment::EquipmentSlot slot{};
+		EquipmentSlot slot{};
 		sf::Vector2f cursorPos{ 0.f, 0.f };         // current mouse position
 		sf::Vector2f offset{ 0.f, 0.f };
 	} drag;
+
+	// Open for future use
 };
 
-
-
-#endif // !DRAG_SOURCE_H
+#endif // !MOUSE_DRAG_CHECK_H
 
 

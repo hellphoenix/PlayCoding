@@ -41,7 +41,7 @@ void Inventory::sortEquipmentInventory()
 }
 
 // Filters inventory by ItemSlot. Input is ItemSlot. Returns a vector of Items.
-std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(Equipment::EquipmentSlot _slot) const
+std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(EquipmentSlot _slot) const
 {
 	std::vector<Equipment> filteredList;
 	filteredList.reserve(equipmentInventory.size());
@@ -58,7 +58,7 @@ std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(Equipment::Equi
 	return filteredList;
 }
 
-std::vector<Equipment> Inventory::filterEquipmentInventoryByRarity(Item::ItemRarity _rarity) const
+std::vector<Equipment> Inventory::filterEquipmentInventoryByRarity(ItemRarity _rarity) const
 {
 	std::vector<Equipment> filteredList;
 	filteredList.reserve(equipmentInventory.size());

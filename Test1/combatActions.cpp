@@ -17,7 +17,7 @@ int CombatActions::enemyAttack(const Enemy& _enemy, const Player& _player)
 	else return _enemy.getBaseAttack() - _player.getMaxDefense();
 }
 
-Enemy CombatActions::spawnEnemy(Enemy::EnemyType _enemyType)
+Enemy CombatActions::spawnEnemy(EnemyType _enemyType)
 {
 
 	Enemy enemy("King Slime", 1000, 1000, 50, 40, _enemyType);

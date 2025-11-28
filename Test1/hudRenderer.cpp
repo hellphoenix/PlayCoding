@@ -180,7 +180,7 @@ void HudRenderer::refreshAbilitySlotsFromEquipment(const Player& player)
 			abilitySlots[index].reset(0.f);
 		};
 
-	const Equipment& mainHand = player.getEquippedItem(Equipment::EquipmentSlot::WEAPON);
+	const Equipment& mainHand = player.getEquippedItem(EquipmentSlot::WEAPON);
 	if (mainHand.getId().empty())
 	{
 		setSlot(0, "Jab", 1.2f);
@@ -195,7 +195,7 @@ void HudRenderer::refreshAbilitySlotsFromEquipment(const Player& player)
 		setSlot(2, base + " Finisher", 4.0f);
 	}
 
-	const Equipment& offHand = player.getEquippedItem(Equipment::EquipmentSlot::SHIELD);
+	const Equipment& offHand = player.getEquippedItem(EquipmentSlot::SHIELD);
 	if (offHand.getId().empty())
 	{
 		clearSlot(3);

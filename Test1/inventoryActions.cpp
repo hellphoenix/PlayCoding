@@ -1,7 +1,7 @@
 #include "inventoryActions.h"
 #include <iostream>
 
-void InventoryActions::dragFromInventory(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState) const
+void InventoryActions::dragFromInventory(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState) const
 {
 	const auto& inventory = player.getPlayerInventory().getEquipmentInventory();
 	if (dragState.inventoryIndex < inventory.size())
@@ -12,14 +12,14 @@ void InventoryActions::dragFromInventory(sf::RenderWindow& window, Player& playe
 	}
 }
 
-void InventoryActions::dragFromEquippedSlot(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState) const
+void InventoryActions::dragFromEquippedSlot(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState) const
 {
-	const auto& equipment = player.getEquippedItem(equipmentSlotFromIndex(dragState.inventoryIndex));
+	const auto& equipment = player.getEquippedItem(dragState.slot);
 
 	drawBoxHelper(window, player, dragState, equipment);
 }
 
-void InventoryActions::dragFromMasterList(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment) const
+void InventoryActions::dragFromMasterList(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment) const
 {
 	const auto& masterEquipmentList = gameEquipment;
 	const auto slotIndex = equipmentSlotToIndex(dragState.slot);
@@ -34,9 +34,9 @@ void InventoryActions::dragFromMasterList(sf::RenderWindow& window, Player& play
 	drawBoxHelper(window, player, dragState, equipment);
 }
 
-void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment, slotFloatRects& slotRects)
+void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment, slotFloatRects& slotRects)
 {
-	if (dragState.source == DragSource::Source::Inventory)
+	if (dragState.source == DragSource::Inventory)
 	{
 		const auto& inventory = player.getPlayerInventory().getEquipmentInventory();
 		if (dragState.inventoryIndex >= inventory.size())
@@ -50,9 +50,9 @@ void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& pla
 		}
 
 		// find which slot rect, if any, we dropped on
-		for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); ++i)
+		for (int i = 1; i < equipmentSlotToIndex(EquipmentSlot::COUNT); ++i)
 		{
-			Equipment::EquipmentSlot slot = equipmentSlotFromIndex(i);
+			EquipmentSlot slot = equipmentSlotFromIndex(i);
 			const auto& rect = slotRects[i];
 
 			if (rect.size.x <= 0.f || rect.size.y <= 0.f)
@@ -70,13 +70,13 @@ void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& pla
 
 				const Equipment& equipped = player.getEquippedItem(slot);
 
-				std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
+				std::cout << "Equipped " << itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
 				hudRenderer.refreshAbilitySlotsFromEquipment(player);
 				return;
 			}
 		}
 	}
-	else if (dragState.source == DragSource::Source::MasterList)
+	else if (dragState.source == DragSource::MasterList)
 	{
 
 		const auto& masterEquipmentList = gameEquipment;
@@ -92,10 +92,10 @@ void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& pla
 		}
 
 		// find which slot rect, if any, we dropped on
-		for (int i = 1; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); ++i)
+		for (int i = 1; i < equipmentSlotToIndex(EquipmentSlot::COUNT); ++i)
 		{
 
-			Equipment::EquipmentSlot slot = equipmentSlotFromIndex(i);
+			EquipmentSlot slot = equipmentSlotFromIndex(i);
 			const auto& rect = slotRects[i];
 
 			if (rect.size.x <= 0.f || rect.size.y <= 0.f)
@@ -114,7 +114,7 @@ void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& pla
 
 				const Equipment& equipped = player.getEquippedItem(slot);
 
-				std::cout << "Equipped " << Equipment::itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
+				std::cout << "Equipped " << itemRarityToString.at(equipped.getItemRarity()) << " " << equipped.getItemName() << "\n";
 				hudRenderer.refreshAbilitySlotsFromEquipment(player);
 				return;
 			}
@@ -122,18 +122,18 @@ void InventoryActions::dropOnPlayerSlot(const sf::Vector2f& dropPos, Player& pla
 	}
 }
 
-void InventoryActions::dropOnInventory(Player& player, DragSource::DragState& dragState, equipmentArray& gameEquipment)
+void InventoryActions::dropOnInventory(Player& player, MouseDragCheck::DragState& dragState, equipmentArray& gameEquipment)
 {
-	if (dragState.source == DragSource::Source::EquippedSlot)
+	if (dragState.source == DragSource::EquippedSlot)
 	{
 		const auto& playerEquipment = player.getPlayerEquipment();
-		const auto& old = player.getEquippedItem(equipmentSlotFromIndex(dragState.inventoryIndex));
+		const auto& old = player.getEquippedItem(dragState.slot);
 
 		player.unequipEquipment(old.getEquipmentSlot());
 		hudRenderer.refreshAbilitySlotsFromEquipment(player);
 
 	}
-	else if (dragState.source == DragSource::Source::MasterList)
+	else if (dragState.source == DragSource::MasterList)
 	{
 		const auto& masterEquipmentList = gameEquipment;
 		const auto slotIndex = equipmentSlotToIndex(dragState.slot);
@@ -147,7 +147,7 @@ void InventoryActions::dropOnInventory(Player& player, DragSource::DragState& dr
 	}
 }
 
-void InventoryActions::drawBoxHelper(sf::RenderWindow& window, Player& player, DragSource::DragState& dragState, Equipment equipment) const
+void InventoryActions::drawBoxHelper(sf::RenderWindow& window, Player& player, MouseDragCheck::DragState& dragState, Equipment equipment) const
 {
 	sf::RectangleShape box({ 240.f, 20.f });
 	box.setPosition(dragState.cursorPos + dragState.offset);
@@ -157,7 +157,7 @@ void InventoryActions::drawBoxHelper(sf::RenderWindow& window, Player& player, D
 
 	sf::Text text(uiFont, "", 16);
 	text.setFillColor(sf::Color::White);
-	text.setString(Equipment::itemRarityToString.at(equipment.getItemRarity()) + " " + equipment.getItemName());
+	text.setString(itemRarityToString.at(equipment.getItemRarity()) + " " + equipment.getItemName());
 	text.setPosition(dragState.cursorPos + dragState.offset);
 
 	window.draw(box);

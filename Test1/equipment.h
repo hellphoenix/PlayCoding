@@ -1,74 +1,86 @@
 #pragma once
 #ifndef EQUIPMENT_H
 #define EQUIPMENT_H
+#include "item.h"
 #include <map>
 #include <string>
-#include "item.h"
 
-struct Equipment : public Item
+enum class EquipmentSlot
 {
-	enum class EquipmentSlot // change me when adding item slots
-	{
-		EMPTY = 0,
-		HELMET,
-		CHESTPIECE,
-		PANTS,
-		BOOTS,
-		SHIELD,
-		WEAPON,
-		COUNT
-	};
+	EMPTY = 0,
+	HELMET,
+	TRINKET,
+	CHESTPIECE,
+	PANTS,
+	BOOTS,
+	SHIELD,
+	WEAPON,
+	COUNT
+};
 
-	static const std::map<EquipmentSlot, std::string> equipmentSlotToString;
+static const std::map<EquipmentSlot, std::string> equipmentSlotToString =
+{
+	{EquipmentSlot::EMPTY, "Empty"},{EquipmentSlot::TRINKET, "Trinket"} , {EquipmentSlot::HELMET, "Helmet"}, {EquipmentSlot::CHESTPIECE, "Chestpiece"},
+	{EquipmentSlot::PANTS, "Pants"}, {EquipmentSlot::BOOTS, "Boots"}, {EquipmentSlot::SHIELD, "Shield"}, {EquipmentSlot::WEAPON, "Weapon"}
+};
 
-	Equipment() : Item("", "", Item::ItemType::EQUIPMENT, Item::ItemRarity::NONEXISTENT), equipmentAttack(0), equipmentDefense(0),
-		equipmentHealth(0), equipmentSlot(EquipmentSlot::EMPTY){}
+constexpr size_t equipmentSlotToIndex(EquipmentSlot slot)
+{
+	return static_cast<size_t>(slot);
+}
 
-	Equipment(const std::string& _id, const std::string& _equipmentName, int _equipmentAttack, int _equipmentDefense, int _equipmentHealth,
-		EquipmentSlot _equipmentSlot = EquipmentSlot::EMPTY, Item::ItemRarity _equipmentRarity = Item::ItemRarity::POOR) :
-		Item(_id, _equipmentName, Item::ItemType::EQUIPMENT, _equipmentRarity),
-		equipmentAttack(_equipmentAttack), equipmentDefense(_equipmentDefense),
-		equipmentHealth(_equipmentHealth), equipmentSlot(_equipmentSlot){}
+// Returns an equipment slot, between EMPTY and COUNT, from an int
+constexpr EquipmentSlot equipmentSlotFromIndex(std::size_t _index)
+{
+	if (_index > 0 && _index < equipmentSlotToIndex(EquipmentSlot::COUNT))
+		return static_cast<EquipmentSlot>(_index);
+	else
+		return EquipmentSlot::EMPTY;
+}
 
-	int getEquipmentAttack() const;
-	int getEquipmentDefense() const;
-	int getEquipmentHealth() const;
-	EquipmentSlot getEquipmentSlot() const;
-
-	void setEquipmentAttack(int _equipmentAttack);
-	void setEquipmentDefense(int _equipmentDefense);
-	void setEquipmentHealth(int _equipmentHealth);
-	void setEquipmentSlot(EquipmentSlot _itemSlot);
-
+class Equipment : public Item
+{
 private:
 
 	EquipmentSlot equipmentSlot;
 	int equipmentAttack;
 	int equipmentDefense;
 	int equipmentHealth;
+
+public:
+
+	Equipment() : Item("", "", ItemType::EQUIPMENT, ItemRarity::NONEXISTENT), equipmentAttack(0), equipmentDefense(0),
+		equipmentHealth(0), equipmentSlot(EquipmentSlot::EMPTY) {
+	}
+
+	Equipment(const std::string& _id, const std::string& _equipmentName, int _equipmentAttack, int _equipmentDefense, int _equipmentHealth,
+		EquipmentSlot _equipmentSlot = EquipmentSlot::EMPTY, ItemRarity _equipmentRarity = ItemRarity::POOR) :
+		Item(_id, _equipmentName, ItemType::EQUIPMENT, _equipmentRarity),
+		equipmentAttack(_equipmentAttack), equipmentDefense(_equipmentDefense),
+		equipmentHealth(_equipmentHealth), equipmentSlot(_equipmentSlot) {
+	}
+
+	int getEquipmentAttack() const { return this->equipmentAttack; }
+	int getEquipmentDefense() const { return this->equipmentDefense; }
+	int getEquipmentHealth() const { return this->equipmentHealth; }
+	EquipmentSlot getEquipmentSlot() const { return equipmentSlot; }
+
+	void setEquipmentAttack(int _equipmentAttack) { this->equipmentAttack = _equipmentAttack; }
+	void setEquipmentDefense(int _equipmentDefense) { this->equipmentDefense = _equipmentDefense; }
+	void setEquipmentHealth(int _equipmentHealth) { this->equipmentHealth = _equipmentHealth; }
+	void setEquipmentSlot(EquipmentSlot _equipmentSlot)
+	{
+		for (int i = 0; i < equipmentSlotToIndex(EquipmentSlot::COUNT); i++)
+		{
+			if (_equipmentSlot == equipmentSlotFromIndex(i))
+			{
+				this->equipmentSlot = _equipmentSlot;
+				return;
+			}
+		}
+		this->equipmentSlot = EquipmentSlot::EMPTY;
+	}
 };
 
-// returns an int value from an equipment slot
-constexpr std::size_t equipmentSlotToIndex(Equipment::EquipmentSlot slot) 
-{
-	return static_cast<std::size_t>(slot);
-}
-
-// Returns an equipment slot, between EMPTY and COUNT, from an int
-constexpr Equipment::EquipmentSlot equipmentSlotFromIndex(int _index) 
-{
-	if (_index > 0 && _index < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
-		return static_cast<Equipment::EquipmentSlot>(_index);
-	else
-		return Equipment::EquipmentSlot::EMPTY;
-}
-
-constexpr Equipment::EquipmentSlot equipmentSlotFromIndex(size_t _index)
-{
-	if (_index > 0 && _index < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT))
-		return static_cast<Equipment::EquipmentSlot>(_index);
-	else
-		return Equipment::EquipmentSlot::EMPTY;
-}
 
 #endif // !EQUIPMENT_H

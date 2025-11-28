@@ -78,7 +78,7 @@ bool SaveLoad::fromJson(const json& j, Player& out)
         if (j.contains("equipment_inventory") && j["equipment_inventory"].is_array()) {
             for (const auto& id : j["equipment_inventory"]) {
                 Equipment it = resolveOrEmpty(id.get<std::string>());
-                if (it.getEquipmentSlot() != Equipment::EquipmentSlot::EMPTY)
+                if (it.getEquipmentSlot() != EquipmentSlot::EMPTY)
                     out.getPlayerInventory().addEquipmentToInventory(it);
             }
         }

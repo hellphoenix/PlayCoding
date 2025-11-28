@@ -11,7 +11,7 @@ public:
 	CombatActions();
 	int playerAttack(const Enemy& _enemy, const Player& _player);
 	int enemyAttack(const Enemy& _enemy, const Player& _player);
-	Enemy spawnEnemy(Enemy::EnemyType _type);
+	Enemy spawnEnemy(EnemyType _type);
 
 private:
 };

@@ -15,48 +15,48 @@ static bool g_loaded = false;
 static std::unordered_map<std::string, std::size_t> g_EquipmentById;
 
 // Determines an ItemSlot based on a string. Input is a string name of the item slot. Returns an ItemSlot (EMPTY if not found).
-static Equipment::EquipmentSlot equipmentSlotFromString(const std::string& slotStr)
+static EquipmentSlot equipmentSlotFromString(const std::string& slotStr)
 {
     std::string slot = slotStr;
     std::transform(slot.begin(), slot.end(), slot.begin(),::toupper);
-    for (int i = 0; i < equipmentSlotToIndex(Equipment::EquipmentSlot::COUNT); i++)
+    for (int i = 0; i < equipmentSlotToIndex(EquipmentSlot::COUNT); i++)
     {
-        std::string upperSlot = Equipment::equipmentSlotToString.at(equipmentSlotFromIndex(i));
+        std::string upperSlot = equipmentSlotToString.at(equipmentSlotFromIndex(i));
         std::transform(upperSlot.begin(), upperSlot.end(), upperSlot.begin(), ::toupper);
         if (slot.compare(upperSlot) == 0)
             return equipmentSlotFromIndex(i);
     }
-    return Equipment::EquipmentSlot::EMPTY;
+    return EquipmentSlot::EMPTY;
 }
 
 // Determines an ItemType based on a string. Input is a string name of the item type. Returns an ItemType (UNKNOWN if not found).
-static Item::ItemType itemTypeFromString(const std::string& itemStr)
+static ItemType itemTypeFromString(const std::string& itemStr)
 {
     std::string item = itemStr;
     std::transform(item.begin(), item.end(), item.begin(), ::toupper);
-    for (int i = 0; i < itemTypeToIndex(Item::ItemType::COUNT); i++)
+    for (int i = 0; i < itemTypeToIndex(ItemType::COUNT); i++)
     {
-        std::string upperItem = Item::itemTypeToString.at(itemTypeFromIndex(i));
+        std::string upperItem = itemTypeToString.at(itemTypeFromIndex(i));
         std::transform(upperItem.begin(), upperItem.end(), upperItem.begin(), ::toupper);
         if (item.compare(upperItem) == 0)
             return itemTypeFromIndex(i);
     }
-    return Item::ItemType::UNKNOWN;
+    return ItemType::UNKNOWN;
 }
 
 // Determines an ItemRarity based on a string. Input is a string name of the item rarity. Returns an ItemRarity (NONEXISTENT if not found).
-static Item::ItemRarity itemRarityFromString(const std::string& rarityStr)
+static ItemRarity itemRarityFromString(const std::string& rarityStr)
 {
     std::string rarity = rarityStr;
     std::transform(rarity.begin(), rarity.end(), rarity.begin(), ::toupper);
-    for (int i = 0; i < itemRarityToIndex(Item::ItemRarity::COUNT); i++)
+    for (int i = 0; i < itemRarityToIndex(ItemRarity::COUNT); i++)
     {
-        std::string upperRarity = Item::itemRarityToString.at(itemRarityFromIndex(i));
+        std::string upperRarity = itemRarityToString.at(itemRarityFromIndex(i));
         std::transform(upperRarity.begin(), upperRarity.end(), upperRarity.begin(), ::toupper);
         if (rarity.compare(upperRarity) == 0)
             return itemRarityFromIndex(i);
     }
-    return Item::ItemRarity::NONEXISTENT;
+    return ItemRarity::NONEXISTENT;
 }
 
 // Loads items found in the items.json file by creating a base item, mutating it with the inputs found in the file, and stroing that item in the g_items vector. Also emplaced the item with it's item ID into the g_byId map.
@@ -81,11 +81,11 @@ static void loadIfNeeded()
             int defense = jitem["defense"];
             int health = jitem["health"];
 
-            Equipment::EquipmentSlot itemSlot = equipmentSlotFromString(slot);
-            Item::ItemType itemType = itemTypeFromString(type);
-            Item::ItemRarity itemRarity = itemRarityFromString(rarity);
+            EquipmentSlot itemSlot = equipmentSlotFromString(slot);
+            ItemType itemType = itemTypeFromString(type);
+            ItemRarity itemRarity = itemRarityFromString(rarity);
 
-            if (itemType == Item::ItemType::EQUIPMENT)
+            if (itemType == ItemType::EQUIPMENT)
             {
                 g_equipment.emplace_back(Equipment(id, name, attack, defense, health, itemSlot, itemRarity));
                 g_EquipmentById.emplace(id, g_equipment.size() - 1);
