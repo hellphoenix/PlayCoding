@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-enum class BUTTON_STATE
+enum BUTTON_STATE
 {
 	IDLE = 0, HOVER = 1, PRESSED = 2
 };

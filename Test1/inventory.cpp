@@ -1,17 +1,14 @@
 #include "inventory.h"
 #include <algorithm>
-#include <iostream>
-#include <unordered_map>
 
 // Adds item to inventory if it has a proper item ID. Input is Item object. 
 void Inventory::addEquipmentToInventory(const Equipment& _equipment)
 {
-	if (_equipment.getId() != "")
+	if (!_equipment.getId().empty())
 	{
 		equipmentInventory.push_back(_equipment);
 		sortEquipmentInventory();
 	}
-
 }
 
 // Removes item from inventory if it exists. Input is item ID.

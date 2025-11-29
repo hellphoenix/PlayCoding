@@ -1,16 +1,8 @@
-﻿  characterRenderer.cpp
-  combatActions.cpp
-  enemy.cpp
-  equipment.cpp
+﻿  button.cpp
   game.cpp
   gameInitialize.cpp
-  hudRenderer.cpp
-  inventory.cpp
-  inventoryActions.cpp
-  inventoryRenderer.cpp
-  item_library.cpp
   main.cpp
-  player.cpp
-  save_load.cpp
   Generating Code...
+D:\Game Dev Training\PlayCoding\Test1\button.cpp(54,1): warning C4172: returning address of local variable or temporary 
+D:\Game Dev Training\PlayCoding\Test1\button.cpp(49,1): warning C4172: returning address of local variable or temporary 
   Test1.vcxproj -> D:\Game Dev Training\PlayCoding\x64\Debug\Test1.exe
