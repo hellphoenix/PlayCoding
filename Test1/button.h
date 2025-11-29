@@ -2,6 +2,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <memory>
 #include <string>
 #include "textures.h"
 
@@ -17,23 +18,15 @@ private:
 	sf::Color colorIdle;
 	sf::Color colorHover;
 	sf::Color colorPressed;
-	sf::Texture textureIdle;
-	sf::Texture textureHover;
-	sf::Texture texturePressed;
-	std::optional<sf::Sprite> shape;
-	Textures loadedTexture;
-	//sf::Sprite shape = sf::Sprite(textureIdle);
+	const sf::Texture* textureIdle;
+	const sf::Texture* textureHover;
+	const sf::Texture* texturePressed;
+	std::unique_ptr<sf::Sprite> shape;
 	int buttonState;
 
 public:
-	Button(sf::Vector2f& mousePosView);
-	Button(sf::Vector2f& mousePosView, std::string& textureSingle);
-	Button(sf::Vector2f& mousePosView, std::string& textureIdle, std::string& textureHover, std::string& texturePressed);
+	Button(sf::Vector2f& mousePosView, const sf::Texture& textureIdle, const sf::Texture& textureHover, const sf::Texture& texturePressed);
 	~Button();
-
-	void setButtonIdleTexture(std::string& textureIdle);
-	void setButtonHoverTexture(std::string& textureHover);
-	void setButtonPressedTexture(std::string& textureHover);
 
 	void setButtonPosition(sf::Vector2f& mousePosView);
 	void updateButton(const sf::RenderWindow& window);

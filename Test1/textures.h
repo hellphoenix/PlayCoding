@@ -1,12 +1,13 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <string>
+#include <unordered_map>
 
 
 struct Textures
 {
-	sf::Texture texture;
-
-	const sf::Texture& loadTexture(std::string texturePath);
-	//const sf::Texture& getTexture() const;
+	const sf::Texture& loadTexture(const std::string& texturePath);
+private:
+	std::unordered_map<std::string, sf::Texture> textures;
 };

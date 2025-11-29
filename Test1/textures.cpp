@@ -1,16 +1,16 @@
 #include "textures.h"
 #include <iostream>
 
-const sf::Texture& Textures::loadTexture(std::string texturePath)
+const sf::Texture& Textures::loadTexture(const std::string& texturePath)
 {
-	if (!this->texture.loadFromFile(texturePath))
+	if (textures.find(texturePath) == textures.end())
 	{
-		std::cout << "Texture from " << texturePath << " could not load\n";
+		sf::Texture texture;
+		if (!texture.loadFromFile(texturePath))
+		{
+			std::cout << "Texture from " << texturePath << " could not load\n";
+		}
+		textures.emplace(texturePath, std::move(texture));
 	}
-	else return this->texture;
+	return textures.at(texturePath);
 }
-
-//const sf::Texture& Textures::getTexture() const
-//{
-//	return texture;
-//}
