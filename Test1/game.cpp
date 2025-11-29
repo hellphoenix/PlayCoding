@@ -90,6 +90,9 @@ void Game::handleEvent(const sf::Event& _event, const sf::RenderWindow& window)
 void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed, const sf::RenderWindow& window)
 {
 	sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	std::string idleTexture = "assets/button_idle.png";
+	std::string hoverTexture = "assets/button_hover.png";
+	std::string pressedTexture = "assets/button_pressed.png";
 	if (gameMode == GameMode::Normal)
 	{
 		switch (_keyPressed.scancode)
@@ -114,7 +117,7 @@ void Game::handleKeyPressed(const sf::Event::KeyPressed& _keyPressed, const sf::
 		{
 			if (keyTime >= keyTimeMax)
 			{
-				buttonVectors.emplace_back(new Button(pos));
+				buttonVectors.emplace_back(new Button(pos, idleTexture, hoverTexture, pressedTexture));
 				buttonVectors[buttonVectors.size()-1]->setButtonPosition(pos);
 				keyTime = 0.f;
 			}

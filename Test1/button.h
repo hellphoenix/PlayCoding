@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#include "textures.h"
 
 enum BUTTON_STATE
 {
@@ -20,6 +21,7 @@ private:
 	sf::Texture textureHover;
 	sf::Texture texturePressed;
 	std::optional<sf::Sprite> shape;
+	Textures loadedTexture;
 	//sf::Sprite shape = sf::Sprite(textureIdle);
 	int buttonState;
 
@@ -28,9 +30,6 @@ public:
 	Button(sf::Vector2f& mousePosView, std::string& textureSingle);
 	Button(sf::Vector2f& mousePosView, std::string& textureIdle, std::string& textureHover, std::string& texturePressed);
 	~Button();
-
-	const bool& isPressed() const;
-	const bool& isHover() const;
 
 	void setButtonIdleTexture(std::string& textureIdle);
 	void setButtonHoverTexture(std::string& textureHover);

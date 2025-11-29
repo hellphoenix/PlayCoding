@@ -1,12 +1,12 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
+
 
 struct Textures
 {
 	sf::Texture texture;
 
-	void loadTexture(std::string texturePath);
-	sf::Texture getTexture();
+	const sf::Texture& loadTexture(std::string texturePath);
+	//const sf::Texture& getTexture() const;
 };

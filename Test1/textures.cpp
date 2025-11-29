@@ -1,12 +1,16 @@
 #include "textures.h"
+#include <iostream>
 
-void Textures::loadTexture(std::string texturePath)
+const sf::Texture& Textures::loadTexture(std::string texturePath)
 {
 	if (!this->texture.loadFromFile(texturePath))
+	{
 		std::cout << "Texture from " << texturePath << " could not load\n";
+	}
+	else return this->texture;
 }
 
-sf::Texture Textures::getTexture()
-{
-	return texture;
-}
+//const sf::Texture& Textures::getTexture() const
+//{
+//	return texture;
+//}
