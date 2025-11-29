@@ -1,12 +1,14 @@
-﻿  character.cpp
-  characterRenderer.cpp
+﻿  characterRenderer.cpp
   combatActions.cpp
   enemy.cpp
+  equipment.cpp
   game.cpp
   gameInitialize.cpp
   hudRenderer.cpp
+  inventory.cpp
   inventoryActions.cpp
   inventoryRenderer.cpp
+  item_library.cpp
   main.cpp
   player.cpp
   save_load.cpp

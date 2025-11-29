@@ -18,6 +18,7 @@ enum class EquipmentSlot
 	COUNT
 };
 
+// Update this map when adding or removing an equipment slot if you want it to be seen on the character sheet.
 static const std::map<EquipmentSlot, std::string> equipmentSlotToString =
 {
 	{EquipmentSlot::EMPTY, "Empty"},{EquipmentSlot::TRINKET, "Trinket"} , {EquipmentSlot::HELMET, "Helmet"}, {EquipmentSlot::CHESTPIECE, "Chestpiece"},
@@ -63,7 +64,7 @@ public:
 	int getEquipmentAttack() const { return this->equipmentAttack; }
 	int getEquipmentDefense() const { return this->equipmentDefense; }
 	int getEquipmentHealth() const { return this->equipmentHealth; }
-	EquipmentSlot getEquipmentSlot() const { return equipmentSlot; }
+	EquipmentSlot getEquipmentSlot() const { return this->equipmentSlot; }
 
 	void setEquipmentAttack(int _equipmentAttack) { this->equipmentAttack = _equipmentAttack; }
 	void setEquipmentDefense(int _equipmentDefense) { this->equipmentDefense = _equipmentDefense; }
