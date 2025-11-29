@@ -11,16 +11,21 @@ void Inventory::addEquipmentToInventory(const Equipment& _equipment)
 		equipmentInventory.push_back(_equipment);
 		sortEquipmentInventory();
 	}
-		
+
 }
 
 // Removes item from inventory if it exists. Input is item ID.
 void Inventory::removeEquipmentFromInventory(const std::string& _id)
 {
-	auto tempItem = std::find_if(equipmentInventory.begin(), equipmentInventory.end(), [&](const Equipment& _equipment)
+	const auto tempItem = std::find_if(equipmentInventory.begin(), equipmentInventory.end(), [&](const Equipment& _equipment)
 		{
-			return _equipment.getId() == _id || _equipment.getId() == "";
+			return _equipment.getId() == _id;
 		});
+
+	if (tempItem == equipmentInventory.end())
+	{
+		return; // Nothing to remove
+	}
 
 	equipmentInventory.erase(tempItem);
 	equipmentInventory.shrink_to_fit();
@@ -30,7 +35,7 @@ void Inventory::removeEquipmentFromInventory(const std::string& _id)
 // Sorts inventory by slot type, then rarity, then name.
 void Inventory::sortEquipmentInventory()
 {
-	std::sort(equipmentInventory.begin(), equipmentInventory.end(),[](const Equipment& a, const Equipment& b)
+	std::sort(equipmentInventory.begin(), equipmentInventory.end(), [](const Equipment& a, const Equipment& b)
 		{
 			if (a.getEquipmentSlot() != b.getEquipmentSlot())
 				return a.getEquipmentSlot() < b.getEquipmentSlot();
@@ -40,7 +45,7 @@ void Inventory::sortEquipmentInventory()
 		});
 }
 
-// Filters inventory by ItemSlot. Input is ItemSlot. Returns a vector of Items.
+// Filters equipment inventory by EquipmentSlot. Input is EquipmentSlot. Returns a vector of Equipment.
 std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(EquipmentSlot _slot) const
 {
 	std::vector<Equipment> filteredList;
@@ -58,6 +63,7 @@ std::vector<Equipment> Inventory::filterEquipmentInventoryBySlot(EquipmentSlot _
 	return filteredList;
 }
 
+// Filters equipment inventory by ItemRarity. Input is ItemRarity. Returns a vector of Equipment.
 std::vector<Equipment> Inventory::filterEquipmentInventoryByRarity(ItemRarity _rarity) const
 {
 	std::vector<Equipment> filteredList;
@@ -75,6 +81,7 @@ std::vector<Equipment> Inventory::filterEquipmentInventoryByRarity(ItemRarity _r
 	return filteredList;
 }
 
+// Finds equipment by ID string. Input is ID. Returns either the found Equipment object or an empty Equipment object.
 Equipment Inventory::findEquipmentById(const std::string& _id) const
 {
 	for (const auto& equipment : equipmentInventory)
